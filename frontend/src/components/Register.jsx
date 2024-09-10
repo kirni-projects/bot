@@ -144,7 +144,7 @@ const Register = () => {
       {embedScript && (
         <textarea readOnly value={embedScript} rows={10} cols={50} />
       )}
-      {eid && <ScriptCheck eid={eid} />}
+      {eid && <ScriptCheck eid={eid} domainURL={domainURL} />}
     </>
   );
 };
