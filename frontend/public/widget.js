@@ -36,6 +36,7 @@
             console.error('Chatbot script is not authorized for this domain.');
             return;
         }
+        console.log('Current Domain:', currentDomain, 'Allowed Domain:', allowedDomain);
 
         function createChatbot() {
             console.log('Creating chatbot...');
@@ -46,7 +47,7 @@
             container.style.right = '0';
             container.style.width = '300px';
             container.style.height = '400px';
-            container.style.zIndex = '1000';
+            container.style.zIndex = '9999';
             container.style.border = '1px solid #ccc';
             container.style.backgroundColor = '#fff';
             document.body.appendChild(container);
