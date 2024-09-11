@@ -1,7 +1,7 @@
 (function() {
     const scriptElement = document.querySelector('script[src*="widget.js"]');
     if (!scriptElement) {
-        console.error("Script element not found.");
+        console.error("Script element with 'widget.js' source not found.");
         return;
     }
 
@@ -36,10 +36,17 @@
             console.error('Chatbot script is not authorized for this domain.');
             return;
         }
-        console.log('Current Domain:', currentDomain, 'Allowed Domain:', allowedDomain);
 
         function createChatbot() {
-            console.log('Creating chatbot...');
+            console.log('Creating chatbot container...');
+
+            // Check if chatbot container already exists
+            if (document.getElementById('chatbot-container')) {
+                console.log('Chatbot container already exists.');
+                return;
+            }
+
+            // Create chatbot container
             const container = document.createElement('div');
             container.id = 'chatbot-container';
             container.style.position = 'fixed';
@@ -47,18 +54,24 @@
             container.style.right = '0';
             container.style.width = '300px';
             container.style.height = '400px';
-            container.style.zIndex = '9999';
+            container.style.zIndex = '1000';
             container.style.border = '1px solid #ccc';
             container.style.backgroundColor = '#fff';
-            document.body.appendChild(container);
+            container.style.display = 'block';  // Ensure it's visible
+            container.style.boxShadow = '0px 4px 8px rgba(0, 0, 0, 0.1)';
+            container.style.borderRadius = '8px';
 
+            document.body.appendChild(container);
+            console.log('Chatbot container appended to body.');
+
+            // Load the chatbot logic script
             const chatbotScript = document.createElement('script');
-            chatbotScript.src = `/chatbotLogic.js`; // No need for localhost or domain in production
+            chatbotScript.src = `/chatbotLogic.js`; // Use relative path for production
             chatbotScript.async = true;
             document.body.appendChild(chatbotScript);
 
             chatbotScript.onload = function() {
-                console.log('Chatbot script loaded.');
+                console.log('Chatbot script loaded successfully.');
                 if (typeof initializeChatbot === 'function') {
                     initializeChatbot(container.id, dataId, eid);
                 } else {
@@ -67,62 +80,13 @@
             };
 
             chatbotScript.onerror = function() {
-                console.error('Error loading chatbotLogic.js');
+                console.error('Error loading chatbotLogic.js.');
             };
         }
 
-        // Check if chatbot container already exists before creating it
-        if (!document.getElementById('chatbot-container')) {
-            createChatbot();
-        } else {
-            console.log('Chatbot container already exists.');
-        }
+        // Create chatbot if container does not already exist
+        createChatbot();
     }
 
     initializeWidget();
 })();
-
-  
-  
-  // // public/widget.js
-  // (function() {
-  //     // Get the script element's attributes
-  //     const scriptElement = document.querySelector('script[src*="widget.js"]');
-  //     const dataId = scriptElement.getAttribute('data-id');
-  //     const eid = scriptElement.getAttribute('eid');
-    
-  //     // Function to create and load the chatbot container
-  //     function createChatbot() {
-  //       // Create a container for the chatbot
-  //       const container = document.createElement('div');
-  //       container.id = 'chatbot-container';
-  //       container.style.position = 'fixed';
-  //       container.style.bottom = '0';
-  //       container.style.right = '0';
-  //       container.style.width = '300px';
-  //       container.style.height = '400px';
-  //       container.style.zIndex = '1000';
-  //       container.style.border = '1px solid #ccc';
-  //       container.style.backgroundColor = '#fff';
-  //       document.body.appendChild(container);
-    
-  //       // Load the chatbot logic script
-  //       const chatbotScript = document.createElement('script');
-  //       chatbotScript.src = `http://localhost:3000/chatbotLogic.js`; // URL to the chatbot's logic file
-  //       chatbotScript.async = true;
-  //       document.body.appendChild(chatbotScript);
-    
-  //       // Initialize the chatbot after the script loads
-  //       chatbotScript.onload = function() {
-  //         if (typeof initializeChatbot === 'function') {
-  //           initializeChatbot(container.id, dataId, eid);
-  //         }
-  //       };
-  //     }
-    
-  //     // Check if the chatbot container already exists
-  //     if (!document.getElementById('chatbot-container')) {
-  //       createChatbot();
-  //     }
-  //   })();
-    
