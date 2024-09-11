@@ -67,7 +67,7 @@
 
             // Load the chatbot logic script
             const chatbotScript = document.createElement('script');
-            chatbotScript.src = `/chatbotLogic.js`; // Use relative path for production
+            chatbotScript.src = `https://bot-rd1k.onrender.com/chatbotLogic.js`; // Full URL for chatbotLogic.js
             chatbotScript.async = true;
             document.body.appendChild(chatbotScript);
 
