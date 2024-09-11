@@ -5,36 +5,25 @@ import connectToMongoDB from './db/connectToMongoDB.js';
 import registerRoutes from './routes/registerRoutes.js';
 import scriptCheckRoutes from './routes/scriptCheckRoutes.js';
 import authRoutes from './routes/authRoutes.js';
-import User from './models/User.js'; // Assuming User model is where domainURL is stored
+import cors from 'cors';
+// import User from './models/User.js';
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
 
-// Custom CORS middleware to dynamically allow domains based on user-registered domains
-app.use(async (req, res, next) => {
-  const origin = req.get('Origin');
-
-  if (origin) {
-    try {
-      // Check if the origin matches any registered domain
-      const user = await User.findOne({ domainURL: origin });
-
-      if (user) {
-        // If the origin matches the user's domain, allow it
-        res.setHeader('Access-Control-Allow-Origin', origin);
-        res.setHeader('Access-Control-Allow-Credentials', 'true');
-        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-      }
-    } catch (error) {
-      console.error('Error in CORS middleware:', error);
-    }
-  }
-  // Always pass to next middleware
+// CORS for widget.js specifically
+app.use('/widget.js', (req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*'); // Allow all origins, or set to specific domain
   next();
 });
+
+// General CORS setup for APIs
+app.use(cors({
+  origin: '*', // Use specific domains if needed
+  credentials: true,
+}));
 
 // Serve static files from the frontend
 const __dirname = path.resolve();
