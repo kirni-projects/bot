@@ -9,18 +9,19 @@
     const eid = scriptElement.getAttribute('eid');
 
     // Fetch the allowed domain from the backend
+   
     async function fetchAllowedDomain() {
         try {
-            const response = await fetch(`/api/getdomainurl/${eid}`);
-            const data = await response.json();
-            console.log('Allowed domain fetched:', data.domainURL);
-            return data.domainURL;
+          const response = await fetch(`https://bot-rd1k.onrender.com/api/getdomainurl/${eid}`);
+          const data = await response.json();
+          console.log('Allowed domain fetched:', data.domainURL);
+          return data.domainURL;
         } catch (error) {
-            console.error('Error fetching domain URL:', error);
-            return null;
+          console.error('Error fetching domain URL:', error);
+          return null;
         }
-    }
-
+      }
+      
     async function initializeWidget() {
         const allowedDomain = await fetchAllowedDomain();
 
