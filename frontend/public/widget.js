@@ -9,7 +9,7 @@
     const eid = scriptElement.getAttribute('eid');
 
     // Fetch the allowed domain from the backend
-    const productionUrl = loadEnv(mode, process.cwd());; // Access the environment variable
+    const productionUrl = import.meta.env.VITE_PRODUCTION_URL; // This gets the URL from .env
 
     async function fetchAllowedDomain() {
         try {
