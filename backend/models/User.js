@@ -28,7 +28,7 @@ UserSchema.pre('save', function (next) {
   
   // Get the current environment domain
   const scriptDomain = process.env.NODE_ENV === 'production' 
-    ? process.env.PRODUCTION_URL // Replace with your live domain
+    ? process.env.VITE_PRODUCTION_URL // Replace with your live domain
     : 'http://localhost:3000';
 
   // Generate the embed script

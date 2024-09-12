@@ -22,7 +22,7 @@ export const checkScript = async (req, res) => {
         console.log('Fetched HTML Content:', response.data);
 
         // Now find the exact script tag with both 'data-id' and 'eid' in it
-        const scriptTagRegex = new RegExp(`<script type=['"]module['"] src=['"]${process.env.PRODUCTION_URL}/widget.js['"] data-id=['"]chatbot-[a-fA-F0-9]{24}['"] eid=['"]${eid}['"]></script>`);
+        const scriptTagRegex = new RegExp(`<script type=['"]module['"] src=['"]${process.env.VITE_PRODUCTION_URL}/widget.js['"] data-id=['"]chatbot-[a-fA-F0-9]{24}['"] eid=['"]${eid}['"]></script>`);
         
         console.log('Regex pattern for Script Tag:', scriptTagRegex);
 
@@ -59,7 +59,7 @@ export const checkScript = async (req, res) => {
 
 //         const response = await axios.get(formattedURL);
 
-//         const scriptTag = `<script type='module' src='${process.env.PRODUCTION_URL}/widget.js' data-id='chatbot-${eid}'></script>`;
+//         const scriptTag = `<script type='module' src='${process.env.VITE_PRODUCTION_URL}/widget.js' data-id='chatbot-${eid}'></script>`;
 //         console.log('Searching for Script Tag:', scriptTag);  // Log the script tag for debugging
 
 //         const isScriptPresent = response.data.includes(scriptTag);
