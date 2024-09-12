@@ -7,14 +7,11 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react()],
-    define: {
-      'process.env': {},
-    },
     server: {
       port: 3000,
       proxy: {
         '/api': {
-          target: env.PRODUCTION_URL || 'http://localhost:5000', // Default to localhost if not in production
+          target: env.VITE_PRODUCTION_URL || 'http://localhost:5000', // Default to localhost if not in production
           changeOrigin: true,
         },
       },

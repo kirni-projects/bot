@@ -9,12 +9,11 @@
     const eid = scriptElement.getAttribute('eid');
 
     // Fetch the allowed domain from the backend
-    const productionUrl = import.meta.env.VITE_PRODUCTION_URL; // This gets the URL from .env
-
+   
     async function fetchAllowedDomain() {
         try {
-            const response = await fetch(`${productionUrl}/api/getdomainurl/${eid}`); // Use the production URL from .env
-            const data = await response.json();
+          const response = await fetch(`https://bot-rd1k.onrender.com/api/getdomainurl/${eid}`);
+          const data = await response.json();
           console.log('Allowed domain fetched:', data.domainURL);
           return data.domainURL;
         } catch (error) {
@@ -68,8 +67,7 @@
 
             // Load the chatbot logic script
             const chatbotScript = document.createElement('script');
-
-            chatbotScript.src = `${productionUrl}/chatbotLogic.js`; // Full URL for chatbotLogic.js
+            chatbotScript.src = `https://bot-rd1k.onrender.com/chatbotLogic.js`; // Full URL for chatbotLogic.js
             chatbotScript.async = true;
             document.body.appendChild(chatbotScript);
 
