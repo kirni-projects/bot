@@ -8,11 +8,13 @@
     const dataId = scriptElement.getAttribute('data-id');
     const eid = scriptElement.getAttribute('eid');
 
+    const productionUrl = import.meta.env.PRODUCTION_URL; // This gets the URL from .env
+
     // Fetch the allowed domain from the backend
    
     async function fetchAllowedDomain() {
         try {
-          const response = await fetch(`${process.env.PRODUCTION_URL}/api/getdomainurl/${eid}`);
+          const response = await fetch(`${productionUrl}/api/getdomainurl/${eid}`);
           const data = await response.json();
           console.log('Allowed domain fetched:', data.domainURL);
           return data.domainURL;
@@ -67,7 +69,7 @@
 
             // Load the chatbot logic script
             const chatbotScript = document.createElement('script');
-            chatbotScript.src = `${process.env.PRODUCTION_URL}/chatbotLogic.js`; // Full URL for chatbotLogic.js
+            chatbotScript.src = `${productionUrl}/chatbotLogic.js`; // Full URL for chatbotLogic.js
             chatbotScript.async = true;
             document.body.appendChild(chatbotScript);
 
