@@ -41,6 +41,7 @@
 
         function createChatbot() {
             console.log('Creating chatbot container...');
+            const productionUrl = import.meta.env.VITE_PRODUCTION_URL; // Access the environment variable
 
             // Check if chatbot container already exists
             if (document.getElementById('chatbot-container')) {
