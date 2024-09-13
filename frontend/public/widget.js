@@ -3,13 +3,10 @@
     const dataId = scriptElement.getAttribute('data-id');
     const eid = scriptElement.getAttribute('eid');
 
-    // Use the PRODUCTION_URL from the window object
-    const productionUrl = window.PRODUCTION_URL;
-
     // Fetch the allowed domain from the backend
     async function fetchAllowedDomain() {
         try {
-            const response = await fetch(`${productionUrl}/api/getdomainurl/${eid}`);
+            const response = await fetch(`https://bot-rd1k.onrender.com/api/getdomainurl/${eid}`);
             const data = await response.json();
             console.log('Allowed domain fetched:', data.domainURL);
             return data.domainURL;
@@ -49,7 +46,7 @@
 
         // Load chatbot logic
         const chatbotScript = document.createElement('script');
-        chatbotScript.src = `${productionUrl}/chatbotLogic.js`; // Ensure correct URL is used here
+        chatbotScript.src = `https://bot-rd1k.onrender.com/chatbotLogic.js`; // Ensure correct URL is used here
         chatbotScript.async = true;
         chatbotScript.onload = function() {
             if (typeof initializeChatbot === 'function') {
@@ -92,7 +89,7 @@
    
 //     async function fetchAllowedDomain() {
 //         try {
-//           const response = await fetch(`${productionUrl}/api/getdomainurl/${eid}`);
+//           const response = await fetch(`https://bot-rd1k.onrender.com/api/getdomainurl/${eid}`);
 //           const data = await response.json();
 //           console.log('Allowed domain fetched:', data.domainURL);
 //           return data.domainURL;
@@ -147,7 +144,7 @@
 
 //             // Load the chatbot logic script
 //             const chatbotScript = document.createElement('script');
-//             chatbotScript.src = `${productionUrl}/chatbotLogic.js`; // Full URL for chatbotLogic.js
+//             chatbotScript.src = `https://bot-rd1k.onrender.com/chatbotLogic.js`; // Full URL for chatbotLogic.js
 //             chatbotScript.async = true;
 //             document.body.appendChild(chatbotScript);
 

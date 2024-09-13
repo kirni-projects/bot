@@ -44,7 +44,7 @@ const ScriptCheck = ({ eid }) => {
   return (
     <div>
       <h3>Test Script Presence in Domain URL</h3>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {/* {error && <p style={{ color: 'red' }}>{error}</p>} */}
       <div>
         <label>Domain URL:</label>
         <input type="text" value={domainURL} readOnly />
