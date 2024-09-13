@@ -8,7 +8,7 @@
     const dataId = scriptElement.getAttribute('data-id');
     const eid = scriptElement.getAttribute('eid');
 
-    const productionUrl = import.meta.env.PRODUCTION_URL; // This gets the URL from .env
+    const productionUrl = import.meta.env.VITE_PRODUCTION_URL; // This gets the URL from .env
 
     // Fetch the allowed domain from the backend
    
