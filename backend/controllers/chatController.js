@@ -1,7 +1,7 @@
 // controllers/chatController.js
 import botUser from '../models/user.model.js';  // Use botUser instead of User
 import Conversation from '../models/conversation.model.js';
-import Notification from '../models/notification.model.js';
+import Notification from '../models/Notification.model.js';
 import { v4 as uuidv4 } from 'uuid';
 import { generateToken, setCookie } from '../utils/generateToken.js';
 
