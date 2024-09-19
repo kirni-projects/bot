@@ -1,7 +1,7 @@
 // public/chatbotLogic.js
 import React from 'react';
 import ReactDOM from 'react-dom';
-import WidgetContainer from './widgetContainer/WidgetContainer.jsx'; // Adjust the import path as necessary
+import WidgetContainer from '../src/components/widgetContainer/index.jsx'; // Adjust the import path as necessary
 
 // Initialize the chatbot widget
 function initChatbot({ eid }) {
