@@ -1,75 +1,76 @@
-// server.js
 import path from 'path';
 import express from 'express';
 import dotenv from 'dotenv';
-import connectToMongoDB from './db/connectToMongoDB.js';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import User from './models/User.js';  // Import the User model
 import registerRoutes from './routes/registerRoutes.js';
 import scriptCheckRoutes from './routes/scriptCheckRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
-import cors from 'cors';
 
+// Load .env file
 dotenv.config();
 
-const app = express();
-app.use(express.json());
-
-let cachedAllowedDomains = [];
-let cacheTime = Date.now();
-
-const refreshAllowedDomains = async () => {
+// MongoDB connection
+const connectToMongoDB = async () => {
   try {
-    const users = await User.find({}, 'domainURL');
-    cachedAllowedDomains = users.map(user => user.domainURL);
-    cacheTime = Date.now();
+    const uri = process.env.MONGO_DB_URI;  // Ensure this is loaded from .env
+    if (!uri) {
+      throw new Error('MONGO_DB_URI is not defined');
+    }
+    await mongoose.connect(uri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('MongoDB connected');
   } catch (error) {
-    console.error('Error fetching allowed domains:', error);
+    console.error('MongoDB connection error:', error.message);
+    process.exit(1); // Exit process if MongoDB connection fails
   }
 };
 
+// CORS setup
 const corsOptions = {
   origin: async function (origin, callback) {
     if (!origin) {
       return callback(null, true);  // Allow non-browser clients or requests without Origin
     }
 
-    // Refresh cache every 60 seconds (you can adjust this interval)
-    if (Date.now() - cacheTime > 60000) {
-      await refreshAllowedDomains();
-    }
+    try {
+      // Query the database for allowed domains
+      const allowedDomains = await User.find({}, 'domainURL').then(users => users.map(user => user.domainURL));
 
-    if (cachedAllowedDomains.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
+      if (allowedDomains.indexOf(origin) !== -1) {
+        callback(null, true);  // Allow the request if the domain is registered
+      } else {
+        callback(new Error('Not allowed by CORS'));  // Block the request if the domain is not registered
+      }
+    } catch (error) {
+      console.error('Error fetching allowed domains for CORS:', error);
+      callback(new Error('Internal server error'));
     }
   },
-  credentials: true
+  credentials: true  // Allow sending cookies with CORS requests
 };
 
-// Initial cache load when server starts
-await refreshAllowedDomains();
-
+const app = express();
+app.use(express.json());
 app.use(cors(corsOptions));
 
-// Serve static files from the frontend
-const __dirname = path.resolve();
-app.use(express.static(path.join(__dirname, 'frontend/dist')));
-
+// Routes
 app.use('/api', registerRoutes);
 app.use('/api', scriptCheckRoutes);
 app.use('/api', authRoutes);
 app.use('/api', chatRoutes);
 
+// Serve static files from the frontend
+const __dirname = path.resolve();
+app.use(express.static(path.join(__dirname, 'frontend/dist')));
+
 // Connect to MongoDB
 connectToMongoDB();
 
-console.log('MONGODB_URI:', process.env.MONGO_DB_URI);
-
+// Start the server
 const PORT = process.env.PORT || 5000;
-
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'frontend', 'dist', 'index.html'));
-});
-
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -1,5 +1,7 @@
+// models/user.model.js
 import mongoose from "mongoose";
 
+// Define the botUser schema
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -33,6 +35,7 @@ const userSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-const User = mongoose.model("User", userSchema);
+// Avoid model overwrite error: only compile if not already compiled
+const botUser = mongoose.models.botUser || mongoose.model("botUser", userSchema);
 
-export default User;
+export default botUser;

@@ -1,5 +1,5 @@
 // controllers/chatController.js
-import User from '../models/User.js';
+import botUser from '../models/user.model.js';  // Use botUser instead of User
 import Conversation from '../models/conversation.model.js';
 import Notification from '../models/notification.model.js';
 import { v4 as uuidv4 } from 'uuid';
@@ -20,7 +20,7 @@ export const startConversation = async (req, res) => {
   const { username, message, eid } = req.body; // Include eid from the request
 
   try {
-    const user = await User.findOne({ eid });
+    const user = await botUser.findOne({ eid });
     if (!user) {
       return res.status(404).json({ error: 'User not found for this EID' });
     }
