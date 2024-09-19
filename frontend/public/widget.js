@@ -1,170 +1,27 @@
-(function() {
-    const scriptElement = document.querySelector('script[src*="widget.js"]');
-    const dataId = scriptElement.getAttribute('data-id');
-    const eid = scriptElement.getAttribute('eid');
+// public/widget.js
+(function () {
+  const script = document.currentScript;
+  const allowedDomain = script.getAttribute('data-domain');
+  const eid = script.getAttribute('data-eid'); // unique user identifier from the backend
 
-    // Fetch the allowed domain from the backend
-    async function fetchAllowedDomain() {
-        try {
-            const response = await fetch(`https://bot-rd1k.onrender.com/api/getdomainurl/${eid}`);
-            const data = await response.json();
-            console.log('Allowed domain fetched:', data.domainURL);
-            return data.domainURL;
-        } catch (error) {
-            console.error('Error fetching domain URL:', error);
-            return null;
-        }
-    }
+  if (window.location.hostname === allowedDomain) {
+    const widgetContainer = document.createElement('div');
+    widgetContainer.id = 'chatbot-widget-container';
+    widgetContainer.style.position = 'fixed';
+    widgetContainer.style.bottom = '0';
+    widgetContainer.style.right = '0';
+    widgetContainer.style.zIndex = '9999';
+    document.body.appendChild(widgetContainer);
 
-    // Other widget logic...
-    async function initializeWidget() {
-        const allowedDomain = await fetchAllowedDomain();
-        if (!allowedDomain) {
-            console.error('Allowed domain could not be fetched.');
-            return;
-        }
-
-        const currentDomain = window.location.hostname;
-        console.log('Current Domain:', currentDomain);
-        if (currentDomain !== allowedDomain) {
-            console.error('Chatbot script is not authorized for this domain.');
-            return;
-        }
-
-        console.log('Creating chatbot container...');
-        const container = document.createElement('div');
-        container.id = 'chatbot-container';
-        container.style.position = 'fixed';
-        container.style.bottom = '0';
-        container.style.right = '0';
-        container.style.width = '300px';
-        container.style.height = '400px';
-        container.style.zIndex = '1000';
-        container.style.border = '1px solid #ccc';
-        container.style.backgroundColor = '#fff';
-        document.body.appendChild(container);
-
-        // Load chatbot logic
-        const chatbotScript = document.createElement('script');
-        chatbotScript.src = `https://bot-rd1k.onrender.com/chatbotLogic.js`; // Ensure correct URL is used here
-        chatbotScript.async = true;
-        chatbotScript.onload = function() {
-            if (typeof initializeChatbot === 'function') {
-                initializeChatbot(container.id, dataId, eid);
-            }
-        };
-        chatbotScript.onerror = function() {
-            console.error('Error loading chatbotLogic.js.');
-        };
-        document.body.appendChild(chatbotScript);
-    }
-
-    initializeWidget();
+    const scriptElement = document.createElement('script');
+    scriptElement.src = 'https://bot-rd1k.onrender.com/chatbotLogic.js'; // Adjust this to your deployment
+    scriptElement.onload = function () {
+      if (typeof initChatbot === 'function') {
+        initChatbot({ eid });
+      }
+    };
+    document.body.appendChild(scriptElement);
+  } else {
+    console.error('Domain not allowed to load chatbot.');
+  }
 })();
-
-
-
-
-
-
-
-
-
-
-
-
-// (function() {
-//     const scriptElement = document.querySelector('script[src*="widget.js"]');
-//     if (!scriptElement) {
-//         console.error("Script element with 'widget.js' source not found.");
-//         return;
-//     }
-
-//     const dataId = scriptElement.getAttribute('data-id');
-//     const eid = scriptElement.getAttribute('eid');
-
-//     const productionUrl = window.PRODUCTION_URL;
-
-//     // Fetch the allowed domain from the backend
-   
-//     async function fetchAllowedDomain() {
-//         try {
-//           const response = await fetch(`https://bot-rd1k.onrender.com/api/getdomainurl/${eid}`);
-//           const data = await response.json();
-//           console.log('Allowed domain fetched:', data.domainURL);
-//           return data.domainURL;
-//         } catch (error) {
-//           console.error('Error fetching domain URL:', error);
-//           return null;
-//         }
-//       }
-      
-//     async function initializeWidget() {
-//         const allowedDomain = await fetchAllowedDomain();
-
-//         if (!allowedDomain) {
-//             console.error('Allowed domain could not be fetched.');
-//             return;
-//         }
-
-//         // Check if the current domain matches the allowed domain
-//         const currentDomain = window.location.hostname;
-//         console.log('Current Domain:', currentDomain);
-//         if (currentDomain !== allowedDomain) {
-//             console.error('Chatbot script is not authorized for this domain.');
-//             return;
-//         }
-
-//         function createChatbot() {
-//             console.log('Creating chatbot container...');
-
-//             // Check if chatbot container already exists
-//             if (document.getElementById('chatbot-container')) {
-//                 console.log('Chatbot container already exists.');
-//                 return;
-//             }
-
-//             // Create chatbot container
-//             const container = document.createElement('div');
-//             container.id = 'chatbot-container';
-//             container.style.position = 'fixed';
-//             container.style.bottom = '0';
-//             container.style.right = '0';
-//             container.style.width = '300px';
-//             container.style.height = '400px';
-//             container.style.zIndex = '1000';
-//             container.style.border = '1px solid #ccc';
-//             container.style.backgroundColor = '#fff';
-//             container.style.display = 'block';  // Ensure it's visible
-//             container.style.boxShadow = '0px 4px 8px rgba(0, 0, 0, 0.1)';
-//             container.style.borderRadius = '8px';
-
-//             document.body.appendChild(container);
-//             console.log('Chatbot container appended to body.');
-
-//             // Load the chatbot logic script
-//             const chatbotScript = document.createElement('script');
-//             chatbotScript.src = `https://bot-rd1k.onrender.com/chatbotLogic.js`; // Full URL for chatbotLogic.js
-//             chatbotScript.async = true;
-//             document.body.appendChild(chatbotScript);
-
-//             chatbotScript.onload = function() {
-//                 console.log('Chatbot script loaded successfully.');
-//                 if (typeof initializeChatbot === 'function') {
-//                     initializeChatbot(container.id, dataId, eid);
-//                 } else {
-//                     console.error('initializeChatbot function not found.');
-//                 }
-//             };
-
-//             chatbotScript.onerror = function() {
-//                 console.error('Error loading chatbotLogic.js.');
-//             };
-//         }
-
-//         // Create chatbot if container does not already exist
-//         createChatbot();
-//     }
-
-//     initializeWidget();
-// })();

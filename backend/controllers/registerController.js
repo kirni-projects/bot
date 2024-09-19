@@ -1,27 +1,34 @@
 import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
+import { generateEmbedScript } from '../utils/generateScript.js';
+
 
 export const register = async (req, res) => {
-    try {
-        const { name, email, mobile, companyName, city, domainURL, ipAddress, password } = req.body;
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const user = new User({
-            name,
-            email,
-            mobile,
-            companyName,
-            city,
-            domainURL,
-            ipAddress,
-            password: hashedPassword,
-        });
-        await user.save();
-        res.status(201).json({ script: user.script, eid: user.eid });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Server error' });
-    }
+  try {
+    const { name, email, mobile, companyName, city, domainURL, ipAddress, password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = new User({
+      name,
+      email,
+      mobile,
+      companyName,
+      city,
+      domainURL,  // Save domainURL from the user
+      ipAddress,
+      password: hashedPassword,
+    });
+    
+    await user.save();
+
+    const script = generateEmbedScript(user._id, user.eid);
+    res.status(201).json({ script, eid: user.eid });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
+  }
 };
+
 
 export const getDomain = async (req, res) => {
     const { eid } = req.params;

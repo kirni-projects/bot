@@ -1,25 +1,21 @@
-// Dummy initialization function (replace with your actual chatbot logic)
-function initializeChatbot(containerId, dataId, eid) {
-  console.log('Initializing chatbot...', { containerId, dataId, eid });
+// public/chatbotLogic.js
+import React from 'react';
+import ReactDOM from 'react-dom';
+import WidgetContainer from './widgetContainer/WidgetContainer.jsx'; // Adjust the import path as necessary
 
-  const container = document.getElementById(containerId);
-  if (!container) {
-      console.error('Chatbot container not found.');
-      return;
-  }
+// Initialize the chatbot widget
+function initChatbot({ eid }) {
+  const widgetContainer = document.getElementById('chatbot-widget-container');
+  if (!widgetContainer) return;
 
-  // Create a basic chatbot UI as an example
-  container.innerHTML = `
-      <div style="height: 100%; display: flex; flex-direction: column;">
-          <div style="flex: 1; overflow-y: auto; padding: 10px;">
-              <p>Welcome to our chatbot! (ID: ${dataId}, EID: ${eid})</p>
-          </div>
-          <div style="border-top: 1px solid #ccc; padding: 10px;">
-              <input type="text" placeholder="Type your message here..." style="width: 100%;" />
-          </div>
-      </div>
-  `;
+  // Render the React chatbot component
+  ReactDOM.render(
+    <React.StrictMode>
+      <WidgetContainer eid={eid} />
+    </React.StrictMode>,
+    widgetContainer
+  );
 }
 
-// Expose the initializeChatbot function globally
-window.initializeChatbot = initializeChatbot;
+// Expose the initChatbot function to the global scope
+window.initChatbot = initChatbot;
