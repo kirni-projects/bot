@@ -146,7 +146,7 @@ const Register = () => {
           />
           {errors.password && <p>{errors.password}</p>}
         </div>
-        <button className="btn btn-warning btn-wide pt-6" type="submit">Register</button>
+        <button className="btn btn-warning btn-wide mt-6" type="submit">Register</button>
       </form>
       {embedScript && (
         <textarea readOnly value={embedScript} rows={10} cols={50} />

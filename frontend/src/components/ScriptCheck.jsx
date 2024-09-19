@@ -10,10 +10,11 @@ const ScriptCheck = ({ eid }) => {
 
   useEffect(() => {
     // Fetch the domainURL using the eid
-    const fetchDomainURL = async () => {
+    const fetchDomainURL = async (eid) => {
       try {
         const response = await axios.get(`/api/getdomainurl/${eid}`);
         setDomainURL(response.data.domainURL);
+        console.log('Domain URL:', response.data);
       } catch (err) {
         console.error('Error fetching domainURL:', err);
         setError('Failed to fetch domain URL');
@@ -64,7 +65,7 @@ const ScriptCheck = ({ eid }) => {
         </div>
       )}
 
-      <button className="btn btn-warning btn-wide pt-6" onClick={handleSkip}>Skip</button> {/* Skip button to bypass the check */}
+      <button className="btn btn-warning btn-wide mt-6" onClick={handleSkip}>Skip</button> {/* Skip button to bypass the check */}
     </div>
   );
 };
