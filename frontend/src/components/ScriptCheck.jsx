@@ -53,7 +53,7 @@ const ScriptCheck = ({ eid }) => {
             type="text" 
             value={domainURL} readOnly />
       </div>
-      <button onClick={checkScriptPresence}>Check Script</button>
+      <button className="btn btn-warning btn-wide mt-6" onClick={checkScriptPresence}>Check Script</button>
 
       {scriptFound !== null && (
         <div>
@@ -65,7 +65,7 @@ const ScriptCheck = ({ eid }) => {
         </div>
       )}
 
-      <button className="btn btn-warning btn-wide mt-6" onClick={handleSkip}>Skip</button> {/* Skip button to bypass the check */}
+      <button className="btn btn-success btn-wide mt-6" onClick={handleSkip}>Skip</button> {/* Skip button to bypass the check */}
     </div>
   );
 };
