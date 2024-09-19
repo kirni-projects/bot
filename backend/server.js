@@ -36,7 +36,6 @@ const corsOptions = {
   credentials: true,
 };
 
-app.use(cors(corsOptions));
 
 // const corsOptions = {
 //   origin: async function (origin, callback) {
@@ -64,6 +63,7 @@ app.use(cors(corsOptions));
 
 const app = express();
 app.use(express.json());
+app.use(cors(corsOptions));
 
 // Serve static files
 const __dirname = path.resolve();
