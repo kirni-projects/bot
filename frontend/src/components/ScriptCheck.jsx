@@ -47,7 +47,10 @@ const ScriptCheck = ({ eid }) => {
       {/* {error && <p style={{ color: 'red' }}>{error}</p>} */}
       <div>
         <label>Domain URL:</label>
-        <input type="text" value={domainURL} readOnly />
+        <input
+            className="input input-bordered input-success pl-4 w-full max-w-xs" 
+            type="text" 
+            value={domainURL} readOnly />
       </div>
       <button onClick={checkScriptPresence}>Check Script</button>
 
@@ -61,7 +64,7 @@ const ScriptCheck = ({ eid }) => {
         </div>
       )}
 
-      <button onClick={handleSkip}>Skip</button> {/* Skip button to bypass the check */}
+      <button className="btn btn-warning btn-wide pt-6" onClick={handleSkip}>Skip</button> {/* Skip button to bypass the check */}
     </div>
   );
 };
