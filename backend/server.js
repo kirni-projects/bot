@@ -32,30 +32,38 @@ const connectToMongoDB = async () => {
 
 // CORS setup
 const corsOptions = {
-  origin: async function (origin, callback) {
-    if (!origin) {
-      return callback(null, true);  // Allow non-browser clients or requests without Origin
-    }
-
-    try {
-      const allowedDomains = await User.find({}, 'domainURL').then(users => users.map(user => user.domainURL));
-
-      if (allowedDomains.indexOf(origin) !== -1) {
-        callback(null, true);  // Allow the request if the domain is registered
-      } else {
-        callback(new Error('Not allowed by CORS'));  // Block the request if the domain is not registered
-      }
-    } catch (error) {
-      console.error('Error fetching allowed domains for CORS:', error);
-      callback(new Error('Internal server error'));
-    }
-  },
-  credentials: true
+  origin: '*',  // Allow all origins temporarily for testing
+  credentials: true,
 };
+
+app.use(cors(corsOptions));
+
+// const corsOptions = {
+//   origin: async function (origin, callback) {
+//     if (!origin) {
+//       return callback(null, true);  // Allow non-browser clients or requests without Origin
+//     }
+
+//     try {
+//       const allowedDomains = await User.find({}, 'domainURL').then(users => users.map(user => user.domainURL));
+
+//       if (allowedDomains.includes(origin)) {
+//         callback(null, true);  // Allow if the origin is in the allowed list
+//       } else {
+//         callback(new Error('Not allowed by CORS'));  // Deny if the origin is not allowed
+//       }
+//     } catch (error) {
+//       console.error('Error fetching allowed domains:', error);
+//       callback(new Error('Internal server error'));
+//     }
+//   },
+//   credentials: true  // Allow credentials (cookies, etc.) to be sent
+// };
+
+// app.use(cors(corsOptions));
 
 const app = express();
 app.use(express.json());
-app.use(cors(corsOptions));
 
 // Serve static files
 const __dirname = path.resolve();
