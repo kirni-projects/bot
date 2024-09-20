@@ -1,49 +1,45 @@
-import express from 'express';
-import dotenv from 'dotenv';
 import cors from 'cors';
+import express from 'express';
 import path from 'path';
-import User from './models/User.js'; // Adjust the path based on your file structure
+import dotenv from 'dotenv';
+import connectToMongoDB from './db/connectToMongoDB.js';
 import registerRoutes from './routes/registerRoutes.js';
 import scriptCheckRoutes from './routes/scriptCheckRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
-import connectToMongoDB from './db/connectToMongoDB.js';
 
+// Load environment variables
 dotenv.config();
 
 const app = express();
-
-// Middleware to parse incoming requests
 app.use(express.json());
 
-// MongoDB connection
-connectToMongoDB();
+// Update the allowed domains in the CORS setup
+const allowedDomains = [
+  process.env.PRODUCTION_URL,  // Add your frontend URL in the .env file
+  'https://bot-rd1k.onrender.com',  // Render backend domain
+  'http://localhost:3000'  // Local development
+];
 
-// CORS Setup
 const corsOptions = {
-  origin: async function (origin, callback) {
-    try {
-      // Fetch allowed domains from the database
-      const allowedDomains = await User.find({}, 'domainURL');
-      const domainList = allowedDomains.map(user => user.domainURL);
-
-      // If no origin or origin is in the allowed domains, proceed
-      if (!origin || domainList.includes(origin)) {
-        callback(null, true);
-      } else {
-        console.error(`CORS blocked request from origin: ${origin}`);
-        callback(new Error('Not allowed by CORS'));
-      }
-    } catch (error) {
-      console.error('Error fetching allowed domains for CORS:', error);
-      callback(new Error('Internal server error'));
+  origin: function (origin, callback) {
+    if (!origin || allowedDomains.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
     }
   },
-  credentials: true, // Allows cookies and other credentials to be sent
+  credentials: true, // Allow credentials (cookies, etc.)
 };
 
-// Apply CORS middleware
 app.use(cors(corsOptions));
+
+// Connect to MongoDB
+connectToMongoDB();
+
+// Serve static files from the frontend
+const __dirname = path.resolve();
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
 // Routes
 app.use('/api', registerRoutes);
@@ -51,13 +47,9 @@ app.use('/api', scriptCheckRoutes);
 app.use('/api', authRoutes);
 app.use('/api', chatRoutes);
 
-// Serve static files from frontend/dist
-const __dirname = path.resolve();
-app.use(express.static(path.join(__dirname, 'frontend/dist')));
-
-// Catch-all route for serving the React app's index.html
+// Fallback route to serve index.html for any unhandled routes
 app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'frontend', 'dist', 'index.html'));
+  res.sendFile(path.resolve(__dirname, '../frontend/dist/index.html'));
 });
 
 // Start the server
