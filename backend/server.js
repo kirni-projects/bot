@@ -1,71 +1,49 @@
-import path from 'path';
 import express from 'express';
 import dotenv from 'dotenv';
-import mongoose from 'mongoose';
 import cors from 'cors';
-import User from './models/User.js';
+import path from 'path';
+import User from './models/User.js'; // Adjust the path based on your file structure
 import registerRoutes from './routes/registerRoutes.js';
 import scriptCheckRoutes from './routes/scriptCheckRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
+import connectToMongoDB from './db/connectToMongoDB.js';
 
-// Load .env file
 dotenv.config();
 
+const app = express();
+
+// Middleware to parse incoming requests
+app.use(express.json());
+
 // MongoDB connection
-const connectToMongoDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGO_DB_URI); // Updated without deprecated options
-    console.log('MongoDB connected');
-  } catch (error) {
-    console.error('MongoDB connection error:', error.message);
-    process.exit(1); // Exit the process if the connection fails
-  }
-};
+connectToMongoDB();
 
-// CORS setup
-// const corsOptions = {
-//   origin: '*',  // Allow all origins temporarily for testing
-//   credentials: true,
-// };
-
-
+// CORS Setup
 const corsOptions = {
   origin: async function (origin, callback) {
-    if (!origin) {
-      return callback(null, true);  // Allow non-browser clients or requests without Origin
-    }
-
     try {
-      const allowedDomains = await User.find({}, 'domainURL').then(users => users.map(user => user.domainURL));
+      // Fetch allowed domains from the database
+      const allowedDomains = await User.find({}, 'domainURL');
+      const domainList = allowedDomains.map(user => user.domainURL);
 
-      if (allowedDomains.includes(origin)) {
-        callback(null, true);  // Allow if the origin is in the allowed list
+      // If no origin or origin is in the allowed domains, proceed
+      if (!origin || domainList.includes(origin)) {
+        callback(null, true);
       } else {
-        callback(new Error('Not allowed by CORS'));  // Deny if the origin is not allowed
+        console.error(`CORS blocked request from origin: ${origin}`);
+        callback(new Error('Not allowed by CORS'));
       }
     } catch (error) {
-      console.error('Error fetching allowed domains:', error);
+      console.error('Error fetching allowed domains for CORS:', error);
       callback(new Error('Internal server error'));
     }
   },
-  credentials: true  // Allow credentials (cookies, etc.) to be sent
+  credentials: true, // Allows cookies and other credentials to be sent
 };
 
-// app.use(cors(corsOptions));
-
-const app = express();
-app.use(express.json());
+// Apply CORS middleware
 app.use(cors(corsOptions));
-
-// Serve static files
-const __dirname = path.resolve();
-app.use(express.static(path.join(__dirname, 'frontend/dist')));  // Ensure this serves your frontend build
-
-// Fallback route to serve the index.html for any unhandled routes
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'frontend', 'dist', 'index.html'));  // Ensure this serves your React app correctly
-});
 
 // Routes
 app.use('/api', registerRoutes);
@@ -73,8 +51,14 @@ app.use('/api', scriptCheckRoutes);
 app.use('/api', authRoutes);
 app.use('/api', chatRoutes);
 
-// Connect to MongoDB
-connectToMongoDB();
+// Serve static files from frontend/dist
+const __dirname = path.resolve();
+app.use(express.static(path.join(__dirname, 'frontend/dist')));
+
+// Catch-all route for serving the React app's index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'frontend', 'dist', 'index.html'));
+});
 
 // Start the server
 const PORT = process.env.PORT || 5000;
