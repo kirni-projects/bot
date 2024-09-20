@@ -3,33 +3,34 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const ScriptCheck = ({ eid }) => {
-  const [domainURL, setDomainURL] = useState('');
+  const [domainURL, setDomainURL] = useState('');  // Initial state for the domain URL
   const [scriptFound, setScriptFound] = useState(null);
   const [error, setError] = useState('');
-  const navigate = useNavigate(); // Use useNavigate for navigation
+  const navigate = useNavigate();  // Use useNavigate for navigation
 
+  // Fetch the domain URL using the eid
   useEffect(() => {
-    // Fetch the domainURL using the eid
     const fetchDomainURL = async () => {
       try {
         const response = await axios.get(`/api/getdomainurl/${eid}`);
-        setDomainURL(response.data.domainURL);
+        console.log(response.data);  // Check if the correct data is being fetched
+        setDomainURL(response.data.domainURL);  // Update the state with the fetched domain URL
       } catch (err) {
         console.error('Error fetching domainURL:', err);
         setError('Failed to fetch domain URL');
       }
     };
-    fetchDomainURL();
-  }, [eid]);
 
+    fetchDomainURL();
+  }, [eid]);  // Ensure this runs when eid changes
+
+  // Function to check script presence
   const checkScriptPresence = async () => {
     try {
-      // Use the backend proxy to check for the script presence
       const response = await axios.get('/api/proxy/check-script', {
-        params: { domainURL, eid },
+        params: { domainURL, eid },  // Pass the domain URL and eid as query params
       });
 
-      // Update scriptFound based on the success field in the response
       setScriptFound(response.data.success);
     } catch (err) {
       console.error('Error checking script presence:', err);
@@ -38,21 +39,22 @@ const ScriptCheck = ({ eid }) => {
   };
 
   const handleSkip = () => {
-    navigate('/login'); // Navigate to the login page on skip
+    navigate('/login');  // Navigate to the login page on skip
   };
 
   return (
     <div>
       <h3>Test Script Presence in Domain URL</h3>
-      {/* {error && <p style={{ color: 'red' }}>{error}</p>} */}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
       <div>
         <label>Domain URL:</label>
         <input
-            className="input input-bordered input-success pl-4 w-full max-w-xs" 
-            type="text" 
-            value={domainURL} readOnly />
+          type="text"
+          value={domainURL}  // Bind the input field to the state variable
+          readOnly
+        />
       </div>
-      <button className="btn btn-warning btn-wide mt-6" onClick={checkScriptPresence}>Check Script</button>
+      <button onClick={checkScriptPresence}>Check Script</button>
 
       {scriptFound !== null && (
         <div>
@@ -64,7 +66,7 @@ const ScriptCheck = ({ eid }) => {
         </div>
       )}
 
-      <button className="btn btn-success btn-wide mt-6 ml-4" onClick={handleSkip}>Skip</button> {/* Skip button to bypass the check */}
+      <button onClick={handleSkip}>Skip</button>
     </div>
   );
 };
