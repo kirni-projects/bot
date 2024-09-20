@@ -10,11 +10,10 @@ const ScriptCheck = ({ eid }) => {
 
   useEffect(() => {
     // Fetch the domainURL using the eid
-    const fetchDomainURL = async (eid) => {
+    const fetchDomainURL = async () => {
       try {
         const response = await axios.get(`/api/getdomainurl/${eid}`);
         setDomainURL(response.data.domainURL);
-        console.log('Domain URL:', response.data);
       } catch (err) {
         console.error('Error fetching domainURL:', err);
         setError('Failed to fetch domain URL');
