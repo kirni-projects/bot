@@ -1,4 +1,5 @@
-(function () {
+// public/widget.js
+(function() {
   const scriptElement = document.querySelector('script[src*="widget.js"]');
   const dataId = scriptElement.getAttribute('data-id');
   const eid = scriptElement.getAttribute('eid');
@@ -8,18 +9,13 @@
     try {
       const response = await fetch(`https://bot-rd1k.onrender.com/api/getdomainurl/${eid}`);
       
-      // Check if the response is OK (status code 200)
+      // Check if the response is JSON
       if (!response.ok) {
-        throw new Error(`Failed to fetch domain URL, status code: ${response.status}`);
+        console.error('Error fetching domain URL:', response.status, response.statusText);
+        return null;
       }
-
-      const data = await response.json();  // Ensure response is parsed as JSON
-
-      // Check if domainURL exists in the response
-      if (!data.domainURL) {
-        throw new Error('domainURL not found in the response');
-      }
-
+      
+      const data = await response.json();
       return data.domainURL;
     } catch (error) {
       console.error('Error fetching domain URL:', error);
@@ -44,7 +40,7 @@
 
     function createChatbot() {
       const container = document.createElement('div');
-      container.id = 'chatbot-container';
+      container.id = 'chatbot-widget-container';
       container.style.position = 'fixed';
       container.style.bottom = '0';
       container.style.right = '0';
@@ -53,21 +49,50 @@
       document.body.appendChild(container);
 
       const chatbotScript = document.createElement('script');
-      chatbotScript.src = `https://bot-rd1k.onrender.com/chatbotLogic.js`; // No need for localhost or domain in production
+      chatbotScript.src = `https://bot-rd1k.onrender.com/chatbotLogic.js`; // Load chatbot logic
       chatbotScript.async = true;
       document.body.appendChild(chatbotScript);
 
-      chatbotScript.onload = function () {
+      chatbotScript.onload = function() {
         if (typeof initChatbot === 'function') {
-          initChatbot(container.id, dataId, eid);
+          initChatbot({ eid });  // Initialize the chatbot
         }
       };
     }
 
-    if (!document.getElementById('chatbot-container')) {
+    if (!document.getElementById('chatbot-widget-container')) {
       createChatbot();
     }
   }
 
   initializeWidget();
 })();
+
+
+// // public/widget.js
+// (function () {
+//   const script = document.currentScript;
+//   const allowedDomain = script.getAttribute('data-domain');
+//   const eid = script.getAttribute('data-eid'); // unique user identifier from the backend
+
+//   if (window.location.hostname === allowedDomain) {
+//     const widgetContainer = document.createElement('div');
+//     widgetContainer.id = 'chatbot-widget-container';
+//     widgetContainer.style.position = 'fixed';
+//     widgetContainer.style.bottom = '0';
+//     widgetContainer.style.right = '0';
+//     widgetContainer.style.zIndex = '9999';
+//     document.body.appendChild(widgetContainer);
+
+//     const scriptElement = document.createElement('script');
+//     scriptElement.src = 'https://bot-rd1k.onrender.com/chatbotLogic.js'; // Adjust this to your deployment
+//     scriptElement.onload = function () {
+//       if (typeof initChatbot === 'function') {
+//         initChatbot({ eid });
+//       }
+//     };
+//     document.body.appendChild(scriptElement);
+//   } else {
+//     console.error('Domain not allowed to load chatbot.');
+//   }
+// })();
