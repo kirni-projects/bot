@@ -11,12 +11,31 @@ import chatRoutes from './routes/chatRoutes.js';
 
 // Load .env file
 dotenv.config();
-
-// CORS setup
+// Configure CORS
 const corsOptions = {
-  origin: '*', // Adjust this to restrict only specific domains in production
+  origin: (origin, callback) => {
+    // Allow requests from the domains registered in the database
+    User.find({}, 'domainURL', (err, users) => {
+      if (err) {
+        return callback(new Error('Internal server error'));
+      }
+      const allowedDomains = users.map(user => user.domainURL);
+      
+      // Allow if origin is in the allowed domains or if no origin (non-browser requests)
+      if (!origin || allowedDomains.includes(origin)) {
+        return callback(null, true);
+      } else {
+        return callback(new Error('Not allowed by CORS'));
+      }
+    });
+  },
   credentials: true,
 };
+// CORS setup
+// const corsOptions = {
+//   origin: '*', // Adjust this to restrict only specific domains in production
+//   credentials: true,
+// };
 
 
 // const corsOptions = {

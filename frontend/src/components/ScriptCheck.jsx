@@ -6,14 +6,13 @@ const ScriptCheck = ({ eid }) => {
   const [domainURL, setDomainURL] = useState('');
   const [scriptFound, setScriptFound] = useState(null);
   const [error, setError] = useState('');
-  const navigate = useNavigate(); // Use useNavigate for navigation
+  const navigate = useNavigate();  // Use useNavigate for navigation
 
   useEffect(() => {
-    // Fetch the domainURL using the eid
     const fetchDomainURL = async () => {
       try {
         const response = await axios.get(`/api/getdomainurl/${eid}`);
-        setDomainURL(response.data.domainURL);
+        setDomainURL(response.data.domainURL);  // Update domain URL from the backend response
       } catch (err) {
         console.error('Error fetching domainURL:', err);
         setError('Failed to fetch domain URL');
@@ -24,21 +23,15 @@ const ScriptCheck = ({ eid }) => {
 
   const checkScriptPresence = async () => {
     try {
-      // Use the backend proxy to check for the script presence
       const response = await axios.get('/api/proxy/check-script', {
-        params: { domainURL, eid },
+        params: { domainURL, eid },  // Pass domainURL and eid to check script presence
       });
 
-      // Update scriptFound based on the success field in the response
       setScriptFound(response.data.success);
     } catch (err) {
       console.error('Error checking script presence:', err);
       setError('Failed to check script presence');
     }
-  };
-
-  const handleSkip = () => {
-    navigate('/login'); // Navigate to the login page on skip
   };
 
   return (
@@ -61,7 +54,7 @@ const ScriptCheck = ({ eid }) => {
         </div>
       )}
 
-      <button onClick={handleSkip}>Skip</button> {/* Skip button to bypass the check */}
+      <button onClick={() => navigate('/login')}>Skip</button> {/* Skip button */}
     </div>
   );
 };

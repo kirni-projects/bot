@@ -5,7 +5,7 @@ import WidgetContainer from '../src/components/widgetContainer/index.jsx'; // Ad
 
 // Initialize the chatbot widget
 function initChatbot({ eid }) {
-  const widgetContainer = document.getElementById('chatbot-container');
+  const widgetContainer = document.getElementById('chatbot-widget-container');
   if (!widgetContainer) return;
 
   // Render the React chatbot component
