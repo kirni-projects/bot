@@ -6,7 +6,7 @@
   // Fetch the allowed domain from the backend
   async function fetchAllowedDomain() {
       try {
-          const response = await fetch(`/api/getdomainurl/${eid}`);
+          const response = await fetch(`https://bot-rd1k.onrender.com/api/getdomainurl/${eid}`);
           const data = await response.json();
           return data.domainURL;
       } catch (error) {
@@ -32,7 +32,7 @@
 
       function createChatbot() {
           const container = document.createElement('div');
-          container.id = 'chatbot-container';
+          container.id = 'chatbot-widget-container';
           container.style.position = 'fixed';
           container.style.bottom = '0';
           container.style.right = '0';
