@@ -3,34 +3,33 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const ScriptCheck = ({ eid }) => {
-  const [domainURL, setDomainURL] = useState('');  // Initial state for the domain URL
+  const [domainURL, setDomainURL] = useState('');
   const [scriptFound, setScriptFound] = useState(null);
   const [error, setError] = useState('');
-  const navigate = useNavigate();  // Use useNavigate for navigation
+  const navigate = useNavigate(); // Use useNavigate for navigation
 
-  // Fetch the domain URL using the eid
   useEffect(() => {
+    // Fetch the domainURL using the eid
     const fetchDomainURL = async () => {
       try {
         const response = await axios.get(`/api/getdomainurl/${eid}`);
-        console.log(response.data);  // Check if the correct data is being fetched
-        setDomainURL(response.data.domainURL);  // Update the state with the fetched domain URL
+        setDomainURL(response.data.domainURL);
       } catch (err) {
         console.error('Error fetching domainURL:', err);
         setError('Failed to fetch domain URL');
       }
     };
-
     fetchDomainURL();
-  }, [eid]);  // Ensure this runs when eid changes
+  }, [eid]);
 
-  // Function to check script presence
   const checkScriptPresence = async () => {
     try {
+      // Use the backend proxy to check for the script presence
       const response = await axios.get('/api/proxy/check-script', {
-        params: { domainURL, eid },  // Pass the domain URL and eid as query params
+        params: { domainURL, eid },
       });
 
+      // Update scriptFound based on the success field in the response
       setScriptFound(response.data.success);
     } catch (err) {
       console.error('Error checking script presence:', err);
@@ -39,7 +38,7 @@ const ScriptCheck = ({ eid }) => {
   };
 
   const handleSkip = () => {
-    navigate('/login');  // Navigate to the login page on skip
+    navigate('/login'); // Navigate to the login page on skip
   };
 
   return (
@@ -48,11 +47,7 @@ const ScriptCheck = ({ eid }) => {
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <div>
         <label>Domain URL:</label>
-        <input
-          type="text"
-          value={domainURL}  // Bind the input field to the state variable
-          readOnly
-        />
+        <input type="text" value={domainURL} readOnly />
       </div>
       <button onClick={checkScriptPresence}>Check Script</button>
 
@@ -66,7 +61,7 @@ const ScriptCheck = ({ eid }) => {
         </div>
       )}
 
-      <button onClick={handleSkip}>Skip</button>
+      <button onClick={handleSkip}>Skip</button> {/* Skip button to bypass the check */}
     </div>
   );
 };
