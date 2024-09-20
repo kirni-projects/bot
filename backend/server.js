@@ -12,27 +12,9 @@ import chatRoutes from './routes/chatRoutes.js';
 // Load .env file
 dotenv.config();
 
-// MongoDB connection
-const connectToMongoDB = async () => {
-  try {
-    const uri = process.env.MONGO_DB_URI;
-    if (!uri) {
-      throw new Error('MONGO_DB_URI is not defined');
-    }
-    await mongoose.connect(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    console.log('MongoDB connected');
-  } catch (error) {
-    console.error('MongoDB connection error:', error.message);
-    process.exit(1); // Exit process if MongoDB connection fails
-  }
-};
-
 // CORS setup
 const corsOptions = {
-  origin: '*',  // Allow all origins temporarily for testing
+  origin: '*', // Adjust this to restrict only specific domains in production
   credentials: true,
 };
 
@@ -82,6 +64,24 @@ app.use('/api', chatRoutes);
 
 // Connect to MongoDB
 connectToMongoDB();
+
+// MongoDB connection
+const connectToMongoDB = async () => {
+  try {
+    const uri = process.env.MONGO_DB_URI;
+    if (!uri) {
+      throw new Error('MONGO_DB_URI is not defined');
+    }
+    await mongoose.connect(uri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('MongoDB connected');
+  } catch (error) {
+    console.error('MongoDB connection error:', error.message);
+    process.exit(1); // Exit process if MongoDB connection fails
+  }
+};
 
 // Start the server
 const PORT = process.env.PORT || 5000;
