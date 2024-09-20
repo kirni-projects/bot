@@ -32,16 +32,20 @@ export const register = async (req, res) => {
 export const getDomain = async (req, res) => {
   try {
     const eid = req.params.eid;
+    console.log(`Fetching domain URL for EID: ${eid}`);
     const user = await User.findOne({ eid });
-    if (!user) return res.status(404).json({ message: 'User not found' });
-    
-    // Ensure this returns valid JSON
-    return res.json({ domainURL: user.domainURL });
+    if (!user) {
+      console.log('User not found');
+      return res.status(404).json({ message: 'User not found' });
+    }
+    console.log('User found:', user);
+    res.json({ domainURL: user.domainURL });
   } catch (error) {
     console.error('Error fetching domain URL:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
 
 
 
