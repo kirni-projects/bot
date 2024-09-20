@@ -47,20 +47,21 @@ const app = express();
 app.use(express.json());
 app.use(cors(corsOptions));
 
+// Serve static files from the frontend/dist directory
+const __dirname = path.resolve();
+app.use(express.static(path.join(__dirname, 'frontend/dist')));
+
+// Fallback route to serve index.html for all other requests (for React Router)
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'frontend', 'dist', 'index.html'));
+});
+  
 // Routes
 app.use('/api', registerRoutes);
 app.use('/api', scriptCheckRoutes);
 app.use('/api', authRoutes);
 app.use('/api', chatRoutes);
 
-// Serve static files from the frontend
-const __dirname = path.resolve();
-app.use(express.static(path.join(__dirname, 'frontend/dist')));
-
-// Fallback route to serve the index.html for any unhandled routes
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'frontend', 'dist', 'index.html'));
-});
 
 // Connect to MongoDB
 connectToMongoDB();
