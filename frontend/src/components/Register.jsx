@@ -69,7 +69,7 @@ const Register = () => {
         <div>
           <label>Name</label>
           <input
-            className="input input-bordered input-success pl-4 w-full max-w-xs"
+            className="input input-bordered input-success ml-2 pl-4 w-full max-w-xs"
             type="text"
             name="name"
             autoComplete="name"
@@ -81,7 +81,7 @@ const Register = () => {
         <div>
           <label>Email</label>
           <input
-            className="input input-bordered input-success pl-4 w-full max-w-xs"
+            className="input input-bordered input-success ml-2 pl-4 w-full max-w-xs"
             type="email"
             name="email"
             value={formData.email}
@@ -92,7 +92,7 @@ const Register = () => {
         <div>
           <label>Mobile</label>
           <input
-            className="input input-bordered input-success pl-4 w-full max-w-xs"
+            className="input input-bordered input-success ml-2 pl-4 w-full max-w-xs"
             type="text"
             name="mobile"
             value={formData.mobile}
@@ -103,7 +103,7 @@ const Register = () => {
         <div>
           <label>Company Name</label>
           <input
-            className="input input-bordered input-success pl-4 w-full max-w-xs"
+            className="input input-bordered input-success ml-2 pl-4 w-full max-w-xs"
             type="text"
             name="companyName"
             value={formData.companyName}
@@ -114,7 +114,7 @@ const Register = () => {
         <div>
           <label>City</label>
           <input
-            className="input input-bordered input-success pl-4 w-full max-w-xs"
+            className="input input-bordered input-success ml-2 pl-4 w-full max-w-xs"
             type="text"
             name="city"
             value={formData.city}
@@ -125,7 +125,7 @@ const Register = () => {
         <div>
           <label>Domain URL</label>
           <input
-            className="input input-bordered input-success pl-4 w-full max-w-xs"
+            className="input input-bordered input-success ml-2 pl-4 w-full max-w-xs"
             type="text"
             name="domainURL"
             autoComplete="url"
@@ -137,7 +137,7 @@ const Register = () => {
         <div>
           <label>Password</label>
           <input
-            className="input input-bordered input-success pl-4 w-full max-w-xs"
+            className="input input-bordered input-success ml-2 pl-4 w-full max-w-xs"
             type="password"
             name="password"
             value={formData.password}
@@ -146,7 +146,7 @@ const Register = () => {
           />
           {errors.password && <p>{errors.password}</p>}
         </div>
-        <button className="btn btn-warning btn-wide mt-6" type="submit">Register</button>
+        <button className="btn btn-warning mt-6 btn-wide text-center" type="submit">Register</button>
       </form>
       {embedScript && (
         <textarea readOnly value={embedScript} rows={10} cols={50} />

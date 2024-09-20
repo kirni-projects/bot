@@ -65,7 +65,7 @@ const ScriptCheck = ({ eid }) => {
         </div>
       )}
 
-      <button className="btn btn-success btn-wide mt-6" onClick={handleSkip}>Skip</button> {/* Skip button to bypass the check */}
+      <button className="btn btn-success btn-wide mt-6 ml-4" onClick={handleSkip}>Skip</button> {/* Skip button to bypass the check */}
     </div>
   );
 };
