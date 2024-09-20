@@ -24,22 +24,27 @@ const connectToMongoDB = async () => {
 };
 
 // CORS setup
-const corsOptions = {
-  origin: async function (origin, callback) {
-    try {
-      const allowedDomains = await User.find({}, 'domainURL');  // Use async/await with Mongoose
-      const domains = allowedDomains.map(user => user.domainURL);
+// const corsOptions = {
+//   origin: async function (origin, callback) {
+//     try {
+//       const allowedDomains = await User.find({}, 'domainURL');  // Use async/await with Mongoose
+//       const domains = allowedDomains.map(user => user.domainURL);
       
-      if (!origin || domains.includes(origin)) {
-        return callback(null, true);  // Allow the request if the domain is in the allowed list
-      } else {
-        return callback(new Error('Not allowed by CORS'));
-      }
-    } catch (error) {
-      console.error('Error fetching allowed domains for CORS:', error);
-      return callback(new Error('Internal server error'));
-    }
-  },
+//       if (!origin || domains.includes(origin)) {
+//         return callback(null, true);  // Allow the request if the domain is in the allowed list
+//       } else {
+//         return callback(new Error('Not allowed by CORS'));
+//       }
+//     } catch (error) {
+//       console.error('Error fetching allowed domains for CORS:', error);
+//       return callback(new Error('Internal server error'));
+//     }
+//   },
+//   credentials: true,
+// };
+// CORS setup
+const corsOptions = {
+  origin: '*', // Adjust this to restrict only specific domains in production
   credentials: true,
 };
 
@@ -49,11 +54,12 @@ app.use(cors(corsOptions));
 
 // Serve static files from the frontend/dist directory
 const __dirname = path.resolve();
-app.use(express.static(path.join(__dirname, 'frontend/dist')));
+// Serve static files from the 'dist' directory
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
-// Fallback route to serve index.html for all other requests (for React Router)
+// Catch-all route to serve index.html for any unhandled routes (for React Router)
 app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'frontend', 'dist', 'index.html'));
+  res.sendFile(path.resolve(__dirname, '../frontend/dist/index.html'));
 });
   
 // Routes
