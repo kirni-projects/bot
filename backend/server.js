@@ -62,9 +62,6 @@ app.use('/api', scriptCheckRoutes);
 app.use('/api', authRoutes);
 app.use('/api', chatRoutes);
 
-// Connect to MongoDB
-connectToMongoDB();
-
 // MongoDB connection
 const connectToMongoDB = async () => {
   try {
@@ -82,6 +79,9 @@ const connectToMongoDB = async () => {
     process.exit(1); // Exit process if MongoDB connection fails
   }
 };
+
+// Connect to MongoDB
+connectToMongoDB();
 
 // Start the server
 const PORT = process.env.PORT || 5000;
