@@ -1,12 +1,20 @@
-import cors from 'cors';
-import express from 'express';
+// backend/server.js
 import path from 'path';
+import express from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors';
 import connectToMongoDB from './db/connectToMongoDB.js';
 import registerRoutes from './routes/registerRoutes.js';
 import scriptCheckRoutes from './routes/scriptCheckRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
+import User from './models/User.js';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+// Get __dirname in ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Load environment variables
 dotenv.config();
@@ -14,44 +22,115 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
-// Update the allowed domains in the CORS setup
-const allowedDomains = [
-  process.env.PRODUCTION_URL,  // Add your frontend URL in the .env file
-  'https://bot-rd1k.onrender.com',  // Render backend domain
-  'http://localhost:3000'  // Local development
-];
-
+// CORS configuration for API routes
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedDomains.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
+  origin: async function (origin, callback) {
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    try {
+      const allowedDomains = await User.find({}, 'domainURL').then(users => users.map(user => user.domainURL));
+      if (allowedDomains.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    } catch (error) {
+      console.error('Error fetching allowed domains for CORS:', error);
+      callback(new Error('Internal server error'));
     }
   },
-  credentials: true, // Allow credentials (cookies, etc.)
+  credentials: true,
 };
 
-app.use(cors(corsOptions));
+// Apply CORS only to API routes
+app.use('/api', cors(corsOptions), registerRoutes, scriptCheckRoutes, authRoutes, chatRoutes);
+
+// Serve widget.js with CORS headers
+app.get('/widget.js', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*'); // Allow all origins or specify specific ones
+  res.sendFile(path.resolve(__dirname, '../frontend/dist/widget.js'));
+});
+
+// Serve chatbotLogic.js with CORS headers
+app.get('/chatbotLogic.js', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*'); // Allow all origins or specify specific ones
+  res.sendFile(path.resolve(__dirname, '../frontend/dist/chatbotLogic.js'));
+});
+
+// Serve static files from the frontend
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+// Fallback route to serve index.html for any unhandled routes
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../frontend/dist/index.html'));
+});
 
 // Connect to MongoDB
 connectToMongoDB();
 
-// Serve static files from the frontend
-const __dirname = path.resolve();
-app.use(express.static(path.join(__dirname, 'frontend/dist')));
-
-// Routes
-app.use('/api', registerRoutes);
-app.use('/api', scriptCheckRoutes);
-app.use('/api', authRoutes);
-app.use('/api', chatRoutes);
-
-// Fallback route to serve index.html for any unhandled routes
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'frontend/dist/index.html'));
-});
-
 // Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+
+
+
+// import cors from 'cors';
+// import express from 'express';
+// import path from 'path';
+// import dotenv from 'dotenv';
+// import connectToMongoDB from './db/connectToMongoDB.js';
+// import registerRoutes from './routes/registerRoutes.js';
+// import scriptCheckRoutes from './routes/scriptCheckRoutes.js';
+// import authRoutes from './routes/authRoutes.js';
+// import chatRoutes from './routes/chatRoutes.js';
+
+// // Load environment variables
+// dotenv.config();
+
+// const app = express();
+// app.use(express.json());
+
+// // Update the allowed domains in the CORS setup
+// const allowedDomains = [
+//   process.env.PRODUCTION_URL,  // Add your frontend URL in the .env file
+//   'https://bot-rd1k.onrender.com',  // Render backend domain
+//   'http://localhost:3000'  // Local development
+// ];
+
+// const corsOptions = {
+//   origin: function (origin, callback) {
+//     if (!origin || allowedDomains.indexOf(origin) !== -1) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error('Not allowed by CORS'));
+//     }
+//   },
+//   credentials: true, // Allow credentials (cookies, etc.)
+// };
+
+// app.use(cors(corsOptions));
+
+// // Connect to MongoDB
+// connectToMongoDB();
+
+// // Serve static files from the frontend
+// const __dirname = path.resolve();
+// app.use(express.static(path.join(__dirname, 'frontend/dist')));
+
+// // Routes
+// app.use('/api', registerRoutes);
+// app.use('/api', scriptCheckRoutes);
+// app.use('/api', authRoutes);
+// app.use('/api', chatRoutes);
+
+// // Fallback route to serve index.html for any unhandled routes
+// app.get('*', (req, res) => {
+//   res.sendFile(path.resolve(__dirname, 'frontend/dist/index.html'));
+// });
+
+// // Start the server
+// const PORT = process.env.PORT || 5000;
+// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

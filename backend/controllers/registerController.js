@@ -1,12 +1,17 @@
+// backend/controllers/registerController.js
 import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
 import { generateEmbedScript } from '../utils/generateScript.js';
-
 
 export const register = async (req, res) => {
   try {
     const { name, email, mobile, companyName, city, domainURL, ipAddress, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Ensure domainURL includes protocol
+    const formattedDomainURL = domainURL.startsWith('http://') || domainURL.startsWith('https://')
+      ? domainURL
+      : `https://${domainURL}`;
 
     const user = new User({
       name,
@@ -14,7 +19,7 @@ export const register = async (req, res) => {
       mobile,
       companyName,
       city,
-      domainURL,  // Save domainURL from the user
+      domainURL: formattedDomainURL,  // Save with protocol
       ipAddress,
       password: hashedPassword,
     });
@@ -32,19 +37,15 @@ export const register = async (req, res) => {
 export const getDomain = async (req, res) => {
   try {
     const eid = req.params.eid;
-    console.log(`Fetching domain URL for EID: ${eid}`);
     const user = await User.findOne({ eid });
-    if (!user) {
-      console.log('User not found');
-      return res.status(404).json({ message: 'User not found' });
-    }
-    console.log('User found:', user);
+    if (!user) return res.status(404).json({ message: 'User not found' });
     res.json({ domainURL: user.domainURL });
   } catch (error) {
     console.error('Error fetching domain URL:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
 
 
 

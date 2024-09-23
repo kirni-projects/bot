@@ -1,6 +1,6 @@
-// public/chatbotLogic.js
+// frontend/public/chatbotLogic.js
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import WidgetContainer from '../src/components/widgetContainer/index.jsx'; // Adjust the import path as necessary
 
 // Initialize the chatbot widget
@@ -9,11 +9,11 @@ function initChatbot({ eid }) {
   if (!widgetContainer) return;
 
   // Render the React chatbot component
-  ReactDOM.render(
+  const root = ReactDOM.createRoot(widgetContainer);
+  root.render(
     <React.StrictMode>
       <WidgetContainer eid={eid} />
-    </React.StrictMode>,
-    widgetContainer
+    </React.StrictMode>
   );
 }
 

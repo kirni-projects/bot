@@ -1,4 +1,4 @@
-// public/widget.js
+// frontend/public/widget.js
 (function() {
   const scriptElement = document.querySelector('script[src*="widget.js"]');
   const eid = scriptElement.getAttribute('eid');
@@ -7,12 +7,6 @@
   async function fetchAllowedDomain() {
     try {
       const response = await fetch(`https://bot-rd1k.onrender.com/api/getdomainurl/${eid}`);
-      
-      // Check if the response is valid JSON
-      if (!response.ok) {
-        throw new Error('Failed to fetch domain URL');
-      }
-
       const data = await response.json();
       return data.domainURL;
     } catch (error) {
@@ -31,12 +25,11 @@
 
     // Check if the current domain matches the allowed domain
     const currentDomain = window.location.hostname;
-    if (currentDomain !== allowedDomain) {
+    if (currentDomain !== new URL(allowedDomain).hostname) {
       console.error('Chatbot script is not authorized for this domain.');
       return;
     }
 
-    // Function to create and load the chatbot widget
     function createChatbot() {
       const widgetContainer = document.createElement('div');
       widgetContainer.id = 'chatbot-widget-container';
@@ -47,7 +40,6 @@
       widgetContainer.style.zIndex = '1000';
       document.body.appendChild(widgetContainer);
 
-      // Load the chatbot logic
       const chatbotScript = document.createElement('script');
       chatbotScript.src = `https://bot-rd1k.onrender.com/chatbotLogic.js`;
       chatbotScript.async = true;
@@ -60,7 +52,6 @@
       };
     }
 
-    // Check if the widget has already been loaded
     if (!document.getElementById('chatbot-widget-container')) {
       createChatbot();
     }
@@ -68,6 +59,7 @@
 
   initializeWidget();
 })();
+
 
 // (function() {
 //   const scriptElement = document.querySelector('script[src*="widget.js"]');
