@@ -1,9 +1,7 @@
-// frontend/public/widget.js
 (function() {
   const scriptElement = document.querySelector('script[src*="widget.js"]');
   const eid = scriptElement.getAttribute('eid');
 
-  // Fetch the allowed domain from the backend
   async function fetchAllowedDomain() {
     try {
       const response = await fetch(`https://bot-rd1k.onrender.com/api/getdomainurl/${eid}`);
@@ -17,44 +15,32 @@
 
   async function initializeWidget() {
     const allowedDomain = await fetchAllowedDomain();
-
-    if (!allowedDomain) {
-      console.error('Allowed domain could not be fetched.');
-      return;
-    }
-
-    // Check if the current domain matches the allowed domain
     const currentDomain = window.location.hostname;
-    if (currentDomain !== new URL(allowedDomain).hostname) {
+
+    if (allowedDomain !== currentDomain) {
       console.error('Chatbot script is not authorized for this domain.');
       return;
     }
 
-    function createChatbot() {
-      const widgetContainer = document.createElement('div');
-      widgetContainer.id = 'chatbot-widget-container';
-      widgetContainer.style.position = 'fixed';
-      widgetContainer.style.bottom = '0';
-      widgetContainer.style.right = '0';
-      widgetContainer.style.height = '400px';
-      widgetContainer.style.zIndex = '1000';
-      document.body.appendChild(widgetContainer);
+    const widgetContainer = document.createElement('div');
+    widgetContainer.id = 'chatbot-widget-container';
+    widgetContainer.style.position = 'fixed';
+    widgetContainer.style.bottom = '0';
+    widgetContainer.style.right = '0';
+    widgetContainer.style.height = '400px';
+    widgetContainer.style.zIndex = '1000';
+    document.body.appendChild(widgetContainer);
 
-      const chatbotScript = document.createElement('script');
-      chatbotScript.src = `https://bot-rd1k.onrender.com/chatbotLogic.js`;
-      chatbotScript.async = true;
-      document.body.appendChild(chatbotScript);
+    const chatbotScript = document.createElement('script');
+    chatbotScript.src = `https://bot-rd1k.onrender.com/chatbotLogic.js`;
+    chatbotScript.async = true;
+    document.body.appendChild(chatbotScript);
 
-      chatbotScript.onload = function() {
-        if (typeof window.initChatbot === 'function') {
-          window.initChatbot({ eid });
-        }
-      };
-    }
-
-    if (!document.getElementById('chatbot-widget-container')) {
-      createChatbot();
-    }
+    chatbotScript.onload = function() {
+      if (typeof window.initChatbot === 'function') {
+        window.initChatbot({ eid });
+      }
+    };
   }
 
   initializeWidget();

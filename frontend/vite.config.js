@@ -7,6 +7,18 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react()],
+    build: {
+      rollupOptions: {
+        input: {
+          main: path.resolve(__dirname, 'index.html'),
+          chatbotLogic: path.resolve(__dirname, 'src/chatbotLogic.js'), // Ensure this script is built
+        },
+        output: {
+          entryFileNames: 'assets/[name]-[hash].js', // Ensure correct output
+        },
+      },
+      outDir: 'dist',
+    },
     server: {
       port: 3000,
       proxy: {
@@ -16,5 +28,6 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
+    
   };
 });
