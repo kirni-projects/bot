@@ -6,7 +6,7 @@
 
     const root = ReactDOM.createRoot(widgetContainer);
     root.render(
-      React.createElement(React.StrictMode, null, React.createElement(WidgetContainer, { eid }))
+      React.createElement(React.StrictMode, null, React.createElement(widgetContainer, { eid }))
     );
   }
 
