@@ -54,21 +54,21 @@ app.use('/api', cors(corsOptions), registerRoutes, scriptCheckRoutes, authRoutes
 // Serve widget.js with CORS headers
 app.get('/widget.js', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*'); // Allow all origins for widget.js
-  res.sendFile(path.resolve(__dirname, 'frontend/dist/widget.js'));
+  res.sendFile(path.resolve(__dirname, '../frontend/dist/widget.js'));
 });
 
 // Serve chatbotLogic.js with CORS headers
 app.get('/chatbotLogic.js', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*'); // Allow all origins for chatbotLogic.js
-  res.sendFile(path.resolve(__dirname, 'frontend/dist/chatbotLogic.js'));
+  res.sendFile(path.resolve(__dirname, '../frontend/dist/chatbotLogic.js'));
 });
 
 // Serve static files from the frontend
-app.use(express.static(path.join(__dirname, 'frontend/dist')));
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
 // Fallback route to serve index.html for any unhandled routes
 app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'frontend/dist/index.html'));
+  res.sendFile(path.resolve(__dirname, '../frontend/dist/index.html'));
 });
 
 // Connect to MongoDB
