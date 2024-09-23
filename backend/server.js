@@ -39,7 +39,7 @@ connectToMongoDB();
 
 // Serve static files from the frontend
 const __dirname = path.resolve();
-app.use(express.static(path.join(__dirname, '../frontend/dist')));
+app.use(express.static(path.join(__dirname, 'frontend/dist')));
 
 // Routes
 app.use('/api', registerRoutes);
@@ -49,7 +49,7 @@ app.use('/api', chatRoutes);
 
 // Fallback route to serve index.html for any unhandled routes
 app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../frontend/dist/index.html'));
+  res.sendFile(path.resolve(__dirname, 'frontend/dist/index.html'));
 });
 
 // Start the server
