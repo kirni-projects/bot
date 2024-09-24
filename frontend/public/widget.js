@@ -50,7 +50,7 @@
 
       const chatbotScript = document.createElement('script');
       chatbotScript.type = 'module'; // Specify module type for ES6 imports
-      chatbotScript.src = `https://bot-rd1k.onrender.com/chatbotLogic.js`; // Load your chatbot logic
+      chatbotScript.src = `https://bot-rd1k.onrender.com/chatbotLogic.jsx`; // Load your chatbot logic
       chatbotScript.async = true;
       document.body.appendChild(chatbotScript);
 
