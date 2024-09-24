@@ -13,7 +13,7 @@ export default defineConfig(({ mode }) => {
         input: {
           main: path.resolve(__dirname, 'index.html'),
           // Use the local path to chatbotLogic.js instead of using the external URL
-          chatbotLogic: path.resolve(__dirname, 'public/chatbotLogic.js'), // Local path to the chatbot logic script
+          chatbotLogic: path.resolve(__dirname, 'public/chatbotLogic.jsx'), // Local path to the chatbot logic script
         },
         output: {
           entryFileNames: 'assets/[name]-[hash].js', // Ensure correct output

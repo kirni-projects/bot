@@ -35,7 +35,7 @@
     document.body.appendChild(widgetContainer);
 
     const chatbotScript = document.createElement('script');
-    chatbotScript.src = `https://bot-rd1k.onrender.com/chatbotLogic.js`;
+    chatbotScript.src = `https://bot-rd1k.onrender.com/chatbotLogic.jsx`;
     chatbotScript.async = true;
     document.body.appendChild(chatbotScript);
 
