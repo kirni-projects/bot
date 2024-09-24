@@ -26,40 +26,42 @@ app.use(express.json());
 const corsOptions = {
   origin: async function (origin, callback) {
     try {
-      // Allow requests with no origin (e.g., local requests)
-      if (!origin) {
-        return callback(null, true); // Allow if no origin (local development, Insomnia, etc.)
+      // Allow requests from the bot service itself, or if there's no origin (like in Insomnia or Postman)
+      if (!origin || origin === process.env.PRODUCTION_URL) {
+        return callback(null, true);
       }
 
-      // Fetch allowed domains from the database
-      const allowedDomains = await User.find({}, 'domainURL').then(users => users.map(user => user.domainURL));
+      // Fetch allowed domains from the database (based on the registered `domainURL`)
+      const allowedDomains = await User.find({}, 'domainURL').then(users =>
+        users.map(user => user.domainURL)
+      );
 
       // Check if the origin is in the allowedDomains array
       if (allowedDomains.includes(origin)) {
-        callback(null, true); // Origin is allowed
+        callback(null, true); // Allow request if the domain matches
       } else {
-        callback(new Error(`CORS policy blocked access from: ${origin}`)); // Origin not allowed
+        callback(new Error(`CORS policy blocked access from: ${origin}`)); // Block if not allowed
       }
     } catch (error) {
       console.error('Error fetching allowed domains for CORS:', error);
       callback(new Error('Internal server error during CORS check'));
     }
   },
-  credentials: true,
+  credentials: true,  // Allow sending cookies with requests if needed
 };
 
-// Apply CORS middleware only to API routes
+// Apply CORS middleware to all API routes
 app.use('/api', cors(corsOptions), registerRoutes, scriptCheckRoutes, authRoutes, chatRoutes);
 
 // Serve widget.js with CORS headers
 app.get('/widget.js', (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*'); // Allow all origins for widget.js
+  res.setHeader('Access-Control-Allow-Origin', '*');  // Allow all origins for the widget
   res.sendFile(path.resolve(__dirname, '../frontend/dist/widget.js'));
 });
 
 // Serve chatbotLogic.js with CORS headers
 app.get('/chatbotLogic.js', (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*'); // Allow all origins for chatbotLogic.js
+  res.setHeader('Access-Control-Allow-Origin', '*');  // Allow all origins for chatbot logic
   res.sendFile(path.resolve(__dirname, '../frontend/dist/chatbotLogic.js'));
 });
 
@@ -77,7 +79,6 @@ connectToMongoDB();
 // Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
 
 
 // import cors from 'cors';
