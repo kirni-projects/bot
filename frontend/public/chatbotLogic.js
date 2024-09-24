@@ -1,17 +1,18 @@
-(function() {
-  // Ensure the script doesn't use imports directly
-  function initChatbot(eid) {
-    const widgetContainer = document.getElementById('chatbot-widget-container');
-    if (!widgetContainer) return;
+import React from 'react';
+import ReactDOM from 'react-dom';  // Import ReactDOM
+import WidgetContainer from '../src/components/widgetContainer/index.jsx';  // Import your WidgetContainer
 
-    const root = ReactDOM.createRoot(widgetContainer);
-    root.render(
-      React.createElement(React.StrictMode, null, React.createElement(widgetContainer, { eid }))
-    );
-  }
+// Initialize the chatbot widget
+function initChatbot({ eid }) {
+  const widgetContainer = document.getElementById('chatbot-widget-container');
+  if (!widgetContainer) return;
 
-  // Attach chatbot initialization to the global scope
-  window.initChatbot = function({ eid }) {
-    initChatbot(eid);
-  };
-})();
+  const root = ReactDOM.createRoot(widgetContainer);  // React 18 syntax for creating a root
+  root.render(
+    <React.StrictMode>
+      <WidgetContainer eid={eid} />
+    </React.StrictMode>
+  );
+}
+
+window.initChatbot = initChatbot;  // Attach initChatbot to the global window object
