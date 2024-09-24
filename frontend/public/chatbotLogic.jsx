@@ -1,13 +1,12 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';  // Use React 18 syntax
-import WidgetContainer from '../src/components/widgetContainer/index.jsx';  // Adjust the import if needed
+import ReactDOM from 'react-dom/client';
+import WidgetContainer from '../src/components/widgetContainer/index.jsx';  // Ensure correct import
 
 // Initialize the chatbot widget
 function initChatbot({ eid }) {
   const widgetContainer = document.getElementById('chatbot-widget-container');
   if (!widgetContainer) return;
 
-  // React 18 syntax for creating a root and rendering the component
   const root = ReactDOM.createRoot(widgetContainer);
   root.render(
     <React.StrictMode>
