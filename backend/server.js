@@ -60,9 +60,9 @@ app.get('/widget.js', (req, res) => {
 });
 
 // Serve chatbotLogic.js with CORS headers
-app.get('/chatbotLogic.js', (req, res) => {
+app.get('/chatbotLogic.jsx', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');  // Allow all origins for chatbot logic
-  res.sendFile(path.resolve(__dirname, '../frontend/dist/chatbotLogic.js'));
+  res.sendFile(path.resolve(__dirname, '../frontend/dist/chatbotLogic.jsx'));
 });
 
 // Serve static files from the frontend
