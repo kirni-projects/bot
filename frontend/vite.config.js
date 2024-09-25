@@ -12,12 +12,11 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         input: {
           main: path.resolve(__dirname, 'index.html'),
-          widget: path.resolve(__dirname, 'public/widget.js'),  // Use .js extension
-          // Use the local path to chatbotLogic.js instead of using the external URL
-          chatbotLogic: path.resolve(__dirname, 'public/chatbotLogic.jsx'), // Local path to the chatbot logic script
+          widget: path.resolve(__dirname, 'public/widget.js'),
+          chatbotLogic: path.resolve(__dirname, 'public/chatbotLogic.jsx'),  // JSX file
         },
         output: {
-          entryFileNames: 'assets/[name]-[hash].js', // Ensure correct output
+          entryFileNames: 'assets/[name]-[hash].js',  // Ensure the output has a unique hash
         },
       },
       outDir: 'dist',

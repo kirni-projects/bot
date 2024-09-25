@@ -1,4 +1,4 @@
-// public/chatbotLogic.js
+// public/chatbotLogic.jsx
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import WidgetContainer from '../src/components/widgetContainer/index.jsx';  // Adjust path if necessary
@@ -19,7 +19,6 @@ function initChatbot({ eid }) {
 
 // Make initChatbot function globally accessible
 window.initChatbot = initChatbot;
-
 
 
 

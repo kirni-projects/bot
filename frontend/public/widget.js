@@ -32,9 +32,9 @@
 
     document.body.appendChild(widgetContainer);
 
-    // Load the chatbot logic
+    // Load the chatbot logic (transpiled JavaScript)
     const chatbotScript = document.createElement('script');
-    chatbotScript.src = `https://bot-rd1k.onrender.com/chatbotLogic.jsx`;  // Load your chatbot logic as .js
+    chatbotScript.src = `https://bot-rd1k.onrender.com/assets/chatbotLogic-[hash].js`;  // Use the transpiled .js file
     chatbotScript.async = true;
     document.body.appendChild(chatbotScript);
 
@@ -47,6 +47,7 @@
 
   initializeWidget();
 })();
+
 
 
 
