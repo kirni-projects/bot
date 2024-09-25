@@ -1,6 +1,6 @@
 // public/widget.js
 
-(function() {
+(function () {
   const scriptElement = document.querySelector('script[src*="widget.js"]');
   const eid = scriptElement.getAttribute('eid');
 
@@ -24,25 +24,32 @@
       return;
     }
 
-    // Create the widget container on the page
-    const widgetContainer = document.createElement('div');
-    widgetContainer.id = 'chatbot-widget-container';
-    widgetContainer.className = 'chat-widget';  // Apply chat-widget class for styling
-    widgetContainer.style.zIndex = '1000';  // Ensure widget is above other elements
+    // Check if the widget is already injected
+    if (!document.getElementById('chatbot-widget-container')) {
+      // Create the widget container on the page
+      const widgetContainer = document.createElement('div');
+      widgetContainer.id = 'chatbot-widget-container';
+      widgetContainer.style.position = 'fixed';
+      widgetContainer.style.bottom = '20px';
+      widgetContainer.style.right = '20px';
+      widgetContainer.style.zIndex = '1000';
+      widgetContainer.style.width = '80px';
+      widgetContainer.style.height = '80px';
 
-    document.body.appendChild(widgetContainer);
+      document.body.appendChild(widgetContainer);
 
-    // Load the chatbot logic (transpiled JavaScript)
-    const chatbotScript = document.createElement('script');
-    chatbotScript.src = `https://bot-rd1k.onrender.com/assets/chatbotLogic-[hash].js`;  // Use the transpiled .js file
-    chatbotScript.async = true;
-    document.body.appendChild(chatbotScript);
+      // Load the chatbot logic (transpiled JavaScript)
+      const chatbotScript = document.createElement('script');
+      chatbotScript.src = `https://bot-rd1k.onrender.com/assets/chatbotLogic-[hash].js`;  // Use the transpiled .js file with correct hash
+      chatbotScript.async = true;
+      document.body.appendChild(chatbotScript);
 
-    chatbotScript.onload = function() {
-      if (typeof window.initChatbot === 'function') {
-        window.initChatbot({ eid });
-      }
-    };
+      chatbotScript.onload = function () {
+        if (typeof window.initChatbot === 'function') {
+          window.initChatbot({ eid });
+        }
+      };
+    }
   }
 
   initializeWidget();
