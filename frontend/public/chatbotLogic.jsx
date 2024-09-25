@@ -30,7 +30,6 @@ window.initChatbot = initChatbot;
 
 
 
-
 // import React from 'react';
 // import ReactDOM from 'react-dom';  // Import ReactDOM
 // import WidgetContainer from '../src/components/widgetContainer/index.jsx';  // Import your WidgetContainer

@@ -28,19 +28,12 @@
     if (!document.getElementById('chatbot-widget-container')) {
       // Create the widget container on the page
       const widgetContainer = document.createElement('div');
-      widgetContainer.id = 'chatbot-widget-container';
-      widgetContainer.style.position = 'fixed';
-      widgetContainer.style.bottom = '20px';
-      widgetContainer.style.right = '20px';
-      widgetContainer.style.zIndex = '1000';
-      widgetContainer.style.width = '80px';
-      widgetContainer.style.height = '80px';
-
+      widgetContainer.id = 'chatbot-widget-container'; // This div will serve as the React root
       document.body.appendChild(widgetContainer);
 
       // Load the chatbot logic (transpiled JavaScript)
       const chatbotScript = document.createElement('script');
-      chatbotScript.src = `https://bot-rd1k.onrender.com/assets/chatbotLogic-[hash].js`;  // Use the transpiled .js file with correct hash
+      chatbotScript.src = `https://bot-rd1k.onrender.com/assets/chatbotLogic-[hash].js`;  // Use the correct hash for the chatbotLogic.js
       chatbotScript.async = true;
       document.body.appendChild(chatbotScript);
 
@@ -54,6 +47,7 @@
 
   initializeWidget();
 })();
+
 
 
 
