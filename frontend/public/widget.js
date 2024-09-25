@@ -1,5 +1,4 @@
 // public/widget.js
-
 (function () {
   const scriptElement = document.querySelector('script[src*="widget.js"]');
   const eid = scriptElement.getAttribute('eid');
@@ -24,33 +23,36 @@
       return;
     }
 
-    // Create the widget container div only if it's not already present
-    let widgetContainer = document.getElementById('chatbot-widget-container');
-    if (!widgetContainer) {
-      widgetContainer = document.createElement('div');
-      widgetContainer.id = 'chatbot-widget-container';
+    // Check if the widget is already injected
+    if (!document.getElementById('chatbot-widget-container')) {
+      // Create the widget container on the page
+      const widgetContainer = document.createElement('div');
+      widgetContainer.id = 'chatbot-widget-container'; // This div will serve as the React root
       document.body.appendChild(widgetContainer);
+
+      // Load the chatbot logic (transpiled JavaScript)
+      const chatbotScript = document.createElement('script');
+      chatbotScript.src = `https://bot-rd1k.onrender.com/assets/chatbotLogic-[hash].js`;  // Replace with the correct hash during build
+      chatbotScript.async = true;
+
+      chatbotScript.onload = function () {
+        if (typeof window.initChatbot === 'function') {
+          window.initChatbot({ eid });
+        } else {
+          console.error('Chatbot initialization function not found.');
+        }
+      };
+
+      chatbotScript.onerror = function () {
+        console.error('Failed to load chatbot logic script.');
+      };
+
+      document.body.appendChild(chatbotScript);
     }
-
-    // Load the chatbot logic (transpiled JavaScript) dynamically
-    const chatbotScript = document.createElement('script');
-    chatbotScript.src = `https://bot-rd1k.onrender.com/assets/chatbotLogic-[hash].js`;  // Make sure the correct hash is used
-    chatbotScript.async = true;
-    document.body.appendChild(chatbotScript);
-
-    // Ensure the chatbot initializes after the script is loaded
-    chatbotScript.onload = function () {
-      if (typeof window.initChatbot === 'function') {
-        window.initChatbot({ eid });
-      } else {
-        console.error('initChatbot function not found after loading the script.');
-      }
-    };
   }
 
   initializeWidget();
 })();
-
 
 
 

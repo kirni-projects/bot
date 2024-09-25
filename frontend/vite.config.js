@@ -3,7 +3,6 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 
 export default defineConfig(({ mode }) => {
-  // Load env variables based on the current mode (e.g., development, production)
   const env = loadEnv(mode, process.cwd());
 
   return {
@@ -16,7 +15,7 @@ export default defineConfig(({ mode }) => {
           chatbotLogic: path.resolve(__dirname, 'public/chatbotLogic.jsx'),  // JSX file
         },
         output: {
-          entryFileNames: 'assets/[name]-[hash].js',  // Ensure the output has a unique hash
+          entryFileNames: 'assets/[name]-[hash].js',  // Ensure output has unique hash
         },
       },
       outDir: 'dist',
@@ -25,7 +24,7 @@ export default defineConfig(({ mode }) => {
       port: 3000,
       proxy: {
         '/api': {
-          target: env.VITE_PRODUCTION_URL || 'http://localhost:5000', // Default to localhost if not in production
+          target: env.VITE_PRODUCTION_URL || 'http://localhost:5000', // Default to localhost
           changeOrigin: true,
         },
       },
