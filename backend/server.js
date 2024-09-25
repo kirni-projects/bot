@@ -49,17 +49,17 @@ const corsOptions = {
 // Apply CORS middleware
 app.use('/api', cors(corsOptions), registerRoutes, scriptCheckRoutes, authRoutes, chatRoutes);
 
-// Serve widget.js with CORS headers
+// backend/server.js
 app.get('/widget.jsx', (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', '*');  // Allow all origins
   res.sendFile(path.resolve(__dirname, '../frontend/dist/widget.jsx'));
 });
 
-// Serve chatbotLogic.js with CORS headers
 app.get('/chatbotLogic.jsx', (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', '*');  // Allow all origins
   res.sendFile(path.resolve(__dirname, '../frontend/dist/chatbotLogic.jsx'));
 });
+
 
 // Serve static files from the frontend
 app.use(express.static(path.join(__dirname, '../frontend/dist')));

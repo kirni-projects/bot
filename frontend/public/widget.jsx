@@ -1,8 +1,9 @@
+// public/widget.jsx
+
 (function() {
-  const scriptElement = document.querySelector('script[src*="widget.js"]');
+  const scriptElement = document.querySelector('script[src*="widget.jsx"]');
   const eid = scriptElement.getAttribute('eid');
 
-  // Fetch allowed domain from the backend
   async function fetchAllowedDomain() {
     try {
       const response = await fetch(`https://bot-rd1k.onrender.com/api/getdomainurl/${eid}`);
@@ -23,21 +24,17 @@
       return;
     }
 
+    // Create the widget container on the page
     const widgetContainer = document.createElement('div');
     widgetContainer.id = 'chatbot-widget-container';
-    widgetContainer.classList.add('chat-widget');
-    // widgetContainer.style.position = 'fixed';
-    // widgetContainer.style.bottom = '0';
-    // widgetContainer.style.right = '0';
-    // widgetContainer.style.height = '400px';
-    // widgetContainer.style.width = '300px';
-    // widgetContainer.style.backgroundColor = '#fff';
-    widgetContainer.style.zIndex = '1000';
+    widgetContainer.className = 'chat-widget';  // Apply chat-widget class for styling
+    widgetContainer.style.zIndex = '1000';  // Ensure widget is above other elements
+
     document.body.appendChild(widgetContainer);
 
-    // Load the chatbot logic after widget container is ready
+    // Load the chatbot logic
     const chatbotScript = document.createElement('script');
-    chatbotScript.src = `https://bot-rd1k.onrender.com/chatbotLogic.jsx`;
+    chatbotScript.src = `https://bot-rd1k.onrender.com/chatbotLogic.jsx`;  // Load your chatbot logic
     chatbotScript.async = true;
     document.body.appendChild(chatbotScript);
 
@@ -50,6 +47,7 @@
 
   initializeWidget();
 })();
+
 
 
 
