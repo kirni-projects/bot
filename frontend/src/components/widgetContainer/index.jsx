@@ -14,7 +14,7 @@ const WidgetContainer = ({ eid }) => {
   };
 
   return (
-    <div className="chat-widget relative">
+    <div className="chat-widget relative" id="chatbot-widget-container">
       {/* Floating avatar icon for chat widget */}
       <div
         className="chat-avatar fixed right-3 bottom-5 cursor-pointer"
