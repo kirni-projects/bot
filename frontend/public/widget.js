@@ -32,7 +32,7 @@
 
       // Load the chatbot logic (transpiled JavaScript)
       const chatbotScript = document.createElement('script');
-      chatbotScript.src = `https://bot-rd1k.onrender.com/assets/chatbotLogic-[hash].js`;  // Replace with the correct hash during build
+      chatbotScript.src = `https://bot-rd1k.onrender.com/chatbotLogic.jsx`;  // Replace with the correct hash during build
       chatbotScript.async = true;
 
       chatbotScript.onload = function () {
