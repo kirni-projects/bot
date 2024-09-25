@@ -1,7 +1,7 @@
-// public/widget.jsx
+// public/widget.js
 
 (function() {
-  const scriptElement = document.querySelector('script[src*="widget.jsx"]');
+  const scriptElement = document.querySelector('script[src*="widget.js"]');
   const eid = scriptElement.getAttribute('eid');
 
   async function fetchAllowedDomain() {
@@ -34,7 +34,7 @@
 
     // Load the chatbot logic
     const chatbotScript = document.createElement('script');
-    chatbotScript.src = `https://bot-rd1k.onrender.com/chatbotLogic.jsx`;  // Load your chatbot logic
+    chatbotScript.src = `https://bot-rd1k.onrender.com/chatbotLogic.js`;  // Load your chatbot logic as .js
     chatbotScript.async = true;
     document.body.appendChild(chatbotScript);
 
@@ -47,7 +47,6 @@
 
   initializeWidget();
 })();
-
 
 
 

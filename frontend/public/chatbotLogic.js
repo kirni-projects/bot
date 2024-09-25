@@ -1,4 +1,4 @@
-// public/chatbotLogic.jsx
+// public/chatbotLogic.js
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import WidgetContainer from '../src/components/widgetContainer/index.jsx';  // Adjust path if necessary

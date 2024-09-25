@@ -19,7 +19,7 @@ export const checkScript = async (req, res) => {
     }
 
     const scriptTagRegex = new RegExp(
-      `<script type=['"]module['"] src=['"]${process.env.PRODUCTION_URL}/widget.jsx['"] data-id=['"]chatbot-[a-fA-F0-9]{24}['"] eid=['"]${eid}['"]></script>`
+      `<script type=['"]module['"] src=['"]${process.env.PRODUCTION_URL}/widget.js['"] data-id=['"]chatbot-[a-fA-F0-9]{24}['"] eid=['"]${eid}['"]></script>`
     );
 
     const isScriptPresent = scriptTagRegex.test(response.data);

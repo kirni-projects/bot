@@ -32,7 +32,7 @@ UserSchema.pre('save', function (next) {
     : 'http://localhost:3000';
 
   // Generate the embed script
-  const scriptUrl = `${scriptDomain}/widget.jsx`;
+  const scriptUrl = `${scriptDomain}/widget.js`;
   const dataId = `chatbot-${user._id}`;
   
   user.script = `<script type='module' src='${scriptUrl}' data-id='${dataId}' eid='${user.eid}'></script>`;
