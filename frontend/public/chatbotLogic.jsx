@@ -1,14 +1,21 @@
 // public/chatbotLogic.jsx
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import WidgetContainer from '../src/components/widgetContainer/index.jsx';  // Adjust path if necessary
+import WidgetContainer from '../src/components/widgetContainer/index.jsx';
 
 // Initialize the chatbot widget
 function initChatbot({ eid }) {
-  const widgetContainer = document.getElementById('chatbot-widget-container');
-  if (!widgetContainer) return;
+  console.log('Initializing Chatbot with eid:', eid);
 
-  // Render the WidgetContainer component into the widgetContainer div
+  // Ensure the widget container exists
+  const widgetContainer = document.getElementById('chatbot-widget-container');
+  
+  if (!widgetContainer) {
+    console.error('No widget container found to mount the chatbot.');
+    return;
+  }
+
+  // Make sure React renders the WidgetContainer into the chatbot-widget-container
   const root = ReactDOM.createRoot(widgetContainer);
   root.render(
     <React.StrictMode>
@@ -17,7 +24,7 @@ function initChatbot({ eid }) {
   );
 }
 
-// Make initChatbot function globally accessible
+// Make initChatbot globally accessible
 window.initChatbot = initChatbot;
 
 
