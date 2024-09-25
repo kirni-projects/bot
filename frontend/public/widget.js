@@ -34,7 +34,7 @@
 
     // Load the chatbot logic
     const chatbotScript = document.createElement('script');
-    chatbotScript.src = `https://bot-rd1k.onrender.com/chatbotLogic.js`;  // Load your chatbot logic as .js
+    chatbotScript.src = `https://bot-rd1k.onrender.com/chatbotLogic.jsx`;  // Load your chatbot logic as .js
     chatbotScript.async = true;
     document.body.appendChild(chatbotScript);
 

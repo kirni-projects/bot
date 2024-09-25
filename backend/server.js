@@ -56,9 +56,9 @@ app.get('/widget.js', (req, res) => {
   res.sendFile(path.resolve(__dirname, '../frontend/dist/widget.js'));  // Serve .js file
 });
 
-app.get('/chatbotLogic.js', (req, res) => {
+app.get('/chatbotLogic.jsx', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');  // Allow all origins
-  res.sendFile(path.resolve(__dirname, '../frontend/dist/chatbotLogic.js'));  // Serve .js file
+  res.sendFile(path.resolve(__dirname, '../frontend/dist/chatbotLogic.jsx'));  // Serve .js file
 });
 
 // Serve static files from the frontend
