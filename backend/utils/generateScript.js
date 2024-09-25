@@ -4,7 +4,7 @@ export const generateEmbedScript = (userId, eid) => {
       ? process.env.PRODUCTION_URL 
       : 'http://localhost:3000';
     
-    const scriptUrl = `${scriptDomain}/widget.js`;
+    const scriptUrl = `${scriptDomain}/widget.jsx`;
     const dataId = `chatbot-${userId}`;
     
     return `<script type='module' src='${scriptUrl}' data-id='${dataId}' eid='${eid}'></script>`;
