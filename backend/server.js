@@ -27,6 +27,7 @@ app.use(cors({
   credentials: true,
 }));
 
+// Path to the 'dist' folder after Vite build
 const frontendDistPath = path.join(__dirname, '../frontend/dist');
 
 // Serve static assets from 'dist' directory
@@ -48,6 +49,7 @@ app.get('/chatbotLogic.js', (req, res) => {
 
     if (chatbotLogicFile) {
       res.setHeader('Access-Control-Allow-Origin', '*');
+      res.type('application/javascript');  // Set the MIME type to JavaScript
       res.sendFile(path.join(assetsPath, chatbotLogicFile)); // Serve the correct chatbotLogic.js file
     } else {
       res.status(404).send('File not found');
