@@ -1,5 +1,8 @@
 // Dynamically inject the chatbot widget and load the necessary assets and CSS
 (function() {
+  // Get the production URL from environment variables
+  const productionUrl = import.meta.env.VITE_PRODUCTION_URL || 'http://localhost:3000'; // Fallback to localhost in development
+
   // Create a container div for the chatbot widget
   const widgetContainer = document.createElement('div');
   widgetContainer.id = 'chat-widget-container'; // Assign an ID to the container
@@ -14,7 +17,7 @@
     <div class="chat-widget">
       <div class="chat-avatar">
         <div class="p-4 w-16 rounded-full bg-orange-400">
-          <img id="widgetAvatar" src="${process.env.PRODUCTION_URL}/src/assets/icons/sms.png" alt="Chat Icon" />
+          <img id="widgetAvatar" src="${productionUrl}/assets/icons/sms.png" alt="Chat Icon" />
         </div>
       </div>
       <div id="messageContainer" class="message-container" style="display: none;">
@@ -41,7 +44,7 @@
   fetchChatbotLogic();
 
   function fetchChatbotLogic() {
-    const chatbotLogicUrl = `${process.env.PRODUCTION_URL}/chatbotLogic.jsx`; // Update this path
+    const chatbotLogicUrl = `${productionUrl}/chatbotLogic.jsx`; // Update this path
     fetch(chatbotLogicUrl)
       .then(response => response.text())
       .then(html => {
@@ -53,6 +56,6 @@
   // Dynamically load the CSS file
   const linkElement = document.createElement('link');
   linkElement.rel = 'stylesheet';
-  linkElement.href = `${process.env.PRODUCTION_URL}/src/index.css`; // Link to the CSS file
+  linkElement.href = `${productionUrl}/index.css`; // Link to the CSS file
   document.head.appendChild(linkElement);
 })();
