@@ -26,11 +26,16 @@ app.use(cors({
   credentials: true,
 }));
 
-// Path to the 'dist' folder after Vite build
+// Serve static assets from 'dist' directory
 const frontendDistPath = path.join(__dirname, '../frontend/dist');
+app.use('/assets', express.static(path.join(frontendDistPath, 'assets'))); // Serve assets
 
-// Serve static files from 'dist' directory
-app.use('/assets', express.static(path.join(frontendDistPath, 'assets'))); // Serve assets from dist
+// Serve chatbotLogic.js
+app.get('/chatbotLogic.js', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.type('application/javascript');  // Set the correct MIME type
+  res.sendFile(path.join(frontendDistPath, 'assets/chatbotLogic.js'));
+});
 
 // Serve widget.js
 app.get('/widget.js', (req, res) => {
@@ -38,20 +43,10 @@ app.get('/widget.js', (req, res) => {
   res.sendFile(path.join(frontendDistPath, 'widget.js'));
 });
 
-// Serve chatbotLogic.js (if dynamically generated)
-app.get('/chatbotLogic.js', (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.type('application/javascript');  // Set the MIME type to JavaScript
-  res.sendFile(path.join(frontendDistPath, 'assets/chatbotLogic.js'));
-});
-
-// Serve static assets (CSS, images, etc.)
-app.use('/assets', express.static(path.join(frontendDistPath, 'assets')));
-
 // Serve API routes
 app.use('/api', registerRoutes, scriptCheckRoutes, authRoutes, chatRoutes);
 
-// Fallback to serving the React app for any unmatched routes (this serves index.html)
+// Fallback to index.html for React router support
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(frontendDistPath, 'index.html'));
 });
@@ -62,7 +57,7 @@ connectToMongoDB();
 // Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-  
+
 
 
 

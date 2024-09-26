@@ -9,11 +9,11 @@ export default defineConfig({
       input: {
         main: path.resolve(__dirname, 'index.html'),
         widget: path.resolve(__dirname, 'public/widget.js'),
-        chatbotLogic: path.resolve(__dirname, 'src/chatbotLogic.jsx'),  // Correctly point to src folder
+        chatbotLogic: path.resolve(__dirname, 'src/chatbotLogic.jsx'), // Correctly point to the src file
       },
       output: {
-        entryFileNames: 'assets/[name].js',  // No hash, use [name].js for consistent file naming
-        assetFileNames: 'assets/[name].[ext]',  // Ensure static assets are copied correctly
+        entryFileNames: 'assets/[name].js',  // Use [name].js to avoid hashed names
+        assetFileNames: 'assets/[name].[ext]', // Ensure assets are copied correctly
       },
     },
     outDir: 'dist',
