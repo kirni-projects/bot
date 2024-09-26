@@ -1,47 +1,137 @@
-// public/chatbotLogic.jsx
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import WidgetContainer from '../src/components/widgetContainer/index.jsx';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { BsSend } from "react-icons/bs"; // Send icon
+import getSocket from "../src/components/widgetContainer/messages/socket/getSocket.jsx"; // Import your socket function
 
-function initChatbot({ eid }) {
-  const widgetContainer = document.getElementById('chatbot-widget-container');
-  if (!widgetContainer) return;
+// Initialize the socket connection
+const socket = getSocket();
 
-  // Render the WidgetContainer component into the widgetContainer div
-  const root = ReactDOM.createRoot(widgetContainer);
-  root.render(
-    <React.StrictMode>
-      <WidgetContainer eid={eid} />
-    </React.StrictMode>
+const ChatbotLogic = ({ eid }) => {
+  const [username, setUsername] = useState("");
+  const [message, setMessage] = useState("");
+  const [conversation, setConversation] = useState([]);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (eid) {
+      fetchConversation(eid);
+    }
+
+    // Listen for real-time messages
+    socket.on("message", (newMessage) => {
+      setConversation((prev) => [...prev, newMessage]);
+    });
+
+    return () => {
+      socket.off("message");
+    };
+  }, [eid]);
+
+  const fetchConversation = async (eid) => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get(`/api/messages/${eid}`);
+      setConversation(response.data.messages || []);
+      setIsLoading(false);
+    } catch (error) {
+      setError("Failed to load messages.");
+      setIsLoading(false);
+    }
+  };
+
+  const handleSendMessage = async (e) => {
+    e.preventDefault();
+
+    if (!username || !message) {
+      setError("Please provide both a name and a message.");
+      return;
+    }
+
+    try {
+      const response = await axios.post("/api/start-conversation", {
+        username,
+        message,
+        eid,
+      });
+
+      const { conversation: newConversation } = response.data;
+      setConversation(newConversation.messages);
+      setMessage(""); // Clear message input
+
+      socket.emit("message", { sender: username, text: message });
+      setError(null);
+    } catch (error) {
+      console.error("Error sending message:", error);
+      setError("Failed to send message.");
+    }
+  };
+
+  const toggleChat = () => {
+    setIsChatOpen(!isChatOpen);
+  };
+
+  return (
+    <div className="chatbot-widget">
+      <div className={`chatbot-toggle ${isChatOpen ? "open" : ""}`}>
+        <button className="chat-toggle-btn" onClick={toggleChat}>
+          {isChatOpen ? "Close Chat" : "Open Chat"}
+        </button>
+      </div>
+
+      {isChatOpen && (
+        <div className="chatbot-container">
+          <div className="chat-header">
+            <h2>Chat with us</h2>
+            <button className="chat-close-btn" onClick={toggleChat}>
+              ✕
+            </button>
+          </div>
+
+          <div className="chat-body">
+            {isLoading ? (
+              <p>Loading conversation...</p>
+            ) : (
+              <div className="chat-messages">
+                {conversation.length > 0 ? (
+                  conversation.map((msg, index) => (
+                    <div key={index} className="message">
+                      <strong>{msg.sender}:</strong> {msg.text}
+                    </div>
+                  ))
+                ) : (
+                  <p>No messages yet. Start the conversation!</p>
+                )}
+                {error && <p className="error">{error}</p>}
+              </div>
+            )}
+          </div>
+
+          <form className="chat-footer" onSubmit={handleSendMessage}>
+            <input
+              type="text"
+              placeholder="Enter your name"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="input"
+              required
+            />
+            <textarea
+              placeholder="Type your message"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              className="textarea"
+              required
+            ></textarea>
+            <button type="submit" className="send-btn">
+              <BsSend />
+            </button>
+          </form>
+        </div>
+      )}
+    </div>
   );
-}
+};
 
-window.initChatbot = initChatbot;
-
-
-
-
-
-
-
-
-
-
-// import React from 'react';
-// import ReactDOM from 'react-dom';  // Import ReactDOM
-// import WidgetContainer from '../src/components/widgetContainer/index.jsx';  // Import your WidgetContainer
-
-// // Initialize the chatbot widget
-// function initChatbot({ eid }) {
-//   const widgetContainer = document.getElementById('chatbot-widget-container');
-//   if (!widgetContainer) return;
-
-//   const root = ReactDOM.createRoot(widgetContainer);  // React 18 syntax for creating a root
-//   root.render(
-//     <React.StrictMode>
-//       <WidgetContainer eid={eid} />
-//     </React.StrictMode>
-//   );
-// }
-
-// window.initChatbot = initChatbot;  // Attach initChatbot to the global window object
+export default ChatbotLogic;

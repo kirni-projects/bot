@@ -12,10 +12,10 @@ export default defineConfig(({ mode }) => {
         input: {
           main: path.resolve(__dirname, 'index.html'),
           widget: path.resolve(__dirname, 'public/widget.js'),
-          chatbotLogic: path.resolve(__dirname, 'public/chatbotLogic.jsx'),  // JSX file
+          chatbotLogic: path.resolve(__dirname, 'public/chatbotLogic.jsx'),  // Ensure chatbot logic is included
         },
         output: {
-          entryFileNames: 'assets/[name]-[hash].js',  // Ensure output has unique hash
+          entryFileNames: 'assets/[name]-[hash].js',
         },
       },
       outDir: 'dist',
@@ -24,7 +24,7 @@ export default defineConfig(({ mode }) => {
       port: 3000,
       proxy: {
         '/api': {
-          target: env.VITE_PRODUCTION_URL || 'http://localhost:5000', // Default to localhost
+          target: env.VITE_PRODUCTION_URL || 'http://localhost:5000', // Proxy to the backend
           changeOrigin: true,
         },
       },
