@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import ReactDOM from 'react-dom'; // Ensure you import ReactDOM to mount the component
 import axios from "axios";
 import { BsSend } from "react-icons/bs"; // Send icon
-import getSocket from "./widgetContainer/messages/socket/getSocket"; // Socket utility for real-time chat
+import getSocket from "../src/components/widgetContainer/messages/socket/getSocket"; // Socket utility for real-time chat
 
 const socket = getSocket();
 
