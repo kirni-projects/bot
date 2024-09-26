@@ -30,7 +30,7 @@ app.use(cors({
 const frontendDistPath = path.join(__dirname, '../frontend/dist');
 
 // Serve static files from 'dist/assets'
-app.use('/assets', express.static(path.join(frontendDistPath, 'assets')));  // Ensure serving from assets
+app.use('/assets', express.static(path.join(frontendDistPath, 'assets')));  // Serve from assets
 
 // Serve widget.js
 app.get('/widget.js', (req, res) => {
@@ -41,7 +41,7 @@ app.get('/widget.js', (req, res) => {
 // Serve chatbotLogic.js (no hash)
 app.get('/chatbotLogic.js', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.type('application/javascript');  // Set the MIME type to JavaScript
+  res.type('application/javascript');  // Ensure MIME type is JavaScript
   res.sendFile(path.join(frontendDistPath, 'assets/chatbotLogic.js'));
 });
 
