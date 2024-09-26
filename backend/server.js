@@ -74,8 +74,6 @@ app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 
 
-
-
 // import path from 'path';
 // import express from 'express';
 // import dotenv from 'dotenv';
