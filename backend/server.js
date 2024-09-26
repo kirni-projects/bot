@@ -1,10 +1,9 @@
 // // backend/server.js
-
-// Import necessary modules
+import fs from 'fs';
 import path from 'path';
 import express from 'express';
+import cors from 'cors';
 import dotenv from 'dotenv';
-import cors from 'cors'; // Import CORS middleware
 import connectToMongoDB from './db/connectToMongoDB.js';
 import registerRoutes from './routes/registerRoutes.js';
 import scriptCheckRoutes from './routes/scriptCheckRoutes.js';
@@ -13,7 +12,6 @@ import chatRoutes from './routes/chatRoutes.js';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
-// Get __dirname in ES6 modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -22,22 +20,40 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+}));
 
-// CORS Middleware - Allow access from specific origins
-app.use(
-  cors({
-    origin: '*', // Allow all origins or replace with specific origin like 'https://scriptdemo.imageum.in'
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true, // Allow credentials such as cookies or authentication headers
-  })
-);
-
-// Use the compiled files from Vite's 'dist' folder
 const frontendDistPath = path.join(__dirname, '../frontend/dist');
 
-// Serve static assets (CSS, images, JS) from the 'dist' folder
+// Serve static assets from 'dist' directory
 app.use(express.static(frontendDistPath));
+
+// Dynamically serve the chatbotLogic-[hash].js file
+app.get('/chatbotLogic.js', (req, res) => {
+  const assetsPath = path.join(frontendDistPath, 'assets');
+  
+  // Find the file that matches 'chatbotLogic-[hash].js'
+  fs.readdir(assetsPath, (err, files) => {
+    if (err) {
+      console.error('Failed to read assets directory:', err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+
+    const chatbotLogicFile = files.find(file => file.startsWith('chatbotLogic') && file.endsWith('.js'));
+
+    if (chatbotLogicFile) {
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.sendFile(path.join(assetsPath, chatbotLogicFile)); // Serve the correct chatbotLogic.js file
+    } else {
+      res.status(404).send('File not found');
+    }
+  });
+});
 
 // Serve widget.js
 app.get('/widget.js', (req, res) => {
@@ -45,19 +61,15 @@ app.get('/widget.js', (req, res) => {
   res.sendFile(path.join(frontendDistPath, 'widget.js'));
 });
 
-// Serve chatbotLogic.js (this is the compiled JavaScript after building with Vite)
-app.get('/chatbotLogic.js', (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  // Ensure you point to the correct path after Vite bundles it
-  res.sendFile(path.join(frontendDistPath, 'assets/chatbotLogic-[hash].js')); // Replace [hash] with actual hash
-});
+// Serve static assets (CSS, images, etc.)
+app.use('/assets', express.static(path.join(frontendDistPath, 'assets')));
 
-// Serve routes for API endpoints (such as chat, auth, register, etc.)
+// Serve API routes
 app.use('/api', registerRoutes, scriptCheckRoutes, authRoutes, chatRoutes);
 
-// Fallback route to serve the frontend React app (for client-side routing)
+// Serve the React application for any unmatched routes
 app.get('*', (req, res) => {
-  res.sendFile(path.resolve(frontendDistPath, 'index.html')); // Serve index.html for any unmatched routes
+  res.sendFile(path.resolve(frontendDistPath, 'index.html'));
 });
 
 // Connect to MongoDB
