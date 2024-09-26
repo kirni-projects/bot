@@ -13,16 +13,46 @@
 
   // Inject React component via ReactDOM
   const script = document.createElement('script');
-  script.src = `${scriptDomain}/assets/chatbotLogic-[hash].js`; // Reference compiled JS, not JSX
+  script.src = `${scriptDomain}/chatbotLogic.js`; // Reference chatbotLogic.js directly
   script.type = 'module';
   widgetContainer.appendChild(script);
 
   // Inject CSS dynamically for widget styling
   const linkElement = document.createElement('link');
   linkElement.rel = 'stylesheet';
-  linkElement.href = `${scriptDomain}/src/index.css`; // Use your live URL for the CSS file
+  linkElement.href = `${scriptDomain}/assets/main-_HApNWUx.css`; // Use your live URL for the CSS file
   document.head.appendChild(linkElement);
 })();
+
+
+
+
+
+
+// (function () {
+//   const scriptDomain = 'https://bot-rd1k.onrender.com';
+
+//   // Create and inject the widget's container into the DOM
+//   const widgetContainer = document.createElement('div');
+//   widgetContainer.id = 'chat-widget-container';
+//   widgetContainer.style.position = 'fixed';
+//   widgetContainer.style.bottom = '20px';
+//   widgetContainer.style.right = '20px';
+//   widgetContainer.style.zIndex = '10000';
+//   document.body.appendChild(widgetContainer);
+
+//   // Inject React component via ReactDOM
+//   const script = document.createElement('script');
+//   script.src = `${scriptDomain}/assets/chatbotLogic-[hash].js`; // Reference compiled JS, not JSX
+//   script.type = 'module';
+//   widgetContainer.appendChild(script);
+
+//   // Inject CSS dynamically for widget styling
+//   const linkElement = document.createElement('link');
+//   linkElement.rel = 'stylesheet';
+//   linkElement.href = `${scriptDomain}/src/index.css`; // Use your live URL for the CSS file
+//   document.head.appendChild(linkElement);
+// })();
 
 
 

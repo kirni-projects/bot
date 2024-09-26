@@ -1,5 +1,4 @@
 // // backend/server.js
-import fs from 'fs';
 import path from 'path';
 import express from 'express';
 import cors from 'cors';
@@ -33,28 +32,11 @@ const frontendDistPath = path.join(__dirname, '../frontend/dist');
 // Serve static assets from 'dist' directory
 app.use(express.static(frontendDistPath));
 
-// Dynamically serve the chatbotLogic-[hash].js file
+// Serve chatbotLogic.js directly (no hash anymore)
 app.get('/chatbotLogic.js', (req, res) => {
-  const assetsPath = path.join(frontendDistPath, 'assets');
-  
-  // Find the file that matches 'chatbotLogic-[hash].js'
-  fs.readdir(assetsPath, (err, files) => {
-    if (err) {
-      console.error('Failed to read assets directory:', err);
-      res.status(500).send('Internal Server Error');
-      return;
-    }
-
-    const chatbotLogicFile = files.find(file => file.startsWith('chatbotLogic') && file.endsWith('.js'));
-
-    if (chatbotLogicFile) {
-      res.setHeader('Access-Control-Allow-Origin', '*');
-      res.type('application/javascript');  // Set the MIME type to JavaScript
-      res.sendFile(path.join(assetsPath, chatbotLogicFile)); // Serve the correct chatbotLogic.js file
-    } else {
-      res.status(404).send('File not found');
-    }
-  });
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.type('application/javascript');  // Set the MIME type to JavaScript
+  res.sendFile(path.join(frontendDistPath, 'assets/chatbotLogic.js')); // Serve the static chatbotLogic.js
 });
 
 // Serve widget.js
