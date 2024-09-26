@@ -4,7 +4,7 @@
 import path from 'path';
 import express from 'express';
 import dotenv from 'dotenv';
-import cors from 'cors'; // Import cors middleware
+import cors from 'cors'; // Import CORS middleware
 import connectToMongoDB from './db/connectToMongoDB.js';
 import registerRoutes from './routes/registerRoutes.js';
 import scriptCheckRoutes from './routes/scriptCheckRoutes.js';
@@ -13,7 +13,7 @@ import chatRoutes from './routes/chatRoutes.js';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
-// Get __dirname in ESM
+// Get __dirname in ES6 modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -23,44 +23,47 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
-app.use('/api', cors(corsOptions), registerRoutes, scriptCheckRoutes, authRoutes, chatRoutes);
+// CORS Middleware - Allow access from specific origins
+app.use(
+  cors({
+    origin: '*', // Allow all origins or replace with specific origin like 'https://scriptdemo.imageum.in'
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true, // Allow credentials such as cookies or authentication headers
+  })
+);
 
-// Enable CORS for all routes
-app.use(cors({
-  origin: '*', // Allow all origins; you can specify your domain here instead
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed methods
-  allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
-  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
-}));
+// Use the compiled files from Vite's 'dist' folder
+const frontendDistPath = path.join(__dirname, '../frontend/dist');
 
-// Serve widget.js from the frontend directory
+// Serve static assets (CSS, images, JS) from the 'dist' folder
+app.use(express.static(frontendDistPath));
+
+// Serve widget.js
 app.get('/widget.js', (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');  // Allow all origins
-  res.sendFile(path.resolve(__dirname, '../frontend/dist/widget.js'));
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.sendFile(path.join(frontendDistPath, 'widget.js'));
 });
 
-// Serve chatbotLogic.js
-// Serve chatbotLogic.js (which is now compiled after build)
+// Serve chatbotLogic.js (this is the compiled JavaScript after building with Vite)
 app.get('/chatbotLogic.js', (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');  // Allow all origins
-  res.sendFile(path.resolve(__dirname, '../frontend/dist/assets/chatbotLogic-[hash].js'));  // Serve the compiled JS file
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  // Ensure you point to the correct path after Vite bundles it
+  res.sendFile(path.join(frontendDistPath, 'assets/chatbotLogic-[hash].js')); // Replace [hash] with actual hash
 });
 
+// Serve routes for API endpoints (such as chat, auth, register, etc.)
+app.use('/api', registerRoutes, scriptCheckRoutes, authRoutes, chatRoutes);
 
-// Serve static assets (like images and CSS)
-app.use('/assets', express.static(path.join(__dirname, '../frontend/src/assets')));
-app.use('/src', express.static(path.join(__dirname, '../frontend/src')));
-
-// Serve static files like the chatbotLogic.js and widget.js from the 'dist' directory
-app.use(express.static(path.join(__dirname, '../frontend/dist')));
-
-// Make sure all other routes fallback to index.html (for React SPA)
+// Fallback route to serve the frontend React app (for client-side routing)
 app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../frontend/dist/index.html'));
+  res.sendFile(path.resolve(frontendDistPath, 'index.html')); // Serve index.html for any unmatched routes
 });
+
 // Connect to MongoDB
 connectToMongoDB();
 
+// Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
