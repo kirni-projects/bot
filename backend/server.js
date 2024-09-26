@@ -49,17 +49,22 @@ const corsOptions = {
 
 // Apply CORS middleware
 app.use('/api', cors(corsOptions), registerRoutes, scriptCheckRoutes, authRoutes, chatRoutes);
-
-// Serve widget.js and chatbotLogic.js
+// Serve widget.js from the frontend directory
 app.get('/widget.js', (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');  // Allow all origins
-  res.sendFile(path.resolve(__dirname, '../frontend/dist/widget.js'));  // Serve .js file
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.sendFile(path.resolve(__dirname, '../frontend/dist/widget.js'));
 });
 
+// Serve chatbotLogic.jsx
 app.get('/chatbotLogic.jsx', (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');  // Allow all origins
-  res.sendFile(path.resolve(__dirname, '../frontend/dist/chatbotLogic.jsx'));  // Serve .js file
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.sendFile(path.resolve(__dirname, '../frontend/dist/chatbotLogic.jsx'));
 });
+
+// Serve static assets (like images and CSS)
+app.use('/assets', express.static(path.join(__dirname, '../frontend/src/assets')));
+app.use('/src', express.static(path.join(__dirname, '../frontend/src')));
+
 
 // Serve static files from the frontend
 app.use(express.static(path.join(__dirname, '../frontend/dist')));

@@ -1,9 +1,10 @@
+// frontend/src/chatbotLogic.jsx
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { BsSend } from "react-icons/bs"; // Send icon
-import getSocket from "../src/components/widgetContainer/messages/socket/getSocket.jsx"; // Import your socket function
+import getSocket from "./widgetContainer/messages/socket/getSocket"; // Socket utility for real-time chat
 
-// Initialize the socket connection
 const socket = getSocket();
 
 const ChatbotLogic = ({ eid }) => {
@@ -14,12 +15,14 @@ const ChatbotLogic = ({ eid }) => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  const apiUrl = 'https://bot-rd1k.onrender.com'; // Live API URL
+
+  // Fetch previous messages when the component is mounted
   useEffect(() => {
     if (eid) {
       fetchConversation(eid);
     }
 
-    // Listen for real-time messages
     socket.on("message", (newMessage) => {
       setConversation((prev) => [...prev, newMessage]);
     });
@@ -32,7 +35,7 @@ const ChatbotLogic = ({ eid }) => {
   const fetchConversation = async (eid) => {
     try {
       setIsLoading(true);
-      const response = await axios.get(`/api/messages/${eid}`);
+      const response = await axios.get(`${apiUrl}/api/messages/${eid}`);
       setConversation(response.data.messages || []);
       setIsLoading(false);
     } catch (error) {
@@ -50,7 +53,7 @@ const ChatbotLogic = ({ eid }) => {
     }
 
     try {
-      const response = await axios.post("/api/start-conversation", {
+      const response = await axios.post(`${apiUrl}/api/start-conversation`, {
         username,
         message,
         eid,
@@ -58,9 +61,10 @@ const ChatbotLogic = ({ eid }) => {
 
       const { conversation: newConversation } = response.data;
       setConversation(newConversation.messages);
-      setMessage(""); // Clear message input
+      setMessage("");
 
       socket.emit("message", { sender: username, text: message });
+
       setError(null);
     } catch (error) {
       console.error("Error sending message:", error);

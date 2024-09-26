@@ -1,38 +1,36 @@
-// Dynamically inject the chatbot widget and load the necessary assets and CSS
-(function() {
-  // Get the production URL from environment variables
-  const productionUrl = import.meta.env.VITE_PRODUCTION_URL || 'http://localhost:3000'; // Fallback to localhost in development
+// frontend/public/widget.js
 
-  // Create a container div for the chatbot widget
+(function () {
+  const scriptDomain = 'https://bot-rd1k.onrender.com';
+
+  // Create and inject the widget's container into the DOM
   const widgetContainer = document.createElement('div');
-  widgetContainer.id = 'chat-widget-container'; // Assign an ID to the container
+  widgetContainer.id = 'chat-widget-container';
   widgetContainer.style.position = 'fixed';
   widgetContainer.style.bottom = '20px';
   widgetContainer.style.right = '20px';
-  widgetContainer.style.zIndex = '10000'; // Ensure the widget is on top of other elements
-  document.body.appendChild(widgetContainer); // Append the widget container to the body
+  widgetContainer.style.zIndex = '10000';
+  document.body.appendChild(widgetContainer);
 
-  // Load the widget HTML
+  // Load the chat widget's HTML
   const widgetHTML = `
     <div class="chat-widget">
-      <div class="chat-avatar">
+      <div class="chat-avatar fixed right-3 bottom-5 cursor-pointer">
         <div class="p-4 w-16 rounded-full bg-orange-400">
-          <img id="widgetAvatar" src="${productionUrl}/assets/icons/sms.png" alt="Chat Icon" />
+          <img id="widgetAvatar" src="${scriptDomain}/assets/icons/sms.png" alt="Chat" />
         </div>
       </div>
-      <div id="messageContainer" class="message-container" style="display: none;">
-        <!-- Chat message container -->
-      </div>
+      <div id="messageContainer" class="messageContainer" style="display: none;"></div>
     </div>
   `;
-  
+
   widgetContainer.innerHTML = widgetHTML;
 
-  // Add click event to toggle the message container
+  // Add the click event listener to toggle the chat container
   const widgetAvatar = document.getElementById('widgetAvatar');
   const messageContainer = document.getElementById('messageContainer');
 
-  widgetAvatar.addEventListener('click', () => {
+  widgetAvatar.addEventListener('click', function () {
     if (messageContainer.style.display === 'none') {
       messageContainer.style.display = 'block';
     } else {
@@ -40,22 +38,23 @@
     }
   });
 
-  // Fetch and inject the chatbot logic
-  fetchChatbotLogic();
+  // Fetch and inject additional content (e.g., chat conversation or form)
+  fetchChatWidgetContent();
 
-  function fetchChatbotLogic() {
-    const chatbotLogicUrl = `${productionUrl}/chatbotLogic.jsx`; // Update this path
-    fetch(chatbotLogicUrl)
-      .then(response => response.text())
-      .then(html => {
-        messageContainer.innerHTML = html; // Inject chatbot HTML
+  function fetchChatWidgetContent() {
+    const chatWidgetUrl = `${scriptDomain}/chatbotLogic.jsx`;
+
+    fetch(chatWidgetUrl)
+      .then((response) => response.text())
+      .then((html) => {
+        messageContainer.innerHTML = html;
       })
-      .catch(err => console.error('Error loading chatbot content:', err));
+      .catch((err) => console.error('Failed to load chat widget content:', err));
   }
 
-  // Dynamically load the CSS file
+  // Inject CSS dynamically for widget styling
   const linkElement = document.createElement('link');
   linkElement.rel = 'stylesheet';
-  linkElement.href = `${productionUrl}/index.css`; // Link to the CSS file
+  linkElement.href = `${scriptDomain}/src/index.css`; // Use your live URL for the CSS file
   document.head.appendChild(linkElement);
 })();
