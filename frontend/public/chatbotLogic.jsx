@@ -1,5 +1,3 @@
-// // frontend/src/chatbotLogic.jsx
-
 // frontend/src/chatbotLogic.jsx
 import React, { useState, useEffect } from "react";
 import ReactDOM from 'react-dom'; // Ensure you import ReactDOM to mount the component

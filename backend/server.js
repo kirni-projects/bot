@@ -23,6 +23,8 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
+app.use('/api', cors(corsOptions), registerRoutes, scriptCheckRoutes, authRoutes, chatRoutes);
+
 // Enable CORS for all routes
 app.use(cors({
   origin: '*', // Allow all origins; you can specify your domain here instead
@@ -38,15 +40,24 @@ app.get('/widget.js', (req, res) => {
 });
 
 // Serve chatbotLogic.js
-app.get('/chatbotLogic.jsx', (req, res) => {
+// Serve chatbotLogic.js (which is now compiled after build)
+app.get('/chatbotLogic.js', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');  // Allow all origins
-  res.sendFile(path.resolve(__dirname, '../frontend/dist/chatbotLogic.jsx'));
+  res.sendFile(path.resolve(__dirname, '../frontend/dist/assets/chatbotLogic-[hash].js'));  // Serve the compiled JS file
 });
+
 
 // Serve static assets (like images and CSS)
 app.use('/assets', express.static(path.join(__dirname, '../frontend/src/assets')));
 app.use('/src', express.static(path.join(__dirname, '../frontend/src')));
 
+// Serve static files like the chatbotLogic.js and widget.js from the 'dist' directory
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+// Make sure all other routes fallback to index.html (for React SPA)
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../frontend/dist/index.html'));
+});
 // Connect to MongoDB
 connectToMongoDB();
 

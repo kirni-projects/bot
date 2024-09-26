@@ -13,8 +13,8 @@
 
   // Inject React component via ReactDOM
   const script = document.createElement('script');
-  script.src = `${scriptDomain}/chatbotLogic.jsx`; // Assuming chatbotLogic is bundled and served as JS
-  script.type = 'module'; // Ensure it's treated as a module if using modern ES6 syntax
+  script.src = `${scriptDomain}/assets/chatbotLogic-[hash].js`; // Reference compiled JS, not JSX
+  script.type = 'module';
   widgetContainer.appendChild(script);
 
   // Inject CSS dynamically for widget styling
