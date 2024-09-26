@@ -83,7 +83,7 @@ const ChatbotLogic = ({ eid }) => {
         <button className="chat-toggle-btn" onClick={toggleChat}>
           <div className={`chat-avatar ${avatarAnimation}`}>
             <img
-              src="https://bot-rd1k.onrender.com/assets/icons/sms.png"
+              src="https://bot-rd1k.onrender.com/assets/sms.png"
               alt="Chat"
             />
           </div>

@@ -12,8 +12,7 @@ export default defineConfig({
         chatbotLogic: path.resolve(__dirname, 'public/chatbotLogic.jsx'),
       },
       output: {
-        entryFileNames: 'assets/[name].js',
-        assetFileNames: 'assets/[name].[ext]',  // This ensures static assets are copied correctly
+        entryFileNames: 'assets/[name].js'
       },
     },
     outDir: 'dist',
