@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => {
         input: {
           main: path.resolve(__dirname, 'index.html'),
           widget: path.resolve(__dirname, 'public/widget.js'),
-          chatbotLogic: path.resolve(__dirname, 'public/chatbotLogic.js'),  // Ensure chatbot logic is included
+          chatbotLogic: path.resolve(__dirname, 'public/chatbotLogic.jsx'),  // Ensure chatbot logic is included
         },
         output: {
           entryFileNames: 'assets/[name]-[hash].js',

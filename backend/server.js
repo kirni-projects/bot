@@ -38,9 +38,9 @@ app.get('/widget.js', (req, res) => {
 });
 
 // Serve chatbotLogic.js
-app.get('/chatbotLogic.js', (req, res) => {
+app.get('/chatbotLogic.jsx', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');  // Allow all origins
-  res.sendFile(path.resolve(__dirname, '../frontend/dist/chatbotLogic.js'));
+  res.sendFile(path.resolve(__dirname, '../frontend/dist/chatbotLogic.jsx'));
 });
 
 // Serve static assets (like images and CSS)
