@@ -51,11 +51,13 @@ const corsOptions = {
 
 // Apply CORS middleware to your API routes
 app.use('/api', cors(corsOptions), registerRoutes, scriptCheckRoutes, authRoutes, chatRoutes);
+
 // Allow CORS for widget.js and chatbotLogic.js as well
 app.get('/widget.js', cors(corsOptions), (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');  // Allow all origins for widget.js
   res.sendFile(path.resolve(__dirname, '../frontend/dist/widget.js'));  // Serve the widget.js file
 });
+
 // Serve static files from the frontend
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
