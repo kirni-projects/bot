@@ -30,7 +30,7 @@ app.use(cors({
   credentials: true, // Allow credentials (cookies, authorization headers, etc.)
 }));
 
-app.use('/api', cors(corsOptions), registerRoutes, scriptCheckRoutes, authRoutes, chatRoutes);
+app.use('/api', registerRoutes, scriptCheckRoutes, authRoutes, chatRoutes);
 // Serve widget.js from the frontend directory
 app.get('/widget.js', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');  // Allow all origins
