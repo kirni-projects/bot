@@ -15,6 +15,7 @@ export default defineConfig(({ mode }) => {
         input: {
           main: path.resolve(__dirname, 'index.html'), // Main entry point for the app
           widget: path.resolve(__dirname, 'public/widget.js'), // Widget entry point for embedding
+          widget: path.resolve(__dirname, 'public/chatbotLogic.jsx'), // Widget entry point for embedding
         },
         output: {
           entryFileNames: 'assets/[name]-[hash].js', // Ensure output files have unique names with a hash
