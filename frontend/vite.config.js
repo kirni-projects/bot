@@ -20,6 +20,9 @@ export default defineConfig(({ mode }) => {
       },
       outDir: 'dist',  // Output directory for production build
     },
+    esbuild: {
+      jsxInject: `import React from 'react'`,
+    },
     server: {
       port: 3000,
       proxy: {
