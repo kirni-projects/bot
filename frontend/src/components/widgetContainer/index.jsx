@@ -1,7 +1,7 @@
 // src/components/widgetContainer/index.jsx
 import React, { useState } from 'react';
-import widgetAvatar from "../../assets/icons/sms.png";  // Path to your widget icon
-import widgetClose from "../../assets/icons/close32X32.png";  // Path to close icon
+import widgetAvatar from "../../assets/sms.png";  // Path to your widget icon
+import widgetClose from "../../assets/close32X32.png";  // Path to close icon
 import MessageContainer from './messages/messageContainer.jsx'; // Import the message container
 
 const WidgetContainer = () => {
