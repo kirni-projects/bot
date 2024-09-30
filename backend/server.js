@@ -26,27 +26,21 @@ app.use(cors({
   credentials: true,
 }));
 
-// Path to the 'dist' folder after Vite build
-const frontendDistPath = path.join(__dirname, '../frontend/dist');
-
-// Serve static files from 'dist/assets'
-app.use('/assets', express.static(path.join(frontendDistPath, 'assets')));  // Serve from assets
-
-// Serve widget.js
+// Serve widget.js from the frontend directory
 app.get('/widget.js', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.sendFile(path.join(frontendDistPath, 'widget.js'));
+  res.sendFile(path.resolve(__dirname, '../frontend/dist/widget.js'));
 });
 
-// Serve chatbotLogic.js (no hash)
-app.get('/chatbotLogic.js', (req, res) => {
+// Serve chatbotLogic.jsx
+app.get('/chatbotLogic.jsx', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.type('application/javascript');  // Ensure MIME type is JavaScript
-  res.sendFile(path.join(frontendDistPath, 'assets/chatbotLogic.js'));
+  res.sendFile(path.resolve(__dirname, '../frontend/dist/chatbotLogic.jsx'));
 });
 
-// Serve other static assets (CSS, images, etc.)
-app.use('/assets', express.static(path.join(frontendDistPath, 'assets')));
+// Serve static assets (like images and CSS)
+app.use('/assets', express.static(path.join(__dirname, '../frontend/src/assets')));
+app.use('/src', express.static(path.join(__dirname, '../frontend/src')));
 
 // Serve API routes
 app.use('/api', registerRoutes, scriptCheckRoutes, authRoutes, chatRoutes);

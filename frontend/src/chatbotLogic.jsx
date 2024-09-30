@@ -1,9 +1,8 @@
 // frontend/src/chatbotLogic.jsx
 import React, { useState, useEffect } from "react";
-import ReactDOM from 'react-dom'; // Ensure you import ReactDOM to mount the component
 import axios from "axios";
 import { BsSend } from "react-icons/bs"; // Send icon
-import getSocket from "./components/widgetContainer/messages/socket/getSocket"; // Socket utility for real-time chat
+import getSocket from "./widgetContainer/messages/socket/getSocket"; // Socket utility for real-time chat
 
 const socket = getSocket();
 
@@ -12,12 +11,12 @@ const ChatbotLogic = ({ eid }) => {
   const [message, setMessage] = useState("");
   const [conversation, setConversation] = useState([]);
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [avatarAnimation, setAvatarAnimation] = useState('rotate-in'); // Manage avatar animation state
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const apiUrl = 'https://bot-rd1k.onrender.com'; // Live API URL
 
+  // Fetch previous messages when the component is mounted
   useEffect(() => {
     if (eid) {
       fetchConversation(eid);
@@ -74,19 +73,13 @@ const ChatbotLogic = ({ eid }) => {
 
   const toggleChat = () => {
     setIsChatOpen(!isChatOpen);
-    setAvatarAnimation(isChatOpen ? 'rotate-in' : 'rotate-out'); // Toggle animation based on state
   };
 
   return (
     <div className="chatbot-widget">
       <div className={`chatbot-toggle ${isChatOpen ? "open" : ""}`}>
         <button className="chat-toggle-btn" onClick={toggleChat}>
-          <div className={`chat-avatar ${avatarAnimation}`}>
-            <img
-              src="https://bot-rd1k.onrender.com/assets/sms.png"
-              alt="Chat"
-            />
-          </div>
+          {isChatOpen ? "Close Chat" : "Open Chat"}
         </button>
       </div>
 
@@ -144,15 +137,7 @@ const ChatbotLogic = ({ eid }) => {
   );
 };
 
-// Mount the chatbot widget into the container
-const widgetContainer = document.getElementById('chat-widget-container');
-if (widgetContainer) {
-  ReactDOM.render(<ChatbotLogic />, widgetContainer);
-}
-
 export default ChatbotLogic;
-
-
 
 
 
