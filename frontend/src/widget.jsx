@@ -1,4 +1,5 @@
 // frontend/src/widget.js
+
 import { createRoot } from 'react-dom/client';
 import WidgetContainer from './components/widgetContainer/index.jsx';
 
