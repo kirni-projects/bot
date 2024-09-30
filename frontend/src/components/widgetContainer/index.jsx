@@ -1,5 +1,4 @@
 // src/components/widgetContainer/index.jsx
-// src/components/widgetContainer/index.jsx
 import React, { useState } from 'react';
 import widgetAvatar from "../../assets/icons/sms.png"; // Chat icon
 import widgetClose from "../../assets/icons/close32X32.png"; // Close icon
@@ -34,7 +33,6 @@ const WidgetContainer = () => {
 };
 
 export default WidgetContainer;
-
 
 
 
