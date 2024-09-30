@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         input: {
           main: path.resolve(__dirname, 'index.html'),
-          widget: path.resolve(__dirname, 'src/widget.js'),  // Ensure correct path for widget.js
+          widget: path.resolve(__dirname, 'src/widget.jsx'),  // Ensure correct path for widget.js
         },
         output: {
           entryFileNames: 'assets/[name]-[hash].js',  // Ensure the output has a unique hash for caching
