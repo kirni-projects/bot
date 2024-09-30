@@ -1,62 +1,27 @@
-// // frontend/public/widget.js
-
+// frontend/public/widget.js
 (function () {
-  const scriptDomain = 'https://bot-rd1k.onrender.com';
+  // Create a div to hold the chatbot widget
+  const chatWidgetContainer = document.createElement('div');
+  chatWidgetContainer.id = 'chat-widget-root'; // Unique ID for the root container
+  document.body.appendChild(chatWidgetContainer); // Append the widget container to the body
 
-  // Create and inject the widget's container into the DOM
-  const widgetContainer = document.createElement('div');
-  widgetContainer.id = 'chat-widget-container';
-  widgetContainer.style.position = 'fixed';
-  widgetContainer.style.bottom = '20px';
-  widgetContainer.style.right = '20px';
-  widgetContainer.style.zIndex = '10000';
-  document.body.appendChild(widgetContainer);
+  // Load the React widget into the container
+  const loadReactWidget = () => {
+    const script = document.createElement('script');
+    script.src = 'https://bot-rd1k.onrender.com/chatbotLogic.jsx'; // Update to match your production script URL
+    script.type = 'module';
+    document.head.appendChild(script);
 
-  // Load the chat widget's HTML
-  const widgetHTML = `
-    <div class="chat-widget">
-      <div class="chat-avatar fixed right-3 bottom-5 cursor-pointer">
-        <div class="p-4 w-16 rounded-full bg-orange-400">
-          <img id="widgetAvatar" src="${scriptDomain}/assets/sms.png" alt="Chat" />
-        </div>
-      </div>
-      <div id="messageContainer" class="messageContainer" style="display: none;"></div>
-    </div>
-  `;
+    script.onload = () => {
+      console.log('Chatbot widget loaded successfully.');
+    };
+    script.onerror = () => {
+      console.error('Failed to load chatbot widget script.');
+    };
+  };
 
-  widgetContainer.innerHTML = widgetHTML;
-
-  // Add the click event listener to toggle the chat container
-  const widgetAvatar = document.getElementById('widgetAvatar');
-  const messageContainer = document.getElementById('messageContainer');
-
-  widgetAvatar.addEventListener('click', function () {
-    if (messageContainer.style.display === 'none') {
-      messageContainer.style.display = 'block';
-    } else {
-      messageContainer.style.display = 'none';
-    }
-  });
-
-  // Fetch and inject additional content (e.g., chat conversation or form)
-  fetchChatWidgetContent();
-
-  function fetchChatWidgetContent() {
-    const chatWidgetUrl = `${scriptDomain}/chatbotLogic.jsx`;
-
-    fetch(chatWidgetUrl)
-      .then((response) => response.text())
-      .then((html) => {
-        messageContainer.innerHTML = html;
-      })
-      .catch((err) => console.error('Failed to load chat widget content:', err));
-  }
-
-  // Inject CSS dynamically for widget styling
-  const linkElement = document.createElement('link');
-  linkElement.rel = 'stylesheet';
-  linkElement.href = `${scriptDomain}/src/index.css`; // Use your live URL for the CSS file
-  document.head.appendChild(linkElement);
+  // Call the function to load the widget
+  loadReactWidget();
 })();
 
 

@@ -1,29 +1,44 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 
-export default defineConfig({
-  plugins: [react()],
-  build: {
-    rollupOptions: {
-      input: {
-        main: path.resolve(__dirname, 'index.html'),
-        widget: path.resolve(__dirname, 'public/widget.js'),
-        chatbotLogic: path.resolve(__dirname, 'public/chatbotLogic.jsx'), // Correctly point to the src file
+// Load environment variables based on the mode (development or production)
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd());
+
+  return {
+    plugins: [react()],
+
+    // Build configuration
+    build: {
+      rollupOptions: {
+        input: {
+          main: path.resolve(__dirname, 'index.html'), // Main entry point for the app
+          widget: path.resolve(__dirname, 'public/widget.js'), // Widget entry point for embedding
+        },
+        output: {
+          entryFileNames: 'assets/[name]-[hash].js', // Ensure output files have unique names with a hash
+        },
       },
-      output: {
-        entryFileNames: 'assets/[name].js'
+      outDir: 'dist', // Directory where the built files will be output
+    },
+
+    // Development server configuration
+    server: {
+      port: 3000, // The port where the dev server runs
+      proxy: {
+        '/api': {
+          target: env.VITE_PRODUCTION_URL || 'http://localhost:5000', // Proxy API calls to backend server
+          changeOrigin: true, // Handle CORS issues
+        },
       },
     },
-    outDir: 'dist',
-  },
-  server: {
-    port: 3000,
-    proxy: {
-      '/api': {
-        target: process.env.VITE_PRODUCTION_URL || 'http://localhost:5000',
-        changeOrigin: true,
+
+    // Resolve configuration for importing files and modules
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, './src'), // Alias for src directory
       },
     },
-  },
+  };
 });

@@ -1,42 +1,33 @@
 // src/components/widgetContainer/index.jsx
 // src/components/widgetContainer/index.jsx
 import React, { useState } from 'react';
-import widgetAvatar from "../../assets/icons/sms.png";
-import widgetClose from "../../assets/icons/close32X32.png";
-import MessageContainer from './messages/messageContainer.jsx';
+import widgetAvatar from "../../assets/icons/sms.png"; // Chat icon
+import widgetClose from "../../assets/icons/close32X32.png"; // Close icon
+import MessageContainer from './messages/messageContainer.jsx'; // Message container
 
 const WidgetContainer = () => {
   const [showAvatar, setShowAvatar] = useState(true);
   const [showMessageContainer, setShowMessageContainer] = useState(false);
 
   const avatarChange = () => {
-    setShowAvatar(!showAvatar);
-    setShowMessageContainer(!showMessageContainer);
+    setShowAvatar(!showAvatar);  // Toggle the chat icon and message container
+    setShowMessageContainer(!showMessageContainer);  // Toggle message container visibility
   };
 
   return (
-    <div className="chat-widget-container" style={{
-      position: 'fixed',
-      bottom: '20px',
-      right: '20px',
-      zIndex: 1000, // Make sure it's always on top
-      maxWidth: '400px', // Ensure a reasonable width
-      width: '100%',
-    }}>
-      <div onClick={avatarChange} style={{
-        position: 'fixed',
-        right: '20px',
-        bottom: '20px',
-        cursor: 'pointer',
-        zIndex: 1001, // Slightly higher than the widget
-      }}>
-        <img
-          src={showAvatar ? widgetAvatar : widgetClose}
-          alt={showAvatar ? "Chat" : "Close"}
-          style={{ width: '50px', height: '50px' }}  // Adjust the size accordingly
-        />
+    <div className="chat-widget relative m-4">
+      {/* Toggle between chat icon and close icon */}
+      <div className="chat-avatar fixed right-3 bottom-5 cursor-pointer" onClick={avatarChange}>
+        <div className="p-4 w-16 rounded-full bg-orange-400">
+          <img
+            src={showAvatar ? widgetAvatar : widgetClose}
+            alt={showAvatar ? "Chat" : "Close"}
+            className={showAvatar ? 'rotate-out' : 'rotate-in'}
+          />
+        </div>
       </div>
 
+      {/* Conditionally show the message container */}
       {showMessageContainer && <MessageContainer />}
     </div>
   );
