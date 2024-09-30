@@ -22,34 +22,40 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
-// CORS configuration for API routes
 const corsOptions = {
   origin: async function (origin, callback) {
-    try {
-      if (!origin || origin === process.env.PRODUCTION_URL) {
-        return callback(null, true);
-      }
+    // Allow requests from the specified origin
+    if (!origin || origin === process.env.PRODUCTION_URL) {
+      return callback(null, true); // Allow your own domain (PRODUCTION_URL)
+    }
 
+    try {
+      // Fetch allowed domains from the database
       const allowedDomains = await User.find({}, 'domainURL').then(users =>
         users.map(user => user.domainURL)
       );
 
+      // Check if the requesting origin is in the allowed domains
       if (allowedDomains.includes(origin)) {
-        callback(null, true);
+        callback(null, true); // Allow the request if the origin is in the list
       } else {
-        callback(new Error('Not allowed by CORS'));
+        callback(new Error('Not allowed by CORS')); // Block the request
       }
     } catch (error) {
       console.error('Error fetching allowed domains for CORS:', error);
       callback(new Error('Internal server error during CORS check'));
     }
   },
-  credentials: true,
+  credentials: true, // If you need to send cookies or authentication information
 };
 
-// Apply CORS middleware
+// Apply CORS middleware to your API routes
 app.use('/api', cors(corsOptions), registerRoutes, scriptCheckRoutes, authRoutes, chatRoutes);
-
+// Allow CORS for widget.js and chatbotLogic.js as well
+app.get('/widget.js', cors(corsOptions), (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');  // Allow all origins for widget.js
+  res.sendFile(path.resolve(__dirname, '../frontend/dist/widget.js'));  // Serve the widget.js file
+});
 // Serve static files from the frontend
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
