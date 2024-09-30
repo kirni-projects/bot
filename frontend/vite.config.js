@@ -9,7 +9,7 @@ export default defineConfig({
       input: {
         main: path.resolve(__dirname, 'index.html'),
         widget: path.resolve(__dirname, 'public/widget.js'),
-        chatbotLogic: path.resolve(__dirname, 'src/chatbotLogic.jsx'), // Correctly point to the src file
+        chatbotLogic: path.resolve(__dirname, 'public/chatbotLogic.jsx'), // Correctly point to the src file
       },
       output: {
         entryFileNames: 'assets/[name].js'
