@@ -1,28 +1,49 @@
+// frontend/src/widget.js
+
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import WidgetContainer from './components/widgetContainer/index.jsx';
+
+// This function appends the widget to the target container
+function appendChatWidget() {
+  const widgetContainer = document.getElementById('chat-widget-container');
+  if (widgetContainer) {
+    const widgetRoot = createRoot(widgetContainer);
+    widgetRoot.render(<WidgetContainer />);
+  } else {
+    console.error('Chat widget container not found!');
+  }
+}
+
+// Wait until the DOM is fully loaded before appending the widget
+window.addEventListener('load', appendChatWidget);
+
+
 // frontend/public/widget.js
-(function () {
-  // Create a div to hold the chatbot widget
-  const chatWidgetContainer = document.createElement('div');
-  chatWidgetContainer.id = 'chat-widget-root'; // Unique ID for the root container
-  document.body.appendChild(chatWidgetContainer); // Append the widget container to the body
+// (function () {
+//   // Create a div to hold the chatbot widget
+//   const chatWidgetContainer = document.createElement('div');
+//   chatWidgetContainer.id = 'chat-widget-root'; // Unique ID for the root container
+//   document.body.appendChild(chatWidgetContainer); // Append the widget container to the body
 
-  // Load the React widget into the container
-  const loadReactWidget = () => {
-    const script = document.createElement('script');
-    script.src = 'https://bot-rd1k.onrender.com/chatbotLogic.jsx'; // Update to match your production script URL
-    script.type = 'module';
-    document.head.appendChild(script);
+//   // Load the React widget into the container
+//   const loadReactWidget = () => {
+//     const script = document.createElement('script');
+//     script.src = 'https://bot-rd1k.onrender.com/chatbotLogic.jsx'; // Update to match your production script URL
+//     script.type = 'module';
+//     document.head.appendChild(script);
 
-    script.onload = () => {
-      console.log('Chatbot widget loaded successfully.');
-    };
-    script.onerror = () => {
-      console.error('Failed to load chatbot widget script.');
-    };
-  };
+//     script.onload = () => {
+//       console.log('Chatbot widget loaded successfully.');
+//     };
+//     script.onerror = () => {
+//       console.error('Failed to load chatbot widget script.');
+//     };
+//   };
 
-  // Call the function to load the widget
-  loadReactWidget();
-})();
+//   // Call the function to load the widget
+//   loadReactWidget();
+// })();
 
 
 

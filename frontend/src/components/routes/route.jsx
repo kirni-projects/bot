@@ -1,4 +1,4 @@
-// routes/route.jsx
+// src/components/routes/route.jsx
 import React from 'react';
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from '../widgetContainer/messages/Home.jsx';

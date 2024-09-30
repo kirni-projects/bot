@@ -1,3 +1,5 @@
+
+// src/components/widgetContainer/messages/message.jsx
 import React, { useEffect, useState } from "react";
 import getSocket from "./socket/getSocket";
 import { useAuthContext } from "./AuthContext.jsx";
@@ -90,7 +92,6 @@ const Message = () => {
 };
 
 export default Message;
-
 
 
 

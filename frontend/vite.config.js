@@ -2,43 +2,44 @@ import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 
-// Load environment variables based on the mode (development or production)
 export default defineConfig(({ mode }) => {
+  // Load environment variables based on the current mode (e.g., development, production)
   const env = loadEnv(mode, process.cwd());
 
   return {
     plugins: [react()],
-
-    // Build configuration
     build: {
       rollupOptions: {
         input: {
-          main: path.resolve(__dirname, 'index.html'), // Main entry point for the app
-          widget: path.resolve(__dirname, 'public/widget.js'), // Widget entry point for embedding
-          widget: path.resolve(__dirname, 'public/chatbotLogic.jsx'), // Widget entry point for embedding
+          main: path.resolve(__dirname, 'index.html'),
+          widget: path.resolve(__dirname, 'src/widget.js'),  // Ensure correct path for widget.js
         },
         output: {
-          entryFileNames: 'assets/[name]-[hash].js', // Ensure output files have unique names with a hash
+          entryFileNames: 'assets/[name]-[hash].js',  // Ensure the output has a unique hash for caching
         },
       },
-      outDir: 'dist', // Directory where the built files will be output
+      outDir: 'dist',  // Output directory for production build
     },
-
-    // Development server configuration
     server: {
-      port: 3000, // The port where the dev server runs
+      port: 3000,
       proxy: {
         '/api': {
-          target: env.VITE_PRODUCTION_URL || 'http://localhost:5000', // Proxy API calls to backend server
-          changeOrigin: true, // Handle CORS issues
+          target: env.VITE_PRODUCTION_URL || 'http://localhost:5000', // Backend API server
+          changeOrigin: true,
         },
       },
     },
-
-    // Resolve configuration for importing files and modules
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, './src'), // Alias for src directory
+        '@': path.resolve(__dirname, 'src'),  // Alias for clean imports
+      },
+    },
+    esbuild: {
+      jsxInject: `import React from 'react'`, // Automatically inject React where necessary
+    },
+    define: {
+      'process.env': {
+        VITE_PRODUCTION_URL: JSON.stringify(env.VITE_PRODUCTION_URL),
       },
     },
   };

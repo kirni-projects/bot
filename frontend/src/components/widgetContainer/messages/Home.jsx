@@ -1,3 +1,5 @@
+
+// src/components/widgetContainer/messages/Home.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { BsSend } from 'react-icons/bs';

@@ -1,3 +1,4 @@
+//src/component/Register.jsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { publicIpv4 } from "public-ip";
