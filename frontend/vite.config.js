@@ -3,7 +3,6 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 
 export default defineConfig(({ mode }) => {
-  // Load environment variables based on the current mode (e.g., development, production)
   const env = loadEnv(mode, process.cwd());
 
   return {
@@ -12,31 +11,21 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         input: {
           main: path.resolve(__dirname, 'index.html'),
-          widget: path.resolve(__dirname, 'src/widget.jsx'),  // Ensure correct path for widget.js
+          widget: path.resolve(__dirname, 'src/widget.jsx'),  // Point to widget.jsx
         },
         output: {
-          entryFileNames: 'assets/[name]-[hash].js',  // Ensure the output has a unique hash for caching
+          entryFileNames: 'assets/[name]-[hash].js',
         },
       },
-      outDir: 'dist',  // Output directory for production build
+      outDir: 'dist',
     },
     server: {
       port: 3000,
       proxy: {
         '/api': {
-          target: env.VITE_PRODUCTION_URL || 'http://localhost:5000', // Backend API server
+          target: env.VITE_PRODUCTION_URL || 'http://localhost:5000',
           changeOrigin: true,
         },
-      },
-    },
-    resolve: {
-      alias: {
-        '@': path.resolve(__dirname, 'src'),  // Alias for clean imports
-      },
-    },
-    define: {
-      'process.env': {
-        VITE_PRODUCTION_URL: JSON.stringify(env.VITE_PRODUCTION_URL),
       },
     },
   };

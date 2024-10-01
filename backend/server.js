@@ -21,27 +21,33 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
+// Helper function to fetch allowed domains from MongoDB
+const getAllowedDomains = async () => {
+  try {
+    const allowedDomains = await User.find({}, 'domainURL').then(users =>
+      users.map(user => user.domainURL)
+    );
+    return allowedDomains;
+  } catch (error) {
+    console.error('Error fetching allowed domains:', error);
+    throw new Error('Failed to fetch allowed domains');
+  }
+};
+
 // CORS configuration for API routes and widget serving
 const corsOptions = {
   origin: async function (origin, callback) {
     try {
-      if (!origin || origin === process.env.PRODUCTION_URL) {
-        return callback(null, true);
-      }
+      const allowedDomains = await getAllowedDomains();
 
-      // Fetch allowed domain URLs from registered users
-      const allowedDomains = await User.find({}, 'domainURL').then(users =>
-        users.map(user => user.domainURL)
-      );
-
-      if (allowedDomains.includes(origin)) {
+      // Allow bot URL (internal calls) or domains from the allowed list
+      if (!origin || origin === process.env.PRODUCTION_URL || allowedDomains.includes(origin)) {
         callback(null, true);
       } else {
         callback(new Error('Not allowed by CORS'));
       }
     } catch (error) {
-      console.error('Error fetching allowed domains for CORS:', error);
-      callback(new Error('Internal server error during CORS check'));
+      callback(new Error('Error during CORS check'));
     }
   },
   credentials: true,
@@ -50,13 +56,10 @@ const corsOptions = {
 // Apply CORS middleware to API routes
 app.use('/api', cors(corsOptions), registerRoutes, scriptCheckRoutes, authRoutes, chatRoutes);
 
-// Apply CORS middleware for static files (widget.js)
-app.use(cors(corsOptions));
-
-// Serve widget.js (widget.jsx) dynamically
-app.get('/widget.js', (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');  // Allow all origins for now
-  res.sendFile(path.resolve(__dirname, '../frontend/dist/widget.js'));  // Serve .js file
+// Apply CORS middleware for serving the widget
+app.get('/widget.js', cors(corsOptions), (req, res) => {
+  // Ensure correct CORS headers and serve the widget.js file
+  res.sendFile(path.resolve(__dirname, '../frontend/dist/widget.js'));
 });
 
 // Serve static files from the frontend
