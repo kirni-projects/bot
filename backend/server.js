@@ -57,7 +57,7 @@ const corsOptions = {
 app.use('/api', cors(corsOptions), registerRoutes, scriptCheckRoutes, authRoutes, chatRoutes);
 
 // Dynamic CORS for the widget.js file
-app.get('/widget.js', async (req, res, next) => {
+app.get('/widget.js', async (req, res) => {
   try {
     const allowedDomains = await getAllowedDomains();
     const origin = req.headers.origin;
@@ -66,14 +66,11 @@ app.get('/widget.js', async (req, res, next) => {
       res.setHeader('Access-Control-Allow-Origin', origin);  // Allow the specific origin dynamically
       res.setHeader('Access-Control-Allow-Methods', 'GET');  // Only allow GET requests
       res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+      res.sendFile(path.resolve(__dirname, '../frontend/dist/assets/widget-Cmu1M9AF.js')); // Serve the widget.js file
     } else {
       res.setHeader('Access-Control-Allow-Origin', '');  // Block other origins
-      return res.status(403).json({ message: 'CORS policy: This origin is not allowed' });
+      res.status(403).json({ message: 'CORS policy: This origin is not allowed' });
     }
-
-    // Serve the widget.js file
-    res.sendFile(path.resolve(__dirname, '../frontend/dist/widget.js'));
-
   } catch (error) {
     console.error('Error serving widget.js:', error);
     res.status(500).json({ message: 'Internal server error' });
