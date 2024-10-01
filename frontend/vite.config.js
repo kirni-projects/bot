@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => {
           widget: path.resolve(__dirname, 'src/widget.jsx'),  // Point to widget.jsx
         },
         output: {
-          entryFileNames: 'assets/[name]-[hash].js',
+          entryFileNames: 'assets/[name].js',  // No hash in the name
         },
       },
       outDir: 'dist',
