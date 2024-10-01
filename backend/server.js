@@ -1,4 +1,3 @@
-// backend/server.js
 import path from 'path';
 import express from 'express';
 import dotenv from 'dotenv';
@@ -22,40 +21,42 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
+// CORS configuration for API routes and widget serving
 const corsOptions = {
   origin: async function (origin, callback) {
-    // Allow requests from the specified origin
-    if (!origin || origin === process.env.PRODUCTION_URL) {
-      return callback(null, true); // Allow your own domain (PRODUCTION_URL)
-    }
-
     try {
-      // Fetch allowed domains from the database
+      if (!origin || origin === process.env.PRODUCTION_URL) {
+        return callback(null, true);
+      }
+
+      // Fetch allowed domain URLs from registered users
       const allowedDomains = await User.find({}, 'domainURL').then(users =>
         users.map(user => user.domainURL)
       );
 
-      // Check if the requesting origin is in the allowed domains
       if (allowedDomains.includes(origin)) {
-        callback(null, true); // Allow the request if the origin is in the list
+        callback(null, true);
       } else {
-        callback(new Error('Not allowed by CORS')); // Block the request
+        callback(new Error('Not allowed by CORS'));
       }
     } catch (error) {
       console.error('Error fetching allowed domains for CORS:', error);
       callback(new Error('Internal server error during CORS check'));
     }
   },
-  credentials: true, // If you need to send cookies or authentication information
+  credentials: true,
 };
 
-// Apply CORS middleware to your API routes
+// Apply CORS middleware to API routes
 app.use('/api', cors(corsOptions), registerRoutes, scriptCheckRoutes, authRoutes, chatRoutes);
 
-// Allow CORS for widget.js and chatbotLogic.js as well
-app.get('/widget.js', cors(corsOptions), (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');  // Allow all origins for widget.js
-  res.sendFile(path.resolve(__dirname, '../frontend/dist/widget.js'));  // Serve the widget.js file
+// Apply CORS middleware for static files (widget.js)
+app.use(cors(corsOptions));
+
+// Serve widget.js (widget.jsx) dynamically
+app.get('/widget.js', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');  // Allow all origins for now
+  res.sendFile(path.resolve(__dirname, '../frontend/dist/widget.js'));  // Serve .js file
 });
 
 // Serve static files from the frontend
