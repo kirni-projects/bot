@@ -62,6 +62,7 @@ app.get('/widget.js', async (req, res) => {
     const allowedDomains = await getAllowedDomains();
     const origin = req.headers.origin;
 
+    // Check if the origin is allowed
     if (allowedDomains.includes(origin)) {
       res.setHeader('Access-Control-Allow-Origin', origin);  // Allow the specific origin dynamically
       res.setHeader('Access-Control-Allow-Methods', 'GET');  // Only allow GET requests
