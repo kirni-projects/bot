@@ -11,10 +11,16 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         input: {
           main: path.resolve(__dirname, 'index.html'),
-          widget: path.resolve(__dirname, 'src/widget.jsx'),  // Point to widget.jsx
+          widget: path.resolve(__dirname, 'src/widget.jsx'),  // Ensure widget.jsx is correctly pointed
         },
         output: {
-          entryFileNames: 'assets/[name].js',  // No hash in the name
+          entryFileNames: (chunkInfo) => {
+            // For widget.jsx, ensure the output is always named widget.js
+            if (chunkInfo.name === 'widget') {
+              return 'assets/widget.js';
+            }
+            return 'assets/[name].js';
+          },
         },
       },
       outDir: 'dist',
