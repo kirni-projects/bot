@@ -1,4 +1,4 @@
-// agent.model.js
+//models/agent.model.js
 import mongoose from 'mongoose';
 
 const agentSchema = new mongoose.Schema({

@@ -1,3 +1,4 @@
+//routes/registerRoutes.js
 import express from 'express';
 import { register, getDomain } from '../controllers/registerController.js';
 

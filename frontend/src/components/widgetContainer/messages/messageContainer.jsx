@@ -1,4 +1,3 @@
-
 // src/components/widgetContainer/messages/messageContainer.jsx
 import React from 'react';
 import RouteContainer from '../../routes/route.jsx';  // Adjust import path if needed

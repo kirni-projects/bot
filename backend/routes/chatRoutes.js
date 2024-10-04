@@ -1,3 +1,4 @@
+//routes/chatRoutes.js
 import express from 'express';
 import { startConversation, sendMessage, getMessages, getMe } from '../controllers/chatController.js';
 import { protectRoute } from '../middleware/protectRoute.js'; // Assuming you have a middleware to protect routes
@@ -8,6 +9,5 @@ router.post('/start-conversation', startConversation);
 router.post('/messages/:userId', sendMessage);
 router.get('/messages/:userId', getMessages);
 router.get('/chat/me', protectRoute, getMe);
-// router.post('/chat/logout', logoutUser);
 
 export default router;

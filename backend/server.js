@@ -1,3 +1,4 @@
+// backend/server.js
 import path from 'path';
 import express from 'express';
 import dotenv from 'dotenv';
@@ -21,62 +22,33 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
-// Helper function to fetch allowed domains from MongoDB
-const getAllowedDomains = async () => {
-  try {
-    const allowedDomains = await User.find({}, 'domainURL').then(users =>
-      users.map(user => user.domainURL)
-    );
-    return allowedDomains;
-  } catch (error) {
-    console.error('Error fetching allowed domains:', error);
-    throw new Error('Failed to fetch allowed domains');
-  }
-};
-
-// CORS configuration for API routes and widget serving
+// CORS configuration for API routes
 const corsOptions = {
   origin: async function (origin, callback) {
     try {
-      const allowedDomains = await getAllowedDomains();
+      if (!origin || origin === process.env.PRODUCTION_URL) {
+        return callback(null, true);
+      }
 
-      // Allow bot URL (internal calls) or domains from the allowed list
-      if (!origin || origin === process.env.PRODUCTION_URL || allowedDomains.includes(origin)) {
+      const allowedDomains = await User.find({}, 'domainURL').then(users =>
+        users.map(user => user.domainURL)
+      );
+
+      if (allowedDomains.includes(origin)) {
         callback(null, true);
       } else {
         callback(new Error('Not allowed by CORS'));
       }
     } catch (error) {
-      callback(new Error('Error during CORS check'));
+      console.error('Error fetching allowed domains for CORS:', error);
+      callback(new Error('Internal server error during CORS check'));
     }
   },
   credentials: true,
 };
 
-// Apply CORS middleware to API routes
+// Apply CORS middleware
 app.use('/api', cors(corsOptions), registerRoutes, scriptCheckRoutes, authRoutes, chatRoutes);
-
-// Dynamic CORS for the widget.js file
-app.get('/widget.js', async (req, res) => {
-  try {
-    const allowedDomains = await getAllowedDomains();
-    const origin = req.headers.origin;
-
-    // Check if the origin is allowed
-    if (allowedDomains.includes(origin)) {
-      res.setHeader('Access-Control-Allow-Origin', origin);  // Allow the specific origin dynamically
-      res.setHeader('Access-Control-Allow-Methods', 'GET');  // Only allow GET requests
-      res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-      res.sendFile(path.resolve(__dirname, '../frontend/dist/assets/widget.js')); // Serve the widget.js file
-    } else {
-      res.setHeader('Access-Control-Allow-Origin', '');  // Block other origins
-      res.status(403).json({ message: 'CORS policy: This origin is not allowed' });
-    }
-  } catch (error) {
-    console.error('Error serving widget.js:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-});
 
 // Serve static files from the frontend
 app.use(express.static(path.join(__dirname, '../frontend/dist')));

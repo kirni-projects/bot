@@ -73,4 +73,4 @@ Messages.propTypes = {
   ).isRequired,
 };
 
-export default Messages;
+export default Messages; 

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const LoginPage = () => {
+const Login = () => {
     const [credentials, setCredentials] = useState({ email: '', password: '' });
     const [error, setError] = useState('');
     const history = useNavigate();
@@ -37,4 +37,4 @@ const LoginPage = () => {
     );
 };
 
-export default LoginPage;
+export default Login;

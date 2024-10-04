@@ -1,16 +1,16 @@
-// src/components/widgetContainer/index.jsx
 import React, { useState } from 'react';
-import widgetAvatar from "../../assets/sms.png";  // Path to your widget icon
-import widgetClose from "../../assets/close32X32.png";  // Path to close icon
-import MessageContainer from './messages/messageContainer.jsx'; // Import the message container
+import ReactDOM from 'react-dom';
+import widgetAvatar from "../../assets/icons/sms.png";  
+import widgetClose from "../../assets/icons/close32X32.png";  
+import MessageContainer from './messages/messageContainer.jsx'; 
 
 const WidgetContainer = () => {
   const [showAvatar, setShowAvatar] = useState(true);
   const [showMessageContainer, setShowMessageContainer] = useState(false);
 
   const avatarChange = () => {
-    setShowAvatar(!showAvatar);  // Toggle between showing avatar and close icon
-    setShowMessageContainer(!showMessageContainer);  // Toggle the message container
+    setShowAvatar(!showAvatar);  
+    setShowMessageContainer(!showMessageContainer);  
   };
 
   return (
@@ -24,9 +24,20 @@ const WidgetContainer = () => {
           />
         </div>
       </div>
-      {showMessageContainer && <MessageContainer />}  {/* Render the chat messages */}
+      {showMessageContainer && <MessageContainer />} 
     </div>
   );
 };
+
+// Function to render the widget into a specific element
+const renderWidget = (elementId) => {
+  const rootElement = document.getElementById(elementId);
+  if (rootElement) {
+    ReactDOM.render(<WidgetContainer />, rootElement);
+  }
+};
+
+// Make this function accessible globally
+window.renderChatWidget = renderWidget;
 
 export default WidgetContainer;

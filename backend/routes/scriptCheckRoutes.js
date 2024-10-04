@@ -1,3 +1,4 @@
+//routes/scriptCheckRoutes.js
 import express from 'express';
 import { checkScript } from '../controllers/scriptCheckController.js';
 

@@ -9,7 +9,6 @@ const ScriptCheck = ({ eid }) => {
   const [error, setError] = useState('');
   const navigate = useNavigate();  // Use useNavigate for navigation
 
-  // Fetch domainURL for the user by EID
   useEffect(() => {
     const fetchDomainURL = async () => {
       try {
@@ -23,7 +22,6 @@ const ScriptCheck = ({ eid }) => {
     fetchDomainURL();
   }, [eid]);
 
-  // Function to check script presence
   const checkScriptPresence = async () => {
     try {
       const response = await axios.get('/api/proxy/check-script', {
