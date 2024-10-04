@@ -22,17 +22,21 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
-// CORS configuration for API routes
 const corsOptions = {
   origin: async function (origin, callback) {
-    try {
-      if (!origin || origin === process.env.PRODUCTION_URL) {
-        return callback(null, true);
-      }
+    // Allow localhost and production URL in development
+    if (!origin || origin === process.env.PRODUCTION_URL || origin.includes("localhost")) {
+      return callback(null, true);
+    }
 
+    try {
+      // Dynamically fetch the allowed domains from your database
       const allowedDomains = await User.find({}, 'domainURL').then(users =>
         users.map(user => user.domainURL)
       );
+
+      // Add a hardcoded domain for testing purposes
+      allowedDomains.push("https://scriptdemo.imageum.in");
 
       if (allowedDomains.includes(origin)) {
         callback(null, true);
@@ -44,8 +48,11 @@ const corsOptions = {
       callback(new Error('Internal server error during CORS check'));
     }
   },
-  credentials: true,
+  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
 };
+
+// Apply CORS middleware to your routes
+app.use(cors(corsOptions));
 
 // Apply CORS middleware
 app.use('/api', cors(corsOptions), registerRoutes, scriptCheckRoutes, authRoutes, chatRoutes);
