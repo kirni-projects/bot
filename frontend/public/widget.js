@@ -1,22 +1,25 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // Select the script tag based on the 'src' attribute or another unique attribute
-  const scriptTag = document.querySelector('script[src*="widget.js"]');  // Use the script's src attribute
+  const scriptTag = document.querySelector('script[src*="widget.js"]'); // Locate the script tag by its src attribute
 
-  // If no script tag is found, log an error and stop execution
   if (!scriptTag) {
     console.error('Script tag not found');
     return;
   }
 
-  const elementId = scriptTag.getAttribute("data-id");
+  const elementId = scriptTag.getAttribute("data-id"); // Get the element ID from the script tag's data-id attribute
   
-  // Ensure the elementId exists before trying to render the widget
   if (elementId) {
-    if (window.renderChatWidget) {
-      window.renderChatWidget(elementId);  // Call the global function to render the widget
-    } else {
-      console.error('renderChatWidget function is not defined');
-    }
+    const waitForRenderFunction = () => {
+      if (typeof window.renderChatWidget === 'function') {
+        // Call the globally available renderChatWidget function
+        window.renderChatWidget(elementId);
+      } else {
+        console.warn('renderChatWidget is not yet defined, retrying...');
+        setTimeout(waitForRenderFunction, 100); // Retry after 100ms if the function is not defined yet
+      }
+    };
+
+    waitForRenderFunction(); // Start checking for the function
   } else {
     console.error('data-id attribute not found on the script tag');
   }
