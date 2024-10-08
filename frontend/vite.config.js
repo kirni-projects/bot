@@ -14,6 +14,12 @@ export default defineConfig(({ mode }) => {
         input: {
           main: path.resolve(__dirname, "index.html"),
           widget: path.resolve(__dirname, "public/widget.js"), // Add widget.js
+          renderWidget: path.resolve(__dirname, 'src/renderWidget.js'),  // Add this for the widget build
+
+        },
+        output: {
+          format: 'iife',  // Immediately Invoked Function Expression, for use in the browser
+          name: 'RenderWidgetBundle',  // Name of the global object
         },
       },
     }, 

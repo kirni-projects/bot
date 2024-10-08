@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import WidgetContainer from "../src/components/widgetContainer";  // Adjust the path if necessary
+import WidgetContainer from "./components/widgetContainer";  // Adjust the path if necessary
 
 // Function to render the widget into a specific element
 const renderWidget = (elementId) => {
