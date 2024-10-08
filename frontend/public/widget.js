@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const scriptTag = document.querySelector('script[src*="widget.js"]'); // Locate the script tag by its src attribute
+  // Select the script tag by its src attribute
+  const scriptTag = document.querySelector('script[src*="widget.js"]'); 
 
   if (!scriptTag) {
     console.error('Script tag not found');
@@ -7,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   const elementId = scriptTag.getAttribute("data-id"); // Get the element ID from the script tag's data-id attribute
-  
+
   if (elementId) {
     const waitForRenderFunction = () => {
       if (typeof window.renderChatWidget === 'function') {
