@@ -29,19 +29,5 @@ const WidgetContainer = () => {
   );
 };
 
-// Function to render the widget into a specific element
-const renderWidget = (elementId) => {
-  const rootElement = document.getElementById(elementId);
-  if (rootElement) {
-    ReactDOM.render(<WidgetContainer />, rootElement);
-  } else {
-    console.error(`Element with ID ${elementId} not found.`);
-  }
-};
-
-// Ensure the function is attached to the global window object
-if (typeof window !== 'undefined') {
-  window.renderChatWidget = renderWidget; // Attach the render function globally to the window object
-}
 
 export default WidgetContainer;

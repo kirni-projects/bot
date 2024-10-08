@@ -1,17 +1,49 @@
 //utils/generateScript.js
+
 export const generateEmbedScript = (userId, eid) => {
   const scriptDomain = process.env.NODE_ENV === 'production' 
     ? process.env.PRODUCTION_URL 
     : 'http://localhost:3000';
 
-  const scriptUrl = `${scriptDomain}/widget.js`;
+  const renderWidgetUrl = `${scriptDomain}/renderWidget.js`; // URL for the renderWidget.js
+  const widgetUrl = `${scriptDomain}/widget.js`;  // URL for the widget.js file
   const dataId = `chatbot-${userId}`;
 
   return `
-    <div id="${dataId}"></div>
-    <script type='module' src='${scriptUrl}' data-id='${dataId}' eid='${eid}'></script>
+    <!-- Load the renderWidget.js script first -->
+    <script src='${renderWidgetUrl}'></script>
+
+    <!-- Then load the widget.js script -->
+    <script type='module' src='${widgetUrl}' data-id='${dataId}' eid='${eid}'></script>
   `;
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// export const generateEmbedScript = (userId, eid) => {
+//   const scriptDomain = process.env.NODE_ENV === 'production' 
+//     ? process.env.PRODUCTION_URL 
+//     : 'http://localhost:3000';
+
+//   const scriptUrl = `${scriptDomain}/widget.js`;
+//   const dataId = `chatbot-${userId}`;
+
+//   return `
+//     <div id="${dataId}"></div>
+//     <script type='module' src='${scriptUrl}' data-id='${dataId}' eid='${eid}'></script>
+//   `;
+// };
 
 
 
