@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => {
         input: {
           main: path.resolve(__dirname, "index.html"),
           widget: path.resolve(__dirname, "public/widget.js"), // Add widget.js
-          renderWidget: path.resolve(__dirname, 'src/renderWidget.js'),  // Add this for the widget build
+          renderWidget: path.resolve(__dirname, 'src/renderWidget.jsx'),  // Add this for the widget build
 
         },
         output: {
