@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import widgetAvatar from "../../assets/icons/sms.png";  
 import widgetClose from "../../assets/icons/close32X32.png";  
-import MessageContainer from './messages/messageContainer.jsx'; 
+import MessageContainer from './messages/messageContainer.jsx';
 
 const WidgetContainer = () => {
   const [showAvatar, setShowAvatar] = useState(true);
@@ -37,7 +37,9 @@ const renderWidget = (elementId) => {
   }
 };
 
-// Make this function accessible globally
-window.renderChatWidget = renderWidget;
+// Make this function accessible globally (on window object)
+if (typeof window !== 'undefined') {
+  window.renderChatWidget = renderWidget; // Attach the render function to the window object
+}
 
 export default WidgetContainer;
