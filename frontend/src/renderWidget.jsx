@@ -13,4 +13,6 @@ const renderWidget = (elementId) => {
 };
 
 // Attach the renderWidget function to the global window object
-window.renderChatWidget = renderWidget;
+if (typeof window !== 'undefined') {
+  window.renderChatWidget = renderWidget;  // Ensure the function is globally available
+}
