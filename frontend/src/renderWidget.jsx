@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import WidgetContainer from "./components/widgetContainer";  // Adjust the path if necessary
+import WidgetContainer from "./components/widgetContainer";  // Adjust this path to point to your widget container
 
 // Function to render the widget into a specific element
 const renderWidget = (elementId) => {
@@ -14,5 +14,6 @@ const renderWidget = (elementId) => {
 
 // Attach the renderWidget function to the global window object
 if (typeof window !== 'undefined') {
-  window.renderChatWidget = renderWidget;  // Ensure the function is globally available
+  console.log('renderWidget.js is loaded, defining window.renderChatWidget.');
+  window.renderChatWidget = renderWidget;  // Make renderChatWidget globally available
 }
