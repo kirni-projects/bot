@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build": "vite build",
-    "start": "vite"
+    "build": "vite build", 
+    "build:widget": "vite build --config vite.config.widget.js"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.3.1",

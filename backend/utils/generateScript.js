@@ -4,8 +4,8 @@ export const generateEmbedScript = (userId, eid) => {
     ? process.env.PRODUCTION_URL 
     : 'http://localhost:3000';
 
-  const renderWidgetUrl = `${scriptDomain}/renderWidget.js`;  // Path to the bundled renderWidget.js
-  const widgetUrl = `${scriptDomain}/widget.js`;  // Path to your widget.js
+  const renderWidgetUrl = `${scriptDomain}/widget/renderWidget.js`;  // Widget output path
+  const widgetUrl = `${scriptDomain}/widget.js`;  // Adjust path accordingly
   const dataId = `chatbot-${userId}`;
 
   return `
