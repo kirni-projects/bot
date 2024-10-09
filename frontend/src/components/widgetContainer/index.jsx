@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
-import widgetAvatar from "../../assets/icons/sms.png";  
-import widgetClose from "../../assets/icons/close32X32.png";  
+import widgetAvatar from "../../assets/sms.png";  
+import widgetClose from "../../assets/close32X32.png";  
 import MessageContainer from './messages/messageContainer.jsx';
 
 const WidgetContainer = () => {
