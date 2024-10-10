@@ -1,4 +1,3 @@
-// backend/server.js
 import path from 'path';
 import express from 'express';
 import dotenv from 'dotenv';
@@ -22,21 +21,17 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
+// CORS configuration
 const corsOptions = {
   origin: async function (origin, callback) {
-    // Allow localhost and production URL in development
-    if (!origin || origin === process.env.PRODUCTION_URL || origin.includes("localhost")) {
-      return callback(null, true);
-    }
-
     try {
-      // Dynamically fetch the allowed domains from your database
+      if (!origin || origin === process.env.PRODUCTION_URL) {
+        return callback(null, true);
+      }
+
       const allowedDomains = await User.find({}, 'domainURL').then(users =>
         users.map(user => user.domainURL)
       );
-
-      // Add a hardcoded domain for testing purposes
-      allowedDomains.push("https://scriptdemo.imageum.in");
 
       if (allowedDomains.includes(origin)) {
         callback(null, true);
@@ -48,19 +43,17 @@ const corsOptions = {
       callback(new Error('Internal server error during CORS check'));
     }
   },
-  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+  credentials: true,
 };
-
-// Apply CORS middleware to your routes
-app.use(cors(corsOptions));
 
 // Apply CORS middleware
 app.use('/api', cors(corsOptions), registerRoutes, scriptCheckRoutes, authRoutes, chatRoutes);
 
-// Serve static files from the frontend
+// Serve static files from the frontend (including the widget)
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
+app.use('/widget', express.static(path.join(__dirname, '../frontend/dist/widget')));
 
-// Fallback route to serve index.html for any unhandled routes
+// Fallback route for React's index.html
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, '../frontend/dist/index.html'));
 });
