@@ -31,7 +31,13 @@ app.use(cors({
 
 // Serve static files from the frontend (including the widget)
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
-app.use('/widget', express.static(path.join(__dirname, '../frontend/dist/widget')));
+app.use('/widget', express.static(path.join(__dirname, '../frontend/dist/widget'),{
+  setHeaders: (res, path) => {
+    if (path.endsWith('.js')) {
+      res.setHeader('Content-Type', 'application/javascript');
+    }
+  }
+}));
 
 // Apply your routes
 app.use('/api', registerRoutes, scriptCheckRoutes, authRoutes, chatRoutes);

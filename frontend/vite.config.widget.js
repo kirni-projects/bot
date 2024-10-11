@@ -11,13 +11,13 @@ export default defineConfig({
         format: 'iife',  // IIFE format for embedding
         name: 'RenderWidgetBundle',  // Name of the global object for the widget
         dir: 'dist/widget',  // Output directory for the widget build
-        entryFileNames: 'renderWidget.js',  // Output file name
+        entryFileNames: 'widget.js',  // Output file name
         globals: {
           react: 'React',
           'react-dom': 'ReactDOM',
         },
       },
     },
-    outDir: 'dist/widget',  // Output directory for the widget
+    // outDir: 'dist/widget',  // Output directory for the widget
   },
 });
