@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useAuthContext } from './AuthContext.jsx';
-import getSocket from '../socket/getSocket';  // Import the socket function
+import getSocket from '../messages/socket/getSocket.jsx';  // Import the socket function
 
 const Messages = ({ initialMessages }) => {
   const { user } = useAuthContext();
