@@ -36,7 +36,7 @@ UserSchema.pre('save', function (next) {
   const scriptUrl = `${scriptDomain}/widget.js`;
   const dataId = `chatbot-${user._id}`;
   
-  user.script = `<script src='${scriptUrl}' data-id='${dataId}' eid='${user.eid}'></script>`;
+  user.script = `<script type='module' src='${scriptUrl}' data-id='${dataId}' eid='${user.eid}'></script>`;
   
   next();
 });
