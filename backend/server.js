@@ -31,6 +31,7 @@ app.use(cors({
 
 // Serve static files from the frontend (including the widget)
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
 app.use('/widget', express.static(path.join(__dirname, '../frontend/dist/widget'),{
   setHeaders: (res, path) => {
     if (path.endsWith('.js')) {
@@ -38,6 +39,12 @@ app.use('/widget', express.static(path.join(__dirname, '../frontend/dist/widget'
     }
   }
 }));
+
+// Set explicit headers for JavaScript files to ensure proper MIME type
+app.use('/widget.js', (req, res, next) => {
+  res.setHeader('Content-Type', 'application/javascript');
+  next();
+}, express.static(path.join(__dirname, '../widget.js')));
 
 // Apply your routes
 app.use('/api', registerRoutes, scriptCheckRoutes, authRoutes, chatRoutes);
