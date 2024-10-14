@@ -2,8 +2,8 @@ import path from 'path';
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import { createServer } from 'http'; // Required for socket.io
-import { Server } from 'socket.io';  // Import socket.io
+import http from 'http';
+import { Server as SocketIOServer } from 'socket.io';
 import connectToMongoDB from './db/connectToMongoDB.js';
 import registerRoutes from './routes/registerRoutes.js';
 import scriptCheckRoutes from './routes/scriptCheckRoutes.js';
@@ -58,15 +58,16 @@ app.get('*', (req, res) => {
 connectToMongoDB();
 
 // Create the HTTP server for Socket.IO
-const server = createServer(app);
+// const server = createServer(app);
+const server = http.createServer(app);
 
 // Initialize Socket.IO
-const io = new Server(server, {
+const io = new SocketIOServer(server, {
   cors: {
-    origin: 'https://scriptdemo.imageum.in', // Allow requests from this origin
+    origin: 'https://scriptdemo.imageum.in', // Allow your domain
     methods: ['GET', 'POST'],
-    credentials: true, // Allow credentials
-  }
+    credentials: true,
+  },
 });
 
 // Socket.IO connection

@@ -9,7 +9,7 @@ const getSocket = () => {
       : 'http://localhost:5000'; // Development environment
     socket = io(serverUrl, {
       transports: ['websocket', 'polling'],  // Fallback to polling if necessary
-      withCredentials: true,  // Pass credentials if needed
+      // withCredentials: true,  // Pass credentials if needed
     });
   }
   return socket;
