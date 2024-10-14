@@ -23,7 +23,9 @@ const UserSchema = new mongoose.Schema({
 // Middleware to generate the embed script and EID before saving the user
 UserSchema.pre('save', function (next) {
   const user = this;
-  
+  console.log('User ID:', user._id);  // Log the user ID for verification
+  console.log('Generated Script:', user.script);  // Log the generated script
+
   // Generate the EID
   user.eid = generateEID();
   

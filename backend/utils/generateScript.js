@@ -9,6 +9,8 @@ export const generateEmbedScript = (userId, eid) => {
   const dataId = `chatbot-${userId}`;
 
   return `
+    <div id='${dataId}'></div>
+
     <!-- Load the renderWidget.js script first -->
     <script src='${renderWidgetUrl}'></script>
 
