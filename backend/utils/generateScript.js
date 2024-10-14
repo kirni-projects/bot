@@ -13,7 +13,7 @@ export const generateEmbedScript = (userId, eid) => {
     <script src='${renderWidgetUrl}'></script>
 
     <!-- Then load the widget.js script -->
-    <script type='module' src='${widgetUrl}' data-id='${dataId}' eid='${eid}'></script>
+    <script src='${widgetUrl}' data-id='${dataId}' eid='${eid}'></script>
   `;
 };
 
