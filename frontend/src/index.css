@@ -114,7 +114,7 @@ button {
 
 /* WidgetContainer.css */
 
-/* .chatbot-widget {
+.chatbot-widget {
   position: fixed;
   bottom: 20px;
   right: 20px;
@@ -196,4 +196,4 @@ button {
   justify-content: center;
   align-items: center;
   font-size: 16px;
-} */
+}
