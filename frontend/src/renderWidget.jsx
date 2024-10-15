@@ -1,6 +1,7 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import WidgetContainer from "./components/widgetContainer";  // Adjust this path to point to your widget container
+import React from 'react';
+import ReactDOM from 'react-dom';
+import WidgetContainer from './components/widgetContainer';
+import './index.css';  // Ensure that your Tailwind CSS is bundled
 
 // Function to render the widget into a specific element
 const renderWidget = (elementId) => {

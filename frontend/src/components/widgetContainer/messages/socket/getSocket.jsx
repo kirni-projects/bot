@@ -4,12 +4,14 @@ let socket;
 
 const getSocket = () => {
   if (!socket) {
-    const serverUrl = process.env.NODE_ENV === 'production' 
-      ? 'https://bot-rd1k.onrender.com' // Your production server URL
-      : 'http://localhost:5000'; // Development environment
+    const serverUrl = process.env.NODE_ENV === 'production'
+      ? 'https://bot-rd1k.onrender.com'  // Use your production URL
+      : 'http://localhost:5000';  // Use localhost in development
+
     socket = io(serverUrl, {
       transports: ['websocket', 'polling'],  // Fallback to polling if necessary
-      // withCredentials: true,  // Pass credentials if needed
+      reconnectionAttempts: 5,  // Retry up to 5 times
+      reconnectionDelay: 1000  // 1 second delay between retries
     });
   }
   return socket;

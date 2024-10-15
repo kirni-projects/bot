@@ -12,9 +12,9 @@ import chatRoutes from './routes/chatRoutes.js';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
-// Get __dirname in ESM
+// Resolve __dirname
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = path.dirname(__filename);
 
 // Load environment variables
 dotenv.config();
@@ -32,8 +32,13 @@ app.use(cors({
 // Serve static files from the frontend (including the widget)
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
-app.use('/widget', express.static(path.join(__dirname, '../frontend/dist/widget'),{
+
+// Set headers for CSS and JS files
+app.use('/widget', express.static(path.join(__dirname, '../frontend/dist/widget'), {
   setHeaders: (res, path) => {
+    if (path.endsWith('.css')) {
+      res.setHeader('Content-Type', 'text/css');
+    }
     if (path.endsWith('.js')) {
       res.setHeader('Content-Type', 'application/javascript');
     }
@@ -44,7 +49,7 @@ app.use('/widget', express.static(path.join(__dirname, '../frontend/dist/widget'
 app.use('/widget.js', (req, res, next) => {
   res.setHeader('Content-Type', 'application/javascript');
   next();
-}, express.static(path.join(__dirname, '../widget.js')));
+}, express.static(path.join(__dirname, '../frontend/dist/widget.js')));
 
 // Apply your routes
 app.use('/api', registerRoutes, scriptCheckRoutes, authRoutes, chatRoutes);
@@ -58,36 +63,33 @@ app.get('*', (req, res) => {
 connectToMongoDB();
 
 // Create the HTTP server for Socket.IO
-// const server = createServer(app);
 const server = http.createServer(app);
 
-// Initialize Socket.IO
+// Setup Socket.IO
 const io = new SocketIOServer(server, {
   cors: {
-    origin: 'https://scriptdemo.imageum.in', // Allow your domain
+    origin: 'https://scriptdemo.imageum.in',
     methods: ['GET', 'POST'],
-    credentials: true,
-  },
+    credentials: true
+  }
 });
 
-// Socket.IO connection
 io.on('connection', (socket) => {
-  console.log('A user connected');
-
-  // Add your socket events here, for example:
+  console.log('User connected');
+  
   socket.on('message', (data) => {
-    console.log('Message received:', data);
-    io.emit('message', data);  // Emit the message to all connected clients
+    io.emit('message', data);
   });
 
   socket.on('disconnect', () => {
-    console.log('A user disconnected');
+    console.log('User disconnected');
   });
 });
 
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));  // Change this to listen to the `server` instance
-
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 
 
 
