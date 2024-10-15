@@ -19,11 +19,14 @@ const generateBotResponse = (userMessage) => {
 export const startConversation = async (req, res) => {
   const { username, message, eid } = req.body; // Include eid from the request
 
-  console.log('Request body:', req.body); // Log the incoming request
-  
   try {
-    // Look for a bot user from the same eid (domain URL) and username
-    let user = await botUser.findOne({ username, eid });
+    // Log the received data for debugging
+    console.log('Received data:', { username, message, eid });
+
+    const user = await botUser.findOne({ eid });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found for this EID' });
+    }
 
     if (!user) {
       // If user doesn't exist, create a new one
@@ -44,6 +47,9 @@ export const startConversation = async (req, res) => {
 
     await newConversation.save();
 
+    // Log the saved conversation for debugging
+    console.log('New conversation saved:', newConversation);
+    
     const newNotification = new Notification({
       userId: user._id,
       userProfile: profilePic,
