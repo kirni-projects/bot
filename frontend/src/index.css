@@ -52,10 +52,10 @@
 }
 
 .messageContainer {
-  position: absolute;
-  top: -70px;
+  position: fixed;
+  /* top: 0; */
   right: 3px;
-  bottom: 0;
+  bottom: 98px;
 }
 
 .card {
