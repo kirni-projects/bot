@@ -17,25 +17,23 @@ const generateBotResponse = (userMessage) => {
 };
 
 export const startConversation = async (req, res) => {
-  const { username, message, eid } = req.body; // Include eid from the request
+  const { username, message, eid } = req.body;
 
   try {
     // Log the received data for debugging
     console.log('Received data:', { username, message, eid });
 
-    const user = await botUser.findOne({ eid });
+    let user = await botUser.findOne({ eid }); // Look up user by EID
     
-
+    // If user does not exist, create a new user
     if (!user) {
       user = new botUser({
         username,
         message,
-        eid,  // Save the widget eid
+        eid,  // Save the widget EID
         profilePic: `https://avatar.iran.liara.run/username?username=${username}`
       });
-      await user.save();  // Save the user
-      // If user doesn't exist, create a new one
-      return res.status(404).json({ error: 'User not found for this EID, Creatting new user' });
+      await user.save();  // Save the user to the database
     }
 
     const profilePic = user.profilePic;
@@ -46,9 +44,6 @@ export const startConversation = async (req, res) => {
 
     await newConversation.save();
 
-    // Log the saved conversation for debugging
-    console.log('New conversation saved:', newConversation);
-    
     const newNotification = new Notification({
       userId: user._id,
       userProfile: profilePic,
@@ -87,6 +82,7 @@ export const startConversation = async (req, res) => {
     res.status(500).json({ message: 'Failed to start conversation', error: err.message });
   }
 };
+
 
 export const getMe = async (req, res) => {
   try {

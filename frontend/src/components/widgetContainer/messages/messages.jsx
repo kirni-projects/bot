@@ -1,3 +1,4 @@
+//src/components/widgetContainer/messages/messages.jsx
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useAuthContext } from './AuthContext.jsx';
