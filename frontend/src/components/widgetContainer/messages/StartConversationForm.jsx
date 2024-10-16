@@ -36,7 +36,7 @@ const StartConversationForm = () => {
     }
 
     try {
-      const response = await axios.post('/api/start-conversation', {
+      const response = await axios.post('https://bot-rd1k.onrender.com/api/start-conversation', {
         ...formData,
         eid // Send EID in the request body
       });

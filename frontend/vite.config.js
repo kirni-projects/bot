@@ -22,10 +22,9 @@
         port: 3000,
         proxy: {
           '/api': {
-            target: env.VITE_PRODUCTION_URL || 'http://localhost:5000',
+            target: process.env.VITE_PRODUCTION_URL || 'http://localhost:5000',
             changeOrigin: true,
-            secure: false, // Use false only for development; make sure it's secure in production
-
+            secure: false
           },
         },
       },

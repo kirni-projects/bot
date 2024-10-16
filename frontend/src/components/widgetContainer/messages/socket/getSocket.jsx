@@ -4,9 +4,10 @@ let socket;
 
 const getSocket = () => {
   if (!socket) {
-    const serverUrl = process.env.NODE_ENV === 'production'
-      ? 'https://bot-rd1k.onrender.com'  // Use your production URL
-      : 'http://localhost:5000';  // Use localhost in development
+    // const serverUrl = process.env.NODE_ENV === 'production'
+    //   ? 'https://bot-rd1k.onrender.com'  // Use your production URL
+    //   : 'http://localhost:5000';  // Use localhost in development
+    const serverUrl = 'https://bot-rd1k.onrender.com'; // Ensure this is your server URL
 
     socket = io(serverUrl, {
       transports: ['websocket', 'polling'],  // Fallback to polling if necessary
