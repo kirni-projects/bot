@@ -21,7 +21,7 @@ const Message = () => {
 
     try {
       setLoading(true);
-      const response = await fetch(`/api/messages/${user._id}`, {
+      const response = await fetch(`https://bot-rd1k.onrender.com/api/messages/${user._id}`, {
         headers: {
           Authorization: `Bearer ${user.token}`,
           "Content-Type": "application/json",
