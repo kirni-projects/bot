@@ -24,12 +24,9 @@ export const startConversation = async (req, res) => {
     console.log('Received data:', { username, message, eid });
 
     const user = await botUser.findOne({ eid });
-    if (!user) {
-      return res.status(404).json({ error: 'User not found for this EID' });
-    }
+    
 
     if (!user) {
-      // If user doesn't exist, create a new one
       user = new botUser({
         username,
         message,
@@ -37,6 +34,8 @@ export const startConversation = async (req, res) => {
         profilePic: `https://avatar.iran.liara.run/username?username=${username}`
       });
       await user.save();  // Save the user
+      // If user doesn't exist, create a new one
+      return res.status(404).json({ error: 'User not found for this EID, Creatting new user' });
     }
 
     const profilePic = user.profilePic;
