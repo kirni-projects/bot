@@ -33,8 +33,8 @@ const Messages = ({ initialMessages }) => {
 
   return (
     <div className="messages-container p-3">
-      {conversation.messages && conversation.messages.length > 0 ? (
-        conversation.messages.map((msg, index) => (
+      {messages && messages.length > 0 ? (
+        messages.map((msg, index) => (
           <div 
             key={index} 
             className={`flex chat gap-0 ${msg.sender === user._id ? 'justify-end chat-end' : 'justify-start chat-start'} mb-3`}
