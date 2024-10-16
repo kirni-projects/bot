@@ -13,7 +13,7 @@ const MessageInput = ({ userId, onNewMessage }) => {
     if (message.trim()) {
       try {
         console.log('Sending message:', message);
-        await axios.post(`https://bot-rd1k.onrender.com/api/messages/${userId}`, { text: message });
+        await axios.post(`/api/messages/${userId}`, { text: message });
         // No need to update state here, it will be updated via socket event
         setMessage('');
       } catch (err) {
