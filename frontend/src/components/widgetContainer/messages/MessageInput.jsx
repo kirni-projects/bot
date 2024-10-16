@@ -14,7 +14,7 @@ const MessageInput = ({ userId, onNewMessage }) => {
     if (message.trim()) {
       try {
         console.log('Sending message:', message);
-        await axios.post(`${apiUrl}/api/messages/${userId}`, { text: message });
+        await axios.post(`${apiUrl}/messages/${userId}`, { text: message });
         // No need to update state here, it will be updated via socket event
         setMessage('');
       } catch (err) {
