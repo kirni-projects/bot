@@ -19,12 +19,11 @@
         },
       },
       server: {
-        port: 3000,
         proxy: {
           '/api': {
-            target: process.env.VITE_PRODUCTION_URL || 'http://localhost:5000',
+            target: 'https://bot-rd1k.onrender.com', // Correct server URL
             changeOrigin: true,
-            secure: false
+            secure: false,
           },
         },
       },
