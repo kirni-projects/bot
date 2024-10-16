@@ -21,7 +21,7 @@
       server: {
         proxy: {
           '/api': {
-            target: 'https://bot-rd1k.onrender.com', // Correct server URL
+            target: env.VITE_PRODUCTION_URL, // Correct server URL
             changeOrigin: true,
             secure: true,
             rewrite: (path) => path.replace(/^\/api/, ''), // Optional: rewrite if needed
