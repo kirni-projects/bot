@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { SlArrowLeft } from "react-icons/sl";
 import axios from "axios";
 import { useAuthContext } from './AuthContext.jsx';
+import apiUrl from '../../../apiConfig.jsx'
 
 const StartConversationForm = () => {
   const [formData, setFormData] = useState({ username: "", message: "" });
@@ -36,7 +37,7 @@ const StartConversationForm = () => {
     }
 
     try {
-      const response = await axios.post('https://bot-rd1k.onrender.com/api/start-conversation', {
+      const response = await axios.post(`${apiUrl}/api/start-conversation`, {
         ...formData,
         eid // Send EID in the request body
       });
