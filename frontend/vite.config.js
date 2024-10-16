@@ -23,7 +23,9 @@
           '/api': {
             target: 'https://bot-rd1k.onrender.com', // Correct server URL
             changeOrigin: true,
-            secure: false,
+            secure: true,
+            rewrite: (path) => path.replace(/^\/api/, ''), // Optional: rewrite if needed
+
           },
         },
       },
