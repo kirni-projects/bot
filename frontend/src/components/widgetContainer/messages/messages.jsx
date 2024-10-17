@@ -1,6 +1,7 @@
 // src/components/widgetContainer/messages/Messages.jsx
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
+import axios from "axios";
 import { useAuthContext } from './AuthContext.jsx';
 import getSocket from '../messages/socket/getSocket.jsx';  
 import apiUrl from '../../../apiConfig'; // Import the backend URL
