@@ -37,16 +37,28 @@ const Messages = ({ initialMessages }) => {
     if (user && user._id) {
       fetchMessages();
       const socket = getSocket();
+      
+      const handleMessage = (newMessage) => {
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
+      };
+    
+      // Listen for 'message' events from the server
+      socket.on('message', handleMessage);
+    
+      // Clean up the event listener on component unmount
+      return () => {
+        socket.off('message', handleMessage);
+      };
 
       // Listen for 'message' events from the server
-      socket.on('message', (newMessage) => {
-        setMessages((prevMessages) => [...prevMessages, newMessage]);  // Append the new message
-      });
+      // socket.on('message', (newMessage) => {
+      //   setMessages((prevMessages) => [...prevMessages, newMessage]);  // Append the new message
+      // });
 
       // Cleanup on unmount
-      return () => {
-        socket.off('message');  // Stop listening for messages when the component unmounts
-      };
+      // return () => {
+      //   socket.off('message');  // Stop listening for messages when the component unmounts
+      // };
     }
   }, [user]);
 

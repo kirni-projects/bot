@@ -31,7 +31,7 @@ const MessageInput = ({ userId, onNewMessage }) => {
           setMessage('');
 
           // Pass the new message to the parent component
-          onNewMessage(newMessage);
+          // onNewMessage(newMessage);
         } else {
           console.error('Failed to send message:', response);
         }
