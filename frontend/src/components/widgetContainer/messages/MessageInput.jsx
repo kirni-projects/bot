@@ -1,10 +1,10 @@
-//src/components/widgetContainer/messages/MessageInput.jsx
+// src/components/widgetContainer/messages/MessageInput.jsx
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import { BsSend } from 'react-icons/bs';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import getSocket from './socket/getSocket';
-import apiUrl from '../../../apiConfig.jsx'
+import apiUrl from '../../../apiConfig'; // Import backend URL
 
 const MessageInput = ({ userId, onNewMessage }) => {
   const [message, setMessage] = useState('');
@@ -13,8 +13,11 @@ const MessageInput = ({ userId, onNewMessage }) => {
   const sendMessage = async () => {
     if (message.trim()) {
       try {
-        // Optionally, send the message to the server using HTTP if needed
-        await axios.post(`${apiUrl}/messages/${userId}`, { text: message });
+        await axios.post(`${apiUrl}/api/messages/${userId}`, { text: message }, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,  // Ensure you have token
+          },
+        });
 
         const newMessage = {
           sender: userId,
@@ -25,9 +28,11 @@ const MessageInput = ({ userId, onNewMessage }) => {
         // Emit the message to the server via WebSocket
         socket.emit('message', newMessage);
 
-        // Clear the input after sending the message
+        // Update UI immediately before receiving from socket
+        onNewMessage(newMessage);
+
+        // Clear input field after sending the message
         setMessage('');
-        onNewMessage(newMessage);  // Update local state in parent component if necessary
       } catch (err) {
         console.error('Error sending message:', err);
       }

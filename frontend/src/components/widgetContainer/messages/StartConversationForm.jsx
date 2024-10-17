@@ -37,7 +37,7 @@ const StartConversationForm = () => {
     }
 
     try {
-      const response = await axios.post(`${apiUrl}/start-conversation`, {
+      const response = await axios.post(`${apiUrl}/api/start-conversation`, {
         ...formData,
         eid // Send EID in the request body
       });
