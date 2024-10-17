@@ -22,7 +22,7 @@ const Message = () => {
 
     try {
       setLoading(true);
-      const response = await fetch(`${apiUrl}/messages/${user._id}`, {
+      const response = await fetch(`${apiUrl}/api/messages/${user._id}`, {
         headers: {
           Authorization: `Bearer ${user.token}`,
           "Content-Type": "application/json",

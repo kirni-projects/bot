@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
       }
 
       try {
-        const response = await axios.get(`${apiUrl}/chat/me`, {
+        const response = await axios.get(`${apiUrl}/api/chat/me`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
