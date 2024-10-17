@@ -1,10 +1,9 @@
 // src/components/widgetContainer/messages/MessageInput.jsx
 import React, { useState } from 'react';
 import { BsSend } from 'react-icons/bs';
-import PropTypes from 'prop-types';
 import axios from 'axios';
-import getSocket from './socket/getSocket';
-import apiUrl from '../../../apiConfig'; // Import backend URL
+import getSocket from './socket/getSocket'; // Assuming this initializes socket connection
+import apiUrl from '../../../apiConfig.jsx'
 
 const MessageInput = ({ userId, onNewMessage }) => {
   const [message, setMessage] = useState('');
@@ -13,26 +12,29 @@ const MessageInput = ({ userId, onNewMessage }) => {
   const sendMessage = async () => {
     if (message.trim()) {
       try {
-        await axios.post(`${apiUrl}/api/messages/${userId}`, { text: message }, {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,  // Ensure you have token
-          },
-        });
+        // Send message to the backend
+        const response = await axios.post(`${apiUrl}/api/messages/${userId}`, { text: message });
+        
+        // Check if the response was successful
+        if (response.status === 201 || response.status === 200) {
+          // Prepare the message object
+          const newMessage = {
+            sender: userId,
+            text: message,
+            createdAt: new Date().toISOString(),
+          };
 
-        const newMessage = {
-          sender: userId,
-          text: message,
-          createdAt: new Date().toISOString(),
-        };
+          // Emit message over socket (optional if using socket)
+          socket.emit('message', newMessage);
 
-        // Emit the message to the server via WebSocket
-        socket.emit('message', newMessage);
+          // Clear the message input field
+          setMessage('');
 
-        // Update UI immediately before receiving from socket
-        onNewMessage(newMessage);
-
-        // Clear input field after sending the message
-        setMessage('');
+          // Pass the new message to the parent component
+          onNewMessage(newMessage);
+        } else {
+          console.error('Failed to send message:', response);
+        }
       } catch (err) {
         console.error('Error sending message:', err);
       }
@@ -41,7 +43,7 @@ const MessageInput = ({ userId, onNewMessage }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    sendMessage();
+    sendMessage(); // Call send message when form is submitted
   };
 
   return (
@@ -61,12 +63,8 @@ const MessageInput = ({ userId, onNewMessage }) => {
   );
 };
 
-MessageInput.propTypes = {
-  userId: PropTypes.string.isRequired,
-  onNewMessage: PropTypes.func.isRequired,
-};
-
 export default MessageInput;
+
 
 
 
