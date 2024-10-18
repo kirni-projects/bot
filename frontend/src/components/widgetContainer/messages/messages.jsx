@@ -1,25 +1,26 @@
 // src/components/widgetContainer/messages/Messages.jsx
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import axios from "axios";
-import { useAuthContext } from './AuthContext.jsx';
-import getSocket from '../messages/socket/getSocket.jsx';  
+import axios from 'axios';
+import { useAuthContext } from './AuthContext.jsx'; // Assuming AuthContext is implemented
+import getSocket from '../messages/socket/getSocket.jsx'; // Assuming this initializes the WebSocket
 import apiUrl from '../../../apiConfig'; // Import the backend URL
 
 const Messages = ({ initialMessages }) => {
-  const { user } = useAuthContext();
-  const [messages, setMessages] = useState(initialMessages || []);  // Use state for messages
-  const messagesEndRef = useRef(null);
+  const { user } = useAuthContext(); // Access user data from context
+  const [messages, setMessages] = useState(initialMessages || []); // Use state for messages
+  const messagesEndRef = useRef(null); // Ref for scrolling to bottom
 
+  // Function to scroll to the latest message
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   useEffect(() => {
-    scrollToBottom();  // Scroll when the messages change
+    scrollToBottom(); // Scroll when the messages change
   }, [messages]);
 
-  // Fetch messages from the server using apiUrl
+  // Function to fetch messages from the server
   const fetchMessages = async () => {
     try {
       const response = await axios.get(`${apiUrl}/api/messages/${user._id}`, {
@@ -35,30 +36,28 @@ const Messages = ({ initialMessages }) => {
 
   useEffect(() => {
     if (user && user._id) {
-      fetchMessages();
-      const socket = getSocket();
-      
+      fetchMessages(); // Fetch messages when the component mounts
+
+      const socket = getSocket(); // Initialize WebSocket connection
+
+      // Handle incoming messages from WebSocket
       const handleMessage = (newMessage) => {
-        setMessages((prevMessages) => [...prevMessages, newMessage]);
+        setMessages((prevMessages) => {
+          // Prevent duplication by checking if the message is already in the list
+          if (!prevMessages.some((msg) => msg._id === newMessage._id)) {
+            return [...prevMessages, newMessage]; // Append the new message
+          }
+          return prevMessages; // Return unchanged list if duplicate
+        });
       };
-    
+
       // Listen for 'message' events from the server
       socket.on('message', handleMessage);
-    
-      // Clean up the event listener on component unmount
+
+      // Clean up the event listener when the component unmounts
       return () => {
-        socket.off('message', handleMessage);
+        socket.off('message', handleMessage); // Unsubscribe from WebSocket events
       };
-
-      // Listen for 'message' events from the server
-      // socket.on('message', (newMessage) => {
-      //   setMessages((prevMessages) => [...prevMessages, newMessage]);  // Append the new message
-      // });
-
-      // Cleanup on unmount
-      // return () => {
-      //   socket.off('message');  // Stop listening for messages when the component unmounts
-      // };
     }
   }, [user]);
 
@@ -112,7 +111,7 @@ const Messages = ({ initialMessages }) => {
       ) : (
         <div className="no-messages text-center text-gray-500 mt-3">No messages yet</div>
       )}
-      <div ref={messagesEndRef} />
+      <div ref={messagesEndRef} /> {/* Invisible div for scrolling */}
     </div>
   );
 };
