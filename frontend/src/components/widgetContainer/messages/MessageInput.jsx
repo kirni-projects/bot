@@ -3,11 +3,11 @@ import React, { useState } from 'react';
 import { BsSend } from 'react-icons/bs';
 import axios from 'axios';
 import getSocket from './socket/getSocket'; // Assuming this initializes socket connection
-import apiUrl from '../../../apiConfig.jsx'
+import apiUrl from '../../../apiConfig.jsx';
 
-const MessageInput = ({ userId, onNewMessage }) => {
+const MessageInput = ({ userId }) => {
   const [message, setMessage] = useState('');
-  const socket = getSocket();
+  const socket = getSocket(); // Assuming socket is properly initialized elsewhere
 
   const sendMessage = async () => {
     if (message.trim()) {
@@ -17,21 +17,18 @@ const MessageInput = ({ userId, onNewMessage }) => {
         
         // Check if the response was successful
         if (response.status === 201 || response.status === 200) {
-          // Prepare the message object
+          // Prepare the message object to emit via WebSocket
           const newMessage = {
             sender: userId,
             text: message,
             createdAt: new Date().toISOString(),
           };
 
-          // Emit message over socket (optional if using socket)
+          // Emit the message through WebSocket to notify the server and other clients
           socket.emit('message', newMessage);
 
-          // Clear the message input field
+          // Clear the input field after sending
           setMessage('');
-
-          // Pass the new message to the parent component
-          // onNewMessage(newMessage);
         } else {
           console.error('Failed to send message:', response);
         }
@@ -43,7 +40,7 @@ const MessageInput = ({ userId, onNewMessage }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    sendMessage(); // Call send message when form is submitted
+    sendMessage(); // Call the sendMessage function on form submit
   };
 
   return (
