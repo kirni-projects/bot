@@ -29,6 +29,9 @@ const MessageInput = ({ userId }) => {
 
           // Clear the input field after sending
           setMessage('');
+
+          // Pass the new message to the parent component
+          onNewMessage(newMessage);
         } else {
           console.error('Failed to send message:', response);
         }

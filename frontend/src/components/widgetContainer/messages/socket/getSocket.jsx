@@ -20,11 +20,6 @@ const getSocket = () => {
     socket.on('connect_error', (error) => {
       console.error('Socket connection error:', error);
     });
-
-    socket.on('disconnect', () => {
-      console.log('WebSocket disconnected. Attempting to reconnect...');
-      socket.connect();  // Reconnect the socket
-    });
   }
   return socket;
 };
