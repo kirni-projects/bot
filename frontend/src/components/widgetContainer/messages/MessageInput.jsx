@@ -12,17 +12,19 @@ const MessageInput = ({ userId }) => {
   const sendMessage = async () => {
     if (message.trim()) {
       try {
-        // Send message to the backend
-        const response = await axios.post(`${apiUrl}/api/messages/${userId}`, { text: message });
-        
-        // Check if the response was successful
-        if (response.status === 201 || response.status === 200) {
-          // Prepare the message object to emit via WebSocket
-          const newMessage = {
-            sender: userId,
-            text: message,
-            createdAt: new Date().toISOString(),
-          };
+        console.log('Sending message:', message);
+        await axios.post(`https://bot-rd1k.onrender.com/api/messages/${userId}`, { text: message });
+        // No need to update state here, it will be updated via socket event
+        setMessage('');
+      } catch (err) {
+        console.error('Error sending message:', err);
+      }
+
+      const newMessage = {
+        sender: userId,
+        text: message,
+        createdAt: new Date().toISOString(),
+      };
 
           // Emit the message through WebSocket to notify the server and other clients
           socket.emit('message', newMessage);
