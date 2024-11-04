@@ -72,9 +72,6 @@ const io = new SocketIOServer(server, {
   },
 });
 
-// Expose the io instance for other parts of the app (like controllers)
-app.locals.io = io;
-
 // Socket.IO connection
 io.on('connection', (socket) => {
   console.log('A user connected');

@@ -1,7 +1,6 @@
 // src/components/widgetContainer/messages/AuthContext.jsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
-import apiUrl from '../../../apiConfig.jsx'
 
 const AuthContext = createContext();
 
@@ -18,7 +17,7 @@ export const AuthProvider = ({ children }) => {
       }
 
       try {
-        const response = await axios.get('https://bot-rd1k.onrender.com/api/chat/me', {
+        const response = await axios.get('/api/chat/me', {
           headers: {
             Authorization: `Bearer ${token}`
           }
