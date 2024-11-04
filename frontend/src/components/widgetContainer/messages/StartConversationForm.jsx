@@ -12,6 +12,15 @@ const StartConversationForm = () => {
   const { setUser } = useAuthContext();
   const navigate = useNavigate();
 
+  // Function to extract the 'eid' from the script tag's attribute
+  const getEID = () => {
+    const scriptTag = document.querySelector('script[src*="widget.js"]');
+    if (scriptTag) {
+      return scriptTag.getAttribute('eid'); // Extract the 'eid' attribute
+    }
+    return null;
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -19,15 +28,27 @@ const StartConversationForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null); // Clear any previous error
+
+    const eid = getEID(); // Get the EID from the script tag
+    if (!eid) {
+      setError('Unable to identify chat widget (EID missing)');
+      return;
+    }
+
     try {
-      const response = await axios.post('/api/start-conversation', formData);
+      const response = await axios.post('/api/start-conversation', {
+        ...formData,
+        eid // Send EID in the request body
+      });
+
       console.log('Response:', response.data);
       
       if (response.status === 201) { // Check for successful response
         const { usertoken, ...userData } = response.data;
         console.log('Form submitted successfully');
         localStorage.setItem('token', usertoken); // Store the token
-        setUser({ ...userData, token: usertoken }); // Set user context with token
+        setUser({ ...userData, token: usertoken, eid }); // Set user context with token and eid
         navigate('/message'); // Navigate to the /message page
       } else {
         console.log('Form submission failed - status is not 201');

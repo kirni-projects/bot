@@ -24,6 +24,8 @@ export default defineConfig(({ mode }) => {
         '/api': {
           target: env.VITE_PRODUCTION_URL || 'http://localhost:5000',
           changeOrigin: true,
+          secure: false, // Use false only for development; make sure it's secure in production
+      
         },
       },
     },

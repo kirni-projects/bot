@@ -22,15 +22,24 @@ export const startConversation = async (req, res) => {
   console.log('Received Data:', { username, message, eid });
 
   try {
-    const user = await botUser.findOne({ eid });
+    let user = await botUser.findOne({ username, eid });
     if (!user) {
       console.error('User not found for EID:', eid);
+
+      // If user doesn't exist, create a new one
+      user = new botUser({
+        username,
+        message,
+        eid,  // Save the widget eid
+        profilePic: `https://avatar.iran.liara.run/username?username=${username}`
+      });
+      await user.save();  // Save the user
       return res.status(404).json({ error: 'User not found for this EID' });
     }
 
     console.log('User found:', user);
 
-    const profilePic = `https://avatar.iran.liara.run/username?username=${username}`;
+    const profilePic = user.profilePic;
     const newConversation = new Conversation({
       participants: [user._id],
       messages: [{ sender: user._id, text: message, createdAt: new Date() }]
