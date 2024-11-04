@@ -1,3 +1,4 @@
+// src/components/widgetContainer/index.jsx
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import widgetAvatar from "../../assets/sms.png";  
@@ -31,3 +32,4 @@ const WidgetContainer = () => {
 
 
 export default WidgetContainer;
+

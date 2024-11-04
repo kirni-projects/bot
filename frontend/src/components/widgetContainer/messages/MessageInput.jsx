@@ -56,17 +56,7 @@ const MessageInput = ({ userId, onNewMessage }) => {
     <button type="submit" className="ml-2 p-2 bg-blue-500 text-white rounded-md">
       <BsSend />
     </button>
-  </form>
-    // <form className="message-input" onSubmit={handleSubmit}>
-    //   <input
-    //     name="text"
-    //     type="text"
-    //     value={message}
-    //     onChange={(e) => setMessage(e.target.value)}
-    //     placeholder="Type a message"
-    //   />
-    //   <button type="submit"><BsSend /></button>
-    // </form>
+   </form>
   );
 };
 

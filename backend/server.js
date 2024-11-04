@@ -1,3 +1,4 @@
+//server.js
 import path from 'path';
 import express from 'express';
 import dotenv from 'dotenv';
@@ -88,8 +89,7 @@ io.on('connection', (socket) => {
 });
 
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));  // Change this to listen to the `server` instance
-
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));  // Change this to listen to the server instance
 
 
 

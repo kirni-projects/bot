@@ -1,3 +1,4 @@
+//src/components/widgetContainer/messages/messages.jsx
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useAuthContext } from './AuthContext.jsx';
@@ -56,7 +57,7 @@ const Messages = ({ initialMessages }) => {
                   {msg.sender === user._id ? 'You' : (msg.sender === 'bot' ? 'Bot' : 'Other')}
                 </span>
               </div>
-              <div className={`chat-bubble ${msg.sender === user._id ? 'bg-blue-200 float-right' : 'bg-gray-400'} p-2 text-black rounded-lg`}>
+              <div className={`chat-bubble ${msg.sender === user._id ? 'bg-blue-200 float-right' : 'bg-gray-400'} p-2 text-black rounded-lg `}>
                 {msg.text}
               </div>
             </div>
@@ -89,7 +90,6 @@ Messages.propTypes = {
 };
 
 export default Messages;
-
 
 
 

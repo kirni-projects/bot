@@ -17,33 +17,31 @@ const generateBotResponse = (userMessage) => {
 };
 
 export const startConversation = async (req, res) => {
-  const { username, message, eid } = req.body; // Include eid from the request
-
-  console.log('Received Data:', { username, message, eid });
+  const { username, message, eid } = req.body;
 
   try {
-    let user = await botUser.findOne({ username, eid });
-    if (!user) {
-      console.error('User not found for EID:', eid);
+    // Log the received data for debugging
+    console.log('Received data:', { username, message, eid });
 
-      // If user doesn't exist, create a new one
+    let user = await botUser.findOne({ eid }); // Look up user by EID
+    
+    // If user does not exist, create a new user
+    if (!user) {
       user = new botUser({
         username,
         message,
-        eid,  // Save the widget eid
+        eid,  // Save the widget EID
         profilePic: `https://avatar.iran.liara.run/username?username=${username}`
       });
-      await user.save();  // Save the user
-      return res.status(404).json({ error: 'User not found for this EID' });
+      await user.save();  // Save the user to the database
     }
-
-    console.log('User found:', user);
 
     const profilePic = user.profilePic;
     const newConversation = new Conversation({
       participants: [user._id],
       messages: [{ sender: user._id, text: message, createdAt: new Date() }]
     });
+
     await newConversation.save();
 
     const newNotification = new Notification({
@@ -53,6 +51,7 @@ export const startConversation = async (req, res) => {
       description: `${username} has started a conversation.`,
       type: 'chat'
     });
+
     await newNotification.save();
 
     const token = generateToken(user._id);
@@ -75,16 +74,14 @@ export const startConversation = async (req, res) => {
       const botMessage = { sender: 'bot', text: botResponse, createdAt: new Date() };
       newConversation.messages.push(botMessage);
       await newConversation.save();
-      
+
       io.to(user._id.toString()).emit('message', botMessage);
     }, 2000);
 
   } catch (err) {
-    console.error('Error starting conversation:', err);
     res.status(500).json({ message: 'Failed to start conversation', error: err.message });
   }
 };
-
 
 export const getMe = async (req, res) => {
   try {
