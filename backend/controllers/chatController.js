@@ -19,11 +19,16 @@ const generateBotResponse = (userMessage) => {
 export const startConversation = async (req, res) => {
   const { username, message, eid } = req.body; // Include eid from the request
 
+  console.log('Received Data:', { username, message, eid });
+
   try {
     const user = await botUser.findOne({ eid });
     if (!user) {
+      console.error('User not found for EID:', eid);
       return res.status(404).json({ error: 'User not found for this EID' });
     }
+
+    console.log('User found:', user);
 
     const profilePic = `https://avatar.iran.liara.run/username?username=${username}`;
     const newConversation = new Conversation({
@@ -63,12 +68,14 @@ export const startConversation = async (req, res) => {
       await newConversation.save();
       
       io.to(user._id.toString()).emit('message', botMessage);
-    }, 2000); 
+    }, 2000);
 
   } catch (err) {
+    console.error('Error starting conversation:', err);
     res.status(500).json({ message: 'Failed to start conversation', error: err.message });
   }
 };
+
 
 export const getMe = async (req, res) => {
   try {
