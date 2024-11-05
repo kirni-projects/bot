@@ -1,4 +1,4 @@
-//middleware/protectRoute.js
+// middleware/protectRoute.js
 import jwt from 'jsonwebtoken';
 import User from '../models/user.model.js';
 import Agent from '../models/agent.model.js';
@@ -6,16 +6,18 @@ import { generateToken, setCookie } from '../utils/generateToken.js';
 
 export const protectRoute = async (req, res, next) => {
   try {
-    let token = req.cookies.jwt || (req.headers.authorization && req.headers.authorization.split(' ')[1]);
+    let token = req.cookies?.jwt || (req.headers.authorization && req.headers.authorization.split(' ')[1]);
 
     if (!token) {
-      return res.status(401).json({ error: "Unauthorized - No Token Provided" });
+      console.log('No token provided in cookies or headers');
+      return res.status(401).json({ error: 'Unauthorized - No Token Provided' });
     }
 
     let decoded;
     try {
       decoded = jwt.verify(token, process.env.JWT_SECRET);
     } catch (error) {
+      console.log('Token verification error:', error.message);
       if (error.name === 'TokenExpiredError') {
         decoded = jwt.decode(token);
         const currentTime = Math.floor(Date.now() / 1000);
@@ -41,12 +43,12 @@ export const protectRoute = async (req, res, next) => {
           }
         }
       } else {
-        return res.status(401).json({ error: "Unauthorized - Invalid Token!" });
+        return res.status(401).json({ error: 'Unauthorized - Invalid Token!' });
       }
     }
 
     if (!decoded) {
-      return res.status(401).json({ error: "Unauthorized - Invalid Token!" });
+      return res.status(401).json({ error: 'Unauthorized - Invalid Token!' });
     }
 
     if (decoded.userId) {
@@ -62,13 +64,12 @@ export const protectRoute = async (req, res, next) => {
       }
       req.agent = agent;
     } else {
-      return res.status(401).json({ error: "Unauthorized - Invalid Token!" });
+      return res.status(401).json({ error: 'Unauthorized - Invalid Token!' });
     }
 
     return next();
-
   } catch (error) {
-    console.error('Error in protectRoute middleware:', error);
+    console.error('Error in protectRoute middleware:', error.message);
     return res.status(401).json({ error: 'Unauthorized' });
   }
 };

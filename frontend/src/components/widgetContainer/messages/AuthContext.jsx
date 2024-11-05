@@ -1,75 +1,48 @@
-// middleware/protectRoute.js
-import jwt from 'jsonwebtoken';
-import botUser from '../../../../../backend/models/user.model.js';
-import Agent from '../../../../../backend/models/agent.model.js';
-import { generateToken, setCookie } from '../../../../../backend/utils/generateToken.js';
+// src/components/widgetContainer/messages/AuthContext.jsx
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import axios from 'axios';
+import apiUrl from "../../../apiConfig.jsx";
 
-export const protectRoute = async (req, res, next) => {
-  try {
-    let token = req.cookies?.jwt || (req.headers.authorization && req.headers.authorization.split(' ')[1]);
+const AuthContext = createContext();
 
-    if (!token) {
-      console.log('No token provided in cookies or headers');
-      return res.status(401).json({ error: 'Unauthorized - No Token Provided' });
-    }
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    let decoded;
-    try {
-      decoded = jwt.verify(token, process.env.JWT_SECRET);
-    } catch (error) {
-      console.log('Token verification error:', error.message);
-      if (error.name === 'TokenExpiredError') {
-        decoded = jwt.decode(token);
-        const currentTime = Math.floor(Date.now() / 1000);
-        const tokenExpiry = decoded.exp;
-
-        if (tokenExpiry - currentTime < 60 * 60 * 24) { // Refresh token if it's expiring soon
-          let userOrAgent;
-          if (decoded.userId) {
-            userOrAgent = await botUser.findById(decoded.userId);
-            if (!userOrAgent) {
-              return res.status(404).json({ error: 'User Not Found' });
-            }
-          } else if (decoded.agentId) {
-            userOrAgent = await Agent.findById(decoded.agentId);
-            if (!userOrAgent) {
-              return res.status(404).json({ error: 'Agent Not Found' });
-            }
-          }
-
-          if (userOrAgent) {
-            const newToken = generateToken(decoded.userId || decoded.agentId);
-            setCookie(res, newToken);
-          }
+  useEffect(() => {
+    const checkLoggedInUser = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+    
+      try {
+        const response = await axios.get(`${apiUrl}/api/chat/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`, // Ensure token is sent correctly
+          },
+        });
+        if (response.data.success) {
+          setUser({ ...response.data.user, token });
+        } else {
+          setUser(null);
         }
-      } else {
-        return res.status(401).json({ error: 'Unauthorized - Invalid Token!' });
+      } catch (err) {
+        console.error('Error checking logged in user:', err);
+        setUser(null);
+      } finally {
+        setLoading(false);
       }
-    }
+    };
+    checkLoggedInUser();
+  }, []);
 
-    if (!decoded) {
-      return res.status(401).json({ error: 'Unauthorized - Invalid Token!' });
-    }
-
-    if (decoded.userId) {
-      const user = await botUser.findById(decoded.userId);
-      if (!user) {
-        return res.status(404).json({ error: 'User Not Found' });
-      }
-      req.user = user;
-    } else if (decoded.agentId) {
-      const agent = await Agent.findById(decoded.agentId);
-      if (!agent) {
-        return res.status(404).json({ error: 'Agent Not Found' });
-      }
-      req.agent = agent;
-    } else {
-      return res.status(401).json({ error: 'Unauthorized - Invalid Token!' });
-    }
-
-    return next();
-  } catch (error) {
-    console.error('Error in protectRoute middleware:', error.message);
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
+  return (
+    <AuthContext.Provider value={{ user, setUser, loading }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
+ 
+export const useAuthContext = () => useContext(AuthContext);
