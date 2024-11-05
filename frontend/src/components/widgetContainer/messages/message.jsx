@@ -1,4 +1,4 @@
-// src/components/widgetContainer/messages/message.jsx
+// src/components/widgetContainer/messages/Message.jsx
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import getSocket from "./socket/getSocket";
@@ -29,21 +29,13 @@ const Message = () => {
           "Content-Type": "application/json",
         },
       });
-      if (response.ok) {
-        const conversationData = await response.json();
-        setConversation(
-          Array.isArray(conversationData.messages)
-            ? conversationData.messages
-            : []
-        );
-        setLoading(false);
-      } else {
-        console.error("Failed to fetch conversation data");
-        setError(new Error("Failed to fetch conversation data"));
-      }
+      
+      setConversation(response.data.messages || []);
+      setLoading(false);
     } catch (error) {
-      console.error("Server error:", error);
+      console.error("Error fetching conversation data:", error);
       setError(error);
+      setLoading(false);
     }
   };
 
@@ -64,9 +56,8 @@ const Message = () => {
     }
   }, [user]);
   
-
   const handleNewMessage = (newMessage) => {
-    socket.emit("message", newMessage); // Emit message to the server
+    socket.emit("message", { text: newMessage, sender: user._id }); // Emit message to the server
   };
 
   if (loading) return <div>Loading...</div>;
@@ -77,16 +68,16 @@ const Message = () => {
       <div className="card-header bg-orange-400 flex justify-between align-middle text-center items-center p-3">
         <div className="avatar items-center ">
           <div className="w-10 mr-3 border-solid border-opacity-100 border-2 rounded-full">
-            <img src={user.profilePic} />
+            <img src={user.profilePic} alt="User profile" />
           </div>
           <span className="text-white text-lg font-semibold">{user.username}</span>
         </div>
       </div>
       <div className="card-body p-1">
-        <Messages messages={conversation} />
+        <Messages initialMessages={conversation} />
       </div>
       <div className="card-footer">
-        <MessageInput userId={user._id} onNewMessage={handleNewMessage} />
+        <MessageInput onNewMessage={handleNewMessage} />
       </div>
     </>
   );
