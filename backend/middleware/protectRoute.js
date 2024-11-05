@@ -1,6 +1,6 @@
 // middleware/protectRoute.js
 import jwt from 'jsonwebtoken';
-import User from '../models/user.model.js';
+import botUser from '../models/user.model.js';
 import Agent from '../models/agent.model.js';
 import { generateToken, setCookie } from '../utils/generateToken.js';
 
@@ -26,7 +26,7 @@ export const protectRoute = async (req, res, next) => {
         if (tokenExpiry - currentTime < 60 * 60 * 24) { // Refresh token if it's expiring soon
           let userOrAgent;
           if (decoded.userId) {
-            userOrAgent = await User.findById(decoded.userId);
+            userOrAgent = await botUser.findById(decoded.userId);
             if (!userOrAgent) {
               return res.status(404).json({ error: 'User Not Found' });
             }
@@ -52,7 +52,7 @@ export const protectRoute = async (req, res, next) => {
     }
 
     if (decoded.userId) {
-      const user = await User.findById(decoded.userId);
+      const user = await botUser.findById(decoded.userId);
       if (!user) {
         return res.status(404).json({ error: 'User Not Found' });
       }
