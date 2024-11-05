@@ -78,9 +78,9 @@ app.locals.io = io;
 io.on('connection', (socket) => {
   console.log('A user connected');
 
-  socket.on('message', (data) => {
-    console.log('Message received:', data);
-    io.emit('message', data);  // Emit the message to all connected clients
+  socket.on('message', (message) => {
+    console.log('Message received:', message);
+    socket.broadcast.emit('message', message);  // Emit the message to all connected clients
   });
 
   socket.on('disconnect', () => {

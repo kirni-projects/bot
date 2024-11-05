@@ -13,31 +13,31 @@ const MessageInput = ({ userId, onNewMessage }) => {
   const sendMessage = async () => {
     if (message.trim()) {
       try {
-        await axios.post(`${apiUrl}/api/messages/${userId}`, { text: message }, {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,  // Ensure you have token
-          },
-        });
-
-        const newMessage = {
-          sender: userId,
-          text: message,
-          createdAt: new Date().toISOString(),
-        };
-
-        // Emit the message to the server via WebSocket
-        socket.emit('message', newMessage);
-
-        // Update UI immediately before receiving from socket
-        onNewMessage(newMessage);
-
-        // Clear input field after sending the message
-        setMessage('');
+        const response = await axios.post(`${apiUrl}/api/messages/${userId}`, { text: message });
+        
+        if (response.status === 201 || response.status === 200) {
+          const newMessage = {
+            sender: userId,
+            text: message,
+            createdAt: new Date().toISOString(),
+          };
+  
+          // Emit the message to the server
+          socket.emit('message', newMessage);
+  
+          // No need to call `onNewMessage` here because we're listening for the response
+          // The message will be handled when we get the message back from the server/socket
+  
+          setMessage('');  // Clear the input after sending
+        } else {
+          console.error('Failed to send message:', response);
+        }
       } catch (err) {
         console.error('Error sending message:', err);
       }
     }
   };
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();

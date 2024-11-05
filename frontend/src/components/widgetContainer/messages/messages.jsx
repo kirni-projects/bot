@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { useAuthContext } from './AuthContext.jsx';
 import getSocket from '../messages/socket/getSocket.jsx';  
 import apiUrl from '../../../apiConfig'; // Import the backend URL
+import axios from 'axios';
 
 const Messages = ({ initialMessages }) => {
   const { user } = useAuthContext();
@@ -21,7 +22,7 @@ const Messages = ({ initialMessages }) => {
   // Fetch messages from the server using apiUrl
   const fetchMessages = async () => {
     try {
-      const response = await fetch(`${apiUrl}/api/messages/${user._id}`, {
+      const response = await axios.get(`${apiUrl}/api/messages/${user._id}`, {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
@@ -33,21 +34,21 @@ const Messages = ({ initialMessages }) => {
   };
 
   useEffect(() => {
-    if (user && user._id) {
-      fetchMessages();
-      const socket = getSocket();
-
-      // Listen for 'message' events from the server
-      socket.on('message', (newMessage) => {
-        setMessages((prevMessages) => [...prevMessages, newMessage]);  // Append the new message
-      });
-
-      // Cleanup on unmount
-      return () => {
-        socket.off('message');  // Stop listening for messages when the component unmounts
-      };
-    }
-  }, [user]);
+    const socket = getSocket();
+    fetchMessages();
+    const handleMessage = (newMessage) => {
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+    };
+  
+    // Listen for 'message' events from the server
+    socket.on('message', handleMessage);
+  
+    // Clean up the event listener on component unmount
+    return () => {
+      socket.off('message', handleMessage);
+    };
+  }, []);  // Only run this once when the component mounts
+  
 
   return (
     <div className="messages-container p-3">
