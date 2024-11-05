@@ -24,7 +24,7 @@ app.use(express.json());
 
 // Apply CORS middleware
 app.use(cors({
-  origin: 'https://scriptdemo.imageum.in', // Allow requests from this origin
+  origin: 'https://scriptdemo.imageum.in', // Your frontend domain
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allow these HTTP methods
   credentials: true, // Allow credentials (cookies, authorization headers)
 }));
@@ -67,17 +67,17 @@ const server = http.createServer(app);
 // Initialize Socket.IO
 const io = new SocketIOServer(server, {
   cors: {
-    origin: 'https://scriptdemo.imageum.in', // Allow your domain
+    origin: 'https://scriptdemo.imageum.in', // Allow your frontend domain
     methods: ['GET', 'POST'],
     credentials: true,
   },
 });
+// Expose the io instance for other parts of the app (like controllers)
+app.locals.io = io;
 
-// Socket.IO connection
 io.on('connection', (socket) => {
   console.log('A user connected');
 
-  // Add your socket events here, for example:
   socket.on('message', (data) => {
     console.log('Message received:', data);
     io.emit('message', data);  // Emit the message to all connected clients

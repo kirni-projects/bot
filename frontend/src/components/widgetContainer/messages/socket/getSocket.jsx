@@ -5,7 +5,7 @@ let socket;
 
 const getSocket = () => {
   if (!socket) {
-    const serverUrl = 'https://bot-rd1k.onrender.com'; // Ensure this is your server URL
+    const serverUrl = 'https://bot-rd1k.onrender.com'; // Make sure this is correct
 
     socket = io(serverUrl, {
       transports: ['websocket', 'polling'],  // Fallback to polling if necessary
@@ -15,6 +15,7 @@ const getSocket = () => {
   }
   return socket;
 };
+
 
 export default getSocket;
 
