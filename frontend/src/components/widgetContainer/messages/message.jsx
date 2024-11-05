@@ -1,5 +1,6 @@
 // src/components/widgetContainer/messages/message.jsx
 import React, { useEffect, useState } from "react";
+import axios from 'axios';
 import getSocket from "./socket/getSocket";
 import { useAuthContext } from "./AuthContext.jsx";
 import Messages from "./messages.jsx";
@@ -22,7 +23,7 @@ const Message = () => {
 
     try {
       setLoading(true);
-      const response = await get(`${apiUrl}/api/messages/${user._id}`, {
+      const response = await axios.get(`${apiUrl}/api/messages/${user._id}`, {
         headers: {
           Authorization: `Bearer ${user.token}`,
           "Content-Type": "application/json",
