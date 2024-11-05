@@ -1,5 +1,6 @@
 // src/components/widgetContainer/messages/Messages.jsx
 import React, { useEffect, useRef, useState } from 'react';
+import axios from "axios";
 import PropTypes from 'prop-types';
 import { useAuthContext } from './AuthContext.jsx';
 import getSocket from '../messages/socket/getSocket.jsx';  
@@ -21,7 +22,7 @@ const Messages = ({ initialMessages }) => {
   // Fetch messages from the server using apiUrl
   const fetchMessages = async () => {
     try {
-      const response = await axios.fetch(`${apiUrl}/api/messages/${user._id}`, {
+      const response = await axios.get(`${apiUrl}/api/messages/${user._id}`, {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
