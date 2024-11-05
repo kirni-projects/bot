@@ -4,6 +4,7 @@ import getSocket from "./socket/getSocket";
 import { useAuthContext } from "./AuthContext.jsx";
 import Messages from "./messages.jsx";
 import MessageInput from "./MessageInput.jsx";
+import apiUrl from '../../../apiConfig';
 
 const socket = getSocket();
 
@@ -21,7 +22,7 @@ const Message = () => {
 
     try {
       setLoading(true);
-      const response = await fetch(`/api/messages/${user._id}`, {
+      const response = await fetch(`${apiUrl}/api/messages/${user._id}`, {
         headers: {
           Authorization: `Bearer ${user.token}`,
           "Content-Type": "application/json",

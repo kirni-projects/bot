@@ -22,7 +22,7 @@ export const startConversation = async (req, res) => {
   try {
     // Log the received data for debugging
     console.log('Received data:', { username, message, eid });
-    
+
     // Find the user by 'username' and 'eid' instead of just 'eid'
     let user = await botUser.findOne({ username, eid });
 
