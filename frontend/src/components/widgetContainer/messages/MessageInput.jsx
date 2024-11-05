@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { BsSend } from 'react-icons/bs';
 import axios from 'axios';
 import getSocket from './socket/getSocket'; // Assuming this initializes socket connection
+import apiUrl from '../../../apiConfig'; // Import the backend URL
 
 const MessageInput = ({ userId, onNewMessage }) => {
   const [message, setMessage] = useState('');
@@ -12,7 +13,7 @@ const MessageInput = ({ userId, onNewMessage }) => {
     if (message.trim()) {
       try {
         // Send message to the backend
-        const response = await axios.post(`/api/messages/${userId}`, { text: message });
+        const response = await axios.post(`${apiUrl}/api/messages/${userId}`, { text: message });
         
         // Check if the response was successful
         if (response.status === 201 || response.status === 200) {
