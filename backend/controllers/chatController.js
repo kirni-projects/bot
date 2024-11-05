@@ -22,18 +22,20 @@ export const startConversation = async (req, res) => {
   try {
     // Log the received data for debugging
     console.log('Received data:', { username, message, eid });
-
-    let user = await botUser.findOne({ eid }); // Look up user by EID
     
-    // If user does not exist, create a new user
+    // Find the user by 'username' and 'eid' instead of just 'eid'
+    let user = await botUser.findOne({ username, eid });
+
+    // If no user exists, create a new one
     if (!user) {
       user = new botUser({
         username,
         message,
-        eid,  // Save the widget EID
+        eid,  // Save the widget eid
         profilePic: `https://avatar.iran.liara.run/username?username=${username}`
       });
-      await user.save();  // Save the user to the database
+
+      await user.save(); // Save the user to the database
     }
 
     const profilePic = user.profilePic;
@@ -69,6 +71,7 @@ export const startConversation = async (req, res) => {
       usertoken: token
     });
 
+    // Bot response after 2 seconds
     setTimeout(async () => {
       const botResponse = generateBotResponse(message);
       const botMessage = { sender: 'bot', text: botResponse, createdAt: new Date() };

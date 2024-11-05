@@ -49,19 +49,19 @@ const Message = () => {
     if (user && user._id) {
       fetchConversation();
       socket.emit("joinRoom", user._id); // Join the room based on user ID
-
+  
       const handleMessage = (message) => {
         setConversation((prev) => [...prev, message]);
       };
-
+  
       socket.on("message", handleMessage);
-
-      // Clean up the event listener on unmount or when user._id changes
+  
       return () => {
         socket.off("message", handleMessage);
       };
     }
   }, [user]);
+  
 
   const handleNewMessage = (newMessage) => {
     socket.emit("message", newMessage); // Emit message to the server
