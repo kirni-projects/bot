@@ -20,22 +20,17 @@ export const startConversation = async (req, res) => {
   const { username, message, eid } = req.body;
 
   try {
-    // Log the received data for debugging
-    console.log('Received data:', { username, message, eid });
-
-    // Find the user by 'username' and 'eid' instead of just 'eid'
+    // Find the user by 'username' and 'eid'
     let user = await botUser.findOne({ username, eid });
 
-    // If no user exists, create a new one
     if (!user) {
       user = new botUser({
         username,
         message,
-        eid,  // Save the widget eid
+        eid,
         profilePic: `https://avatar.iran.liara.run/username?username=${username}`
       });
-
-      await user.save(); // Save the user to the database
+      await user.save();
     }
 
     const profilePic = user.profilePic;
@@ -71,21 +66,20 @@ export const startConversation = async (req, res) => {
       usertoken: token
     });
 
-    // Bot response after 2 seconds
+    // Send a bot response after the initial message
     setTimeout(async () => {
       const botResponse = generateBotResponse(message);
       const botMessage = { sender: 'bot', text: botResponse, createdAt: new Date() };
       newConversation.messages.push(botMessage);
       await newConversation.save();
 
-      io.to(user._id.toString()).emit('message', botMessage);
+      io.to(user._id.toString()).emit('message', botMessage);  // Emit bot message to the client
     }, 2000);
 
   } catch (err) {
     res.status(500).json({ message: 'Failed to start conversation', error: err.message });
   }
 };
-
 
 
 export const getMe = async (req, res) => {
