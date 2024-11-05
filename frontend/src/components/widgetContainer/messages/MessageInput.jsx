@@ -12,29 +12,27 @@ const MessageInput = ({ userId, onNewMessage }) => {
   const sendMessage = async () => {
     if (message.trim()) {
       try {
-        // Send the message to the backend
-        const response = await axios.post(`${apiUrl}/api/messages/${userId}`, { text: message });
-
-        if (response.status === 201 || response.status === 200) {
+        console.log(`Sending message to user ${userId}:`, message);
+        const response = await axios.post(`${apiUrl}/api/messages/${userId}`, { text: message }, {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        if (response.status === 201) {
           const newMessage = {
             sender: userId,
             text: message,
             createdAt: new Date().toISOString(),
           };
-
-          // Emit message over socket to update in real-time
           socket.emit('message', newMessage);
-
-          // Clear the input field
           setMessage('');
-
-          // Notify parent component about the new message
           onNewMessage(newMessage);
         } else {
           console.error('Failed to send message:', response);
         }
-      } catch (err) {
-        console.error('Error sending message:', err);
+      } catch (error) {
+        console.error('Error sending message:', error);
       }
     }
   };

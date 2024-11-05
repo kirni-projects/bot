@@ -77,7 +77,7 @@ const Message = () => {
         <Messages initialMessages={conversation} />
       </div>
       <div className="card-footer">
-        <MessageInput userId={user._id} onNewMessage={handleNewMessage} />
+      <MessageInput userId={user._id} onNewMessage={handleNewMessage} />
       </div>
     </>
   );
