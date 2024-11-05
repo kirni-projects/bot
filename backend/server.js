@@ -26,7 +26,7 @@ app.use(express.json());
 app.use(cors({
   origin: 'https://scriptdemo.imageum.in', // Allow requests from this origin
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allow these HTTP methods
-  credentials: true // Allow credentials (cookies, authorization headers)
+  credentials: true, // Allow credentials (cookies, authorization headers)
 }));
 
 // Serve static files from the frontend (including the widget)
@@ -90,7 +90,6 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));  // Change this to listen to the server instance
-
 
 
 

@@ -4,8 +4,6 @@ import PropTypes from 'prop-types';
 import { BsSend } from 'react-icons/bs';
 import axios from 'axios';
 import getSocket from './socket/getSocket';
-import apiUrl from "../../../apiConfig.jsx";
-
 
 const MessageInput = ({ userId, onNewMessage }) => {
   const [message, setMessage] = useState('');
@@ -15,7 +13,7 @@ const MessageInput = ({ userId, onNewMessage }) => {
     if (message.trim()) {
       try {
         console.log('Sending message:', message);
-        await axios.post(`${apiUrl}/api/messages/${userId}`, { text: message });
+        await axios.post(`/api/messages/${userId}`, { text: message });
         // No need to update state here, it will be updated via socket event
         setMessage('');
       } catch (err) {
@@ -58,7 +56,7 @@ const MessageInput = ({ userId, onNewMessage }) => {
     <button type="submit" className="ml-2 p-2 bg-blue-500 text-white rounded-md">
       <BsSend />
     </button>
-   </form>
+    </form>
   );
 };
 
