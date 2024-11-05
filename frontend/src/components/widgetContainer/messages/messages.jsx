@@ -33,7 +33,7 @@ const Messages = ({ initialMessages }) => {
 
   return (
     <div className="messages-container p-3">
-      {messages.length > 0 ? (
+      {messages && messages.length > 0 ? (
         messages.map((msg, index) => (
           <div 
             key={index} 
