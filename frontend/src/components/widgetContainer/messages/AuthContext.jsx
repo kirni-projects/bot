@@ -1,6 +1,6 @@
 // middleware/protectRoute.js
 import jwt from 'jsonwebtoken';
-import User from '../models/user.model.js';
+import botUser from '../models/user.model.js';
 import Agent from '../models/agent.model.js';
 import { generateToken, setCookie } from '../utils/generateToken.js';
 
