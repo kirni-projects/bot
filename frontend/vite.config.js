@@ -5,7 +5,7 @@ import path from 'path';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd());
-
+  console.log('Backend URL:', env.VITE_PRODUCTION_URL);
   return {
     plugins: [react()],
     build: {

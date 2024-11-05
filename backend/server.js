@@ -26,7 +26,7 @@ app.use(express.json());
 app.use(cors({
   origin: 'https://scriptdemo.imageum.in', // Allow requests from this origin
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allow these HTTP methods
-  credentials: true, // Allow credentials (cookies, authorization headers)
+  credentials: true // Allow credentials (cookies, authorization headers)
 }));
 
 // Serve static files from the frontend (including the widget)

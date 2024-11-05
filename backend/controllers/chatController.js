@@ -17,6 +17,8 @@ const generateBotResponse = (userMessage) => {
 };
 
 export const startConversation = async (req, res) => {
+
+  console.log("Incoming request body:", req.body); // Debug here
   const { username, message, eid } = req.body;
 
   try {
@@ -61,6 +63,8 @@ export const startConversation = async (req, res) => {
     io.to(user._id.toString()).emit('message', { sender: user._id, text: message, createdAt: new Date() });
 
     res.status(201).json({
+      success: true,
+      message: 'Conversation started successfully',
       _id: user._id,
       username: username,
       message: message,
