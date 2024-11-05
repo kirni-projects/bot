@@ -104,7 +104,7 @@ export const getMe = async (req, res) => {
 export const sendMessage = async (req, res) => {
   const { userId } = req.params;
   const { text } = req.body;
-  const io = req.app.locals.io; // Access io from app locals
+  const io = req.app.locals.io;
 
   if (!userId || !text) {
     console.error('UserId or text missing from request');
@@ -112,39 +112,35 @@ export const sendMessage = async (req, res) => {
   }
 
   try {
-    // Find or create a conversation with the user
     let conversation = await Conversation.findOne({ participants: userId });
 
     if (!conversation) {
-      // If no conversation exists, create a new one
       conversation = new Conversation({ participants: [userId], messages: [] });
     }
 
-    // Add the new message from the user to the conversation
-    conversation.messages.push({ sender: userId, text, createdAt: new Date() });
+    const userMessage = { sender: userId, text, createdAt: new Date() };
+    conversation.messages.push(userMessage);
 
-    // Save the conversation before generating a bot response
     await conversation.save();
 
-    // Emit the user message to the client's room
-    io.to(userId).emit('message', { sender: userId, text, createdAt: new Date() });
+    io.to(userId).emit('message', userMessage);
 
-    // Generate and send the bot response after a delay
     setTimeout(async () => {
-      const botResponse = generateBotResponse(text);
-      conversation.messages.push({ sender: 'bot', text: botResponse, createdAt: new Date() });
+      const botResponseText = generateBotResponse(text);
+      const botMessage = { sender: 'bot', text: botResponseText, createdAt: new Date() };
+      conversation.messages.push(botMessage);
       await conversation.save();
-      
-      // Emit the bot message to the client's room
-      io.to(userId).emit('message', { sender: 'bot', text: botResponse, createdAt: new Date() });
-    }, 2000); // Delay of 2 seconds (adjust as needed)
 
-    res.status(201).json({ success: true, conversation, message: 'Message sent' });
+      io.to(userId).emit('message', botMessage);
+    }, 2000);
+
+    res.status(201).json({ success: true, message: 'Message sent' });
   } catch (err) {
     console.error('Error sending message:', err);
     res.status(500).json({ message: 'Failed to send message', error: err.message });
   }
 };
+
 
 // Function to get all messages for a user
 export const getMessages = async (req, res) => {

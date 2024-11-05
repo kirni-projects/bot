@@ -42,7 +42,7 @@ const Message = () => {
   useEffect(() => {
     if (user && user._id) {
       fetchConversation();
-      socket.emit("joinRoom", user._id); // Join the room based on user ID
+      socket.emit("joinRoom", user._id);
   
       const handleMessage = (message) => {
         setConversation((prev) => [...prev, message]);
@@ -57,7 +57,7 @@ const Message = () => {
   }, [user]);
   
   const handleNewMessage = (newMessage) => {
-    socket.emit("message", { text: newMessage, sender: user._id }); // Emit message to the server
+    socket.emit("message", { text: newMessage.text, sender: user._id });
   };
 
   if (loading) return <div>Loading...</div>;
@@ -77,7 +77,7 @@ const Message = () => {
         <Messages initialMessages={conversation} />
       </div>
       <div className="card-footer">
-        <MessageInput onNewMessage={handleNewMessage} />
+        <MessageInput userId={user._id} onNewMessage={handleNewMessage} />
       </div>
     </>
   );
