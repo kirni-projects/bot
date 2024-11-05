@@ -1,12 +1,13 @@
-//src/components/widgetContainer/messages/messages.jsx
+// src/components/widgetContainer/messages/Messages.jsx
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useAuthContext } from './AuthContext.jsx';
-import getSocket from '../messages/socket/getSocket.jsx';  // Import the socket function
+import getSocket from '../messages/socket/getSocket.jsx';  
+import apiUrl from '../../../apiConfig'; // Import the backend URL
 
 const Messages = ({ initialMessages }) => {
   const { user } = useAuthContext();
-  const [messages, setMessages] = useState(initialMessages);  // Use state for messages
+  const [messages, setMessages] = useState(initialMessages || []);  // Use state for messages
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -17,36 +18,57 @@ const Messages = ({ initialMessages }) => {
     scrollToBottom();  // Scroll when the messages change
   }, [messages]);
 
+  // Fetch messages from the server using apiUrl
+  const fetchMessages = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/api/messages/${user._id}`, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+      setMessages(response.data.messages);
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+    }
+  };
+
   useEffect(() => {
-    const socket = getSocket();
+    if (user && user._id) {
+      fetchMessages();
+      const socket = getSocket();
 
-    // Listen for 'message' events from the server
-    socket.on('message', (newMessage) => {
-      setMessages((prevMessages) => [...prevMessages, newMessage]);  // Append the new message
-    });
+      // Listen for 'message' events from the server
+      socket.on('message', (newMessage) => {
+        setMessages((prevMessages) => [...prevMessages, newMessage]);  // Append the new message
+      });
 
-    // Cleanup on unmount
-    return () => {
-      socket.off('message');  // Stop listening for messages when the component unmounts
-    };
-  }, []);
+      // Cleanup on unmount
+      return () => {
+        socket.off('message');  // Stop listening for messages when the component unmounts
+      };
+    }
+  }, [user]);
 
   return (
     <div className="messages-container p-3">
       {messages && messages.length > 0 ? (
         messages.map((msg, index) => (
-          <div 
-            key={index} 
-            className={`flex chat gap-0 ${msg.sender === user._id ? 'justify-end chat-end' : 'justify-start chat-start'} mb-3`}
+          <div
+            key={index}
+            className={`flex chat gap-0 ${
+              msg.sender === user._id ? 'justify-end chat-end' : 'justify-start chat-start'
+            } mb-3`}
           >
             {msg.sender !== user._id && (
               <div className="chat-image avatar">
                 <div className="w-10 rounded-full">
-                  <img 
-                    alt="Profile" 
-                    src={msg.sender === 'bot' 
-                      ? 'https://avatar.iran.liara.run/username?username=bot' 
-                      : 'default-profile.png'} 
+                  <img
+                    alt="Profile"
+                    src={
+                      msg.sender === 'bot'
+                        ? 'https://avatar.iran.liara.run/username?username=bot'
+                        : 'default-profile.png'
+                    }
                   />
                 </div>
               </div>
@@ -54,10 +76,14 @@ const Messages = ({ initialMessages }) => {
             <div className={`ml-3 ${msg.sender === user._id ? 'order-1 text-right' : 'order-none'}`}>
               <div className="chat-header">
                 <span className="chat-sender font-semibold">
-                  {msg.sender === user._id ? 'You' : (msg.sender === 'bot' ? 'Bot' : 'Other')}
+                  {msg.sender === user._id ? 'You' : msg.sender === 'bot' ? 'Bot' : 'Other'}
                 </span>
               </div>
-              <div className={`chat-bubble ${msg.sender === user._id ? 'bg-blue-200 float-right' : 'bg-gray-400'} p-2 text-black rounded-lg`}>
+              <div
+                className={`chat-bubble ${
+                  msg.sender === user._id ? 'bg-blue-200 float-right' : 'bg-gray-400'
+                } p-2 text-black rounded-lg`}
+              >
                 {msg.text}
               </div>
             </div>

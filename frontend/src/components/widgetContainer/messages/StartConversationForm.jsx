@@ -40,14 +40,16 @@ const StartConversationForm = () => {
     try {
       const response = await axios.post(`${apiUrl}/api/start-conversation`, {
         ...formData,
-        eid // Send EID in the request body
+        eid, // Send EID in the request body
       });
   
-      if (response.status === 201) { // Check for successful response
+      console.log('Response:', response.data);
+  
+      if (response.status === 201) {
         const { usertoken, ...userData } = response.data;
         localStorage.setItem('token', usertoken); // Store the token
-        setUser({ ...userData, token: usertoken, eid }); // Set user context with token and eid
-        navigate('/message'); // Navigate to the /message page
+        setUser({ ...userData, token: usertoken, eid });
+        navigate('/message');
       } else {
         setError("Submission failed: Server response was not successful.");
       }
