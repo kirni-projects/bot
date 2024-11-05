@@ -24,7 +24,7 @@ export default defineConfig(({ mode }) => {
         '/api': {
           target: 'https://bot-rd1k.onrender.com', // Correct server URL
           changeOrigin: true,
-          secure: false,
+          secure: false
         },
       },
     },

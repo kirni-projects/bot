@@ -18,8 +18,9 @@ const generateBotResponse = (userMessage) => {
 
 export const startConversation = async (req, res) => {
 
-  console.log("Incoming request body:", req.body); // Debug here
   const { username, message, eid } = req.body;
+
+  console.log("Incoming request body:", req.body); // Debug here
 
   try {
     // Log the received data for debugging
@@ -36,6 +37,8 @@ export const startConversation = async (req, res) => {
         profilePic: `https://avatar.iran.liara.run/username?username=${username}`
       });
       await user.save();  // Save the user to the database
+
+      return res.status(404).json({ error: 'User not found for this EID, Creating new Bot User' });
     }
 
     const profilePic = user.profilePic;
