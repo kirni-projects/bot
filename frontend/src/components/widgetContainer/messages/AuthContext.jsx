@@ -1,7 +1,7 @@
 // middleware/protectRoute.js
 import jwt from 'jsonwebtoken';
-import botUser from '../models/user.model.js';
-import Agent from '../models/agent.model.js';
+import botUser from '../../../../../backend/models/user.model.js';
+import Agent from '../../../../../backend/models/agent.model.js';
 import { generateToken, setCookie } from '../utils/generateToken.js';
 
 export const protectRoute = async (req, res, next) => {
