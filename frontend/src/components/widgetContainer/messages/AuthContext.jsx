@@ -11,20 +11,20 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const checkLoggedInUser = async () => {
-      const userToken = localStorage.getItem('token');
-      if (!userToken) {
+      const token = localStorage.getItem('token');
+      if (!token) {
         setLoading(false);
         return;
       }
-
+    
       try {
-        const response = await axios.get(`${apiUrl}/api/chat/me`, {
+        const response = await axios.get('/api/chat/me', {
           headers: {
-            Authorization: `Bearer ${userToken}`
-          }
+            Authorization: `Bearer ${token}`, // Ensure token is sent correctly
+          },
         });
         if (response.data.success) {
-          setUser({ ...response.data.user, userToken });
+          setUser({ ...response.data.user, token });
         } else {
           setUser(null);
         }
