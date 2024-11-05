@@ -21,7 +21,7 @@ const Messages = ({ initialMessages }) => {
   // Fetch messages from the server using apiUrl
   const fetchMessages = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/api/messages/${user._id}`, {
+      const response = await axios.fetch(`${apiUrl}/api/messages/${user._id}`, {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
