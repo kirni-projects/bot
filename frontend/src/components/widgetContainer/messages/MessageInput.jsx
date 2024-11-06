@@ -12,6 +12,7 @@ const MessageInput = ({ userId, onNewMessage }) => {
   const sendMessage = async () => {
     if (message.trim()) {
       try {
+        // Send message to the backend via HTTP request
         const response = await axios.post(`${apiUrl}/api/messages/${userId}`, { text: message });
         
         if (response.status === 201 || response.status === 200) {
@@ -21,8 +22,13 @@ const MessageInput = ({ userId, onNewMessage }) => {
             createdAt: new Date().toISOString(),
           };
 
+          // Emit message over socket
           socket.emit('message', newMessage);
+
+          // Clear the message input
           setMessage('');
+          
+          // Inform parent component of new message
           onNewMessage(newMessage);
         } else {
           console.error('Failed to send message:', response);

@@ -1,29 +1,33 @@
-// src/components/widgetContainer/messages/socket/getSocket.js
+// src/components/widgetContainer/messages/socket/getSocket.jsx
 import { io } from 'socket.io-client';
 
 let socket;
 
 const getSocket = () => {
   if (!socket) {
-    const serverUrl = 'https://bot-rd1k.onrender.com'; // Ensure this is your correct server URL
+    const serverUrl = 'https://bot-rd1k.onrender.com';
 
-    socket = io(serverUrl, {
-      transports: ['websocket', 'polling'],
-      reconnectionAttempts: 10,  // Retry up to 10 times
-      reconnectionDelay: 2000,   // 2 seconds delay between retries
-    });
+    try {
+      socket = io(serverUrl, {
+        transports: ['websocket', 'polling'],
+        reconnectionAttempts: 10, // Retry up to 10 times
+        reconnectionDelay: 2000, // 2 seconds delay
+      });
 
-    socket.on('connect', () => {
-      console.log('Socket connected');
-    });
+      socket.on('connect', () => {
+        console.log('Socket connected');
+      });
 
-    socket.on('connect_error', (error) => {
-      console.error('Socket connection error:', error);
-    });
+      socket.on('connect_error', (error) => {
+        console.error('Socket connection error:', error);
+      });
 
-    socket.on('disconnect', () => {
-      console.warn('Socket disconnected');
-    });
+      socket.on('disconnect', (reason) => {
+        console.warn('Socket disconnected:', reason);
+      });
+    } catch (err) {
+      console.error('Error initializing WebSocket:', err);
+    }
   }
   return socket;
 };
