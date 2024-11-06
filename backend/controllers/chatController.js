@@ -101,7 +101,6 @@ export const sendMessage = async (req, res) => {
   const io = req.app.locals.io;
 
   if (!userId || !text) {
-    console.error('UserId or text missing from request');
     return res.status(400).json({ message: 'UserId or text missing from request' });
   }
 
@@ -112,28 +111,29 @@ export const sendMessage = async (req, res) => {
       conversation = new Conversation({ participants: [userId], messages: [] });
     }
 
-    const userMessage = { sender: userId, text, createdAt: new Date() };
-    conversation.messages.push(userMessage);
+    const newMessage = { sender: userId, text, createdAt: new Date() };
+    conversation.messages.push(newMessage);
 
     await conversation.save();
 
-    io.to(userId).emit('message', userMessage);
+    io.to(userId).emit('message', newMessage); // Emit to the user's room
 
+    // Bot response after a delay
     setTimeout(async () => {
-      const botResponseText = generateBotResponse(text);
-      const botMessage = { sender: 'bot', text: botResponseText, createdAt: new Date() };
+      const botResponse = generateBotResponse(text);
+      const botMessage = { sender: 'bot', text: botResponse, createdAt: new Date() };
       conversation.messages.push(botMessage);
       await conversation.save();
 
-      io.to(userId).emit('message', botMessage);
+      io.to(userId).emit('message', botMessage); // Emit bot response to the room
     }, 2000);
 
-    res.status(201).json({ success: true, message: 'Message sent' });
+    res.status(201).json({ success: true, conversation, message: 'Message sent' });
   } catch (err) {
-    console.error('Error sending message:', err);
     res.status(500).json({ message: 'Failed to send message', error: err.message });
   }
 };
+
 
 
 // Function to get all messages for a user

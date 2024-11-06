@@ -67,7 +67,7 @@ const Messages = ({ initialMessages }) => {
                     alt="Profile"
                     src={
                       msg.sender === 'bot'
-                        ? 'https://avatar.iran.liara.run/username?username=bot'
+                        ? `${apiUrl}/api/avatar?username=bot`
                         : 'default-profile.png'
                     }
                   />

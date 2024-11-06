@@ -41,7 +41,8 @@ const Message = () => {
   useEffect(() => {
     if (user && user._id) {
       fetchConversation();
-      socket.emit("joinRoom", user._id);
+  
+      socket.emit("joinRoom", user._id); // Join room
   
       const handleMessage = (message) => {
         setConversation((prev) => [...prev, message]);
@@ -54,6 +55,7 @@ const Message = () => {
       };
     }
   }, [user]);
+  
   
   const handleNewMessage = (newMessage) => {
     socket.emit("message", { text: newMessage, sender: user._id });

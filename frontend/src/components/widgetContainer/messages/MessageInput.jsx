@@ -10,27 +10,31 @@ const MessageInput = ({ userId, onNewMessage }) => {
   const socket = getSocket();
 
   const sendMessage = async () => {
-    if (message.trim() && userId) { // Ensure message is not empty and userId is defined
+    if (message.trim()) {
       try {
+        // Send message to the backend
         const response = await axios.post(`${apiUrl}/api/messages/${userId}`, { text: message });
         
-        if (response.status === 201 || response.status === 200) {
-          const newMessage = {
-            sender: userId,
-            text: message,
-            createdAt: new Date().toISOString(),
-          };
-          socket.emit('message', newMessage);
-          setMessage('');
-          onNewMessage(newMessage);
-        } else {
-          console.error('Failed to send message:', response);
-        }
+        // Prepare the message object
+        const newMessage = {
+          sender: userId,
+          text: message,
+          createdAt: new Date().toISOString(),
+        };
+  
+        // Emit message over socket
+        socket.emit('message', newMessage);
+  
+        // Clear the message input field
+        setMessage('');
+        onNewMessage(newMessage); // Update UI immediately
+  
       } catch (err) {
         console.error('Error sending message:', err);
       }
     }
   };
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
