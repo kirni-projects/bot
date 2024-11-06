@@ -10,16 +10,11 @@ const MessageInput = ({ userId, onNewMessage }) => {
   const socket = getSocket();
 
   const sendMessage = async () => {
-    if (message.trim()) {
+    if (message.trim() && userId) { // Ensure message is not empty and userId is defined
       try {
-        console.log(`Sending message to user ${userId}:`, message);
-        const response = await axios.post(`${apiUrl}/api/messages/${userId}`, { text: message }, {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        if (response.status === 201) {
+        const response = await axios.post(`${apiUrl}/api/messages/${userId}`, { text: message });
+        
+        if (response.status === 201 || response.status === 200) {
           const newMessage = {
             sender: userId,
             text: message,
@@ -31,8 +26,8 @@ const MessageInput = ({ userId, onNewMessage }) => {
         } else {
           console.error('Failed to send message:', response);
         }
-      } catch (error) {
-        console.error('Error sending message:', error);
+      } catch (err) {
+        console.error('Error sending message:', err);
       }
     }
   };

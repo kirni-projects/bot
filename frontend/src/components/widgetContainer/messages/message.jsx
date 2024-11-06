@@ -7,13 +7,12 @@ import Messages from "./messages.jsx";
 import MessageInput from "./MessageInput.jsx";
 import apiUrl from '../../../apiConfig';
 
-const socket = getSocket();
-
 const Message = () => {
   const { user } = useAuthContext();
   const [conversation, setConversation] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const socket = getSocket();
 
   const fetchConversation = async () => {
     if (!user) {
@@ -57,7 +56,7 @@ const Message = () => {
   }, [user]);
   
   const handleNewMessage = (newMessage) => {
-    socket.emit("message", { text: newMessage.text, sender: user._id });
+    socket.emit("message", { text: newMessage, sender: user._id });
   };
 
   if (loading) return <div>Loading...</div>;
@@ -77,7 +76,7 @@ const Message = () => {
         <Messages initialMessages={conversation} />
       </div>
       <div className="card-footer">
-      <MessageInput userId={user._id} onNewMessage={handleNewMessage} />
+        <MessageInput userId={user._id} onNewMessage={handleNewMessage} /> {/* Pass userId */}
       </div>
     </>
   );
