@@ -1,44 +1,15 @@
-// src/components/widgetContainer/messages/MessageInput.jsx
 import React, { useState } from 'react';
 import { BsSend } from 'react-icons/bs';
-import axios from 'axios';
-import getSocket from './socket/getSocket';
-import apiUrl from '../../../apiConfig';
 
-const MessageInput = ({ userId, onNewMessage }) => {
+const MessageInput = ({ onNewMessage }) => {
   const [message, setMessage] = useState('');
-  const socket = getSocket();
-
-  const sendMessage = async () => {
-    if (message.trim()) {
-      try {
-        // Send message to the backend
-        const response = await axios.post(`${apiUrl}/api/messages/${userId}`, { text: message });
-        
-        // Prepare the message object
-        const newMessage = {
-          sender: userId,
-          text: message,
-          createdAt: new Date().toISOString(),
-        };
-  
-        // Emit message over socket
-        socket.emit('message', newMessage);
-  
-        // Clear the message input field
-        setMessage('');
-        onNewMessage(newMessage); // Update UI immediately
-  
-      } catch (err) {
-        console.error('Error sending message:', err);
-      }
-    }
-  };
-  
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    sendMessage();
+    if (message.trim()) {
+      onNewMessage(message); // Call parent handler
+      setMessage(''); // Clear the input field
+    }
   };
 
   return (
