@@ -77,18 +77,20 @@ const io = new SocketIOServer(server, {
 app.locals.io = io;
 
 io.on('connection', (socket) => {
-  console.log('A user connected');
+  console.log('New client connected');
+
+  socket.on('joinRoom', (userId) => {
+    socket.join(userId);
+  });
 
   socket.on('message', (message) => {
-    console.log('Message received:', message);
-    socket.broadcast.emit('message', message);  // Emit the message to all connected clients
+    io.to(message.sender).emit('message', message);
   });
 
   socket.on('disconnect', () => {
-    console.log('A user disconnected');
+    console.log('Client disconnected');
   });
 });
-
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));  // Change this to listen to the server instance
 

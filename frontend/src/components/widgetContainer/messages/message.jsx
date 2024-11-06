@@ -1,8 +1,9 @@
+// src/components/widgetContainer/messages/Message.jsx
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import getSocket from "./socket/getSocket";
 import { useAuthContext } from "./AuthContext.jsx";
-import Messages from "./messages.jsx";
+import Messages from "./Messages.jsx";
 import MessageInput from "./MessageInput.jsx";
 import apiUrl from '../../../apiConfig';
 
@@ -10,12 +11,16 @@ const socket = getSocket();
 
 const Message = () => {
   const { user } = useAuthContext();
-  const [messages, setMessages] = useState([]);  // Store all messages here
+  const [conversation, setConversation] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch messages when the component mounts
-  const fetchMessages = async () => {
+  const fetchConversation = async () => {
+    if (!user) {
+      setError(new Error("User not authenticated"));
+      return;
+    }
+
     try {
       setLoading(true);
       const response = await axios.get(`${apiUrl}/api/messages/${user._id}`, {
@@ -24,7 +29,7 @@ const Message = () => {
           "Content-Type": "application/json",
         },
       });
-      setMessages(response.data.messages || []);
+      setConversation(response.data.messages || []);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching conversation data:", error);
@@ -35,43 +40,23 @@ const Message = () => {
 
   useEffect(() => {
     if (user && user._id) {
-      fetchMessages();
-      socket.emit("joinRoom", user._id); // Join room based on user ID
-  
-      // Listen for new messages from the server
+      fetchConversation();
+      socket.emit("joinRoom", user._id);
+
       const handleMessage = (message) => {
-        setMessages((prevMessages) => [...prevMessages, message]); // Update messages state
+        setConversation((prev) => [...prev, message]);
       };
-  
+
       socket.on("message", handleMessage);
-  
+
       return () => {
         socket.off("message", handleMessage);
       };
     }
   }, [user]);
 
-  // Function to handle sending a new message
-  const handleNewMessage = async (newMessageText) => {
-    if (!newMessageText.trim()) return;
-
-    try {
-      // Add the user's message locally
-      const newMessage = {
-        sender: user._id,
-        text: newMessageText,
-        createdAt: new Date().toISOString(),
-      };
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
-
-      // Emit the message to the server
-      socket.emit("message", newMessage);
-
-      // Send the message to the backend
-      await axios.post(`${apiUrl}/api/messages/${user._id}`, { text: newMessageText });
-    } catch (error) {
-      console.error("Error sending message:", error);
-    }
+  const handleNewMessage = (newMessage) => {
+    socket.emit("message", { text: newMessage, sender: user._id });
   };
 
   if (loading) return <div>Loading...</div>;
@@ -88,12 +73,10 @@ const Message = () => {
         </div>
       </div>
       <div className="card-body p-1">
-        {/* Pass messages as a prop to the Messages component */}
-        <Messages initialMessages={messages} />
+        <Messages initialMessages={conversation} />
       </div>
       <div className="card-footer">
-        {/* Pass handleNewMessage to MessageInput */}
-        <MessageInput onNewMessage={handleNewMessage} />
+        <MessageInput userId={user._id} onNewMessage={handleNewMessage} />
       </div>
     </>
   );

@@ -1,26 +1,32 @@
-// src/components/widgetContainer/messages/socket/getSocket.jsx
+// src/components/widgetContainer/messages/socket/getSocket.js
 import { io } from 'socket.io-client';
 
 let socket;
 
 const getSocket = () => {
   if (!socket) {
-    const serverUrl = 'https://bot-rd1k.onrender.com';
+    const serverUrl = 'https://bot-rd1k.onrender.com'; // Ensure this is your correct server URL
+
     socket = io(serverUrl, {
-      transports: ['websocket'],
-      reconnectionAttempts: 5,
-      reconnectionDelay: 1000,
+      transports: ['websocket', 'polling'],
+      reconnectionAttempts: 10,  // Retry up to 10 times
+      reconnectionDelay: 2000,   // 2 seconds delay between retries
     });
+
     socket.on('connect', () => {
       console.log('Socket connected');
     });
+
     socket.on('connect_error', (error) => {
       console.error('Socket connection error:', error);
+    });
+
+    socket.on('disconnect', () => {
+      console.warn('Socket disconnected');
     });
   }
   return socket;
 };
-
 
 export default getSocket;
 

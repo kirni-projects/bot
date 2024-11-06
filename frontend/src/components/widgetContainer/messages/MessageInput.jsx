@@ -1,15 +1,43 @@
+// src/components/widgetContainer/messages/MessageInput.jsx
 import React, { useState } from 'react';
 import { BsSend } from 'react-icons/bs';
+import axios from 'axios';
+import getSocket from './socket/getSocket';
+import apiUrl from '../../../apiConfig';
 
-const MessageInput = ({ onNewMessage }) => {
+const MessageInput = ({ userId, onNewMessage }) => {
   const [message, setMessage] = useState('');
+  const socket = getSocket();
+
+  const sendMessage = async () => {
+    if (message.trim()) {
+      try {
+        const response = await axios.post(`${apiUrl}/api/messages/${userId}`, { text: message });
+        
+        if (response.status === 201 || response.status === 200) {
+          const newMessage = {
+            sender: userId,
+            text: message,
+            createdAt: new Date().toISOString(),
+          };
+
+          socket.emit('message', newMessage);
+          setMessage('');
+          onNewMessage(newMessage);
+        } else {
+          console.error('Failed to send message:', response);
+          alert('Failed to send message. Please try again.');
+        }
+      } catch (err) {
+        console.error('Error sending message:', err);
+        alert('Network error. Please check your connection.');
+      }
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (message.trim()) {
-      onNewMessage(message); // Call parent handler
-      setMessage(''); // Clear the input field
-    }
+    sendMessage();
   };
 
   return (
