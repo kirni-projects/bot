@@ -1,8 +1,14 @@
 // src/components/widgetContainer/messages/Messages.jsx
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useAuthContext } from './AuthContext.jsx';
+import getSocket from '../messages/socket/getSocket.jsx';  
+import apiUrl from '../../../apiConfig'; // Import the backend URL
+import axios from 'axios';
 
 const Messages = ({ initialMessages }) => {
+  const { user } = useAuthContext();
+  const [messages, setMessages] = useState(initialMessages || []);  // Use state for messages
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -10,44 +16,82 @@ const Messages = ({ initialMessages }) => {
   };
 
   useEffect(() => {
-    scrollToBottom(); // Scroll when messages change
-  }, [initialMessages]);
+    scrollToBottom();  // Scroll when the messages change
+  }, [messages]);
+
+  // Fetch messages from the server using apiUrl
+  const fetchMessages = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/api/messages/${user._id}`, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+      setMessages(response.data.messages);
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+    }
+  };
+
+  useEffect(() => {
+    const socket = getSocket();
+    fetchMessages();
+    const handleMessage = (newMessage) => {
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+    };
+  
+    // Listen for 'message' events from the server
+    socket.on('message', handleMessage);
+  
+    // Clean up the event listener on component unmount
+    return () => {
+      socket.off('message', handleMessage);
+    };
+  }, []);  // Only run this once when the component mounts
+  
 
   return (
     <div className="messages-container p-3">
-      {initialMessages.length > 0 ? (
-        initialMessages.map((msg, index) => (
+      {messages.length > 0 ? (
+        messages.map((msg, index) => (
           <div
             key={index}
             className={`flex chat gap-0 ${
-              msg.sender === 'bot' ? 'justify-start chat-start' : 'justify-end chat-end'
+              msg.sender === user._id ? 'justify-end chat-end' : 'justify-start chat-start'
             } mb-3`}
           >
-            {msg.sender !== 'bot' && (
+            {msg.sender !== user._id && (
               <div className="chat-image avatar">
                 <div className="w-10 rounded-full">
-                  <img alt="Profile" src={msg.profilePic} />
+                  <img
+                    alt="Profile"
+                    src={
+                      msg.sender === 'bot'
+                        ? `${apiUrl}/api/avatar?username=bot`
+                        : 'default-profile.png'
+                    }
+                  />
                 </div>
               </div>
             )}
-            <div className={`ml-3 ${msg.sender === 'bot' ? 'order-none' : 'order-1 text-right'}`}>
+            <div className={`ml-3 ${msg.sender === user._id ? 'order-1 text-right' : 'order-none'}`}>
               <div className="chat-header">
                 <span className="chat-sender font-semibold">
-                  {msg.sender === 'bot' ? 'Bot' : 'You'}
+                  {msg.sender === user._id ? 'You' : msg.sender === 'bot' ? 'Bot' : 'Other'}
                 </span>
               </div>
               <div
                 className={`chat-bubble ${
-                  msg.sender === 'bot' ? 'bg-gray-400' : 'bg-blue-200 float-right'
+                  msg.sender === user._id ? 'bg-blue-200 float-right' : 'bg-gray-400'
                 } p-2 text-black rounded-lg`}
               >
                 {msg.text}
               </div>
             </div>
-            {msg.sender === 'bot' && (
+            {msg.sender === user._id && (
               <div className="chat-image avatar ml-3 order-2">
                 <div className="w-10 rounded-full">
-                  <img alt="Profile" src={msg.profilePic} />
+                  <img alt="Profile" src={user.profilePic} />
                 </div>
               </div>
             )}
@@ -73,6 +117,7 @@ Messages.propTypes = {
 };
 
 export default Messages;
+
 
 // //src/components/widgetContainer/messages/messages.jsx
 // import React, { useEffect, useRef } from 'react';
