@@ -10,6 +10,7 @@ import registerRoutes from './routes/registerRoutes.js';
 import scriptCheckRoutes from './routes/scriptCheckRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
+import avatarRoute from './routes/avatarRoute.js';
 import { fileURLToPath } from 'url';
 
 // Get __dirname in ESM
@@ -50,7 +51,7 @@ app.use('/widget.js', (req, res, next) => {
 }, express.static(path.join(__dirname, '../widget.js')));
 
 // Apply your routes
-app.use('/api', registerRoutes, scriptCheckRoutes, authRoutes, chatRoutes);
+app.use('/api', registerRoutes, scriptCheckRoutes, authRoutes, chatRoutes, avatarRoute);
 
 // Fallback route for React's index.html
 app.get('*', (req, res) => {

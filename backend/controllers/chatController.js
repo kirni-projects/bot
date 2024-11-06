@@ -28,7 +28,7 @@ export const startConversation = async (req, res) => {
         username,
         message,
         eid,
-        profilePic: `https://avatar.iran.liara.run/username?username=${username}`
+        profilePic: `${process.env.PRODUCTION_URL}/api/avatar?username=${encodeURIComponent(username)}`
       });
       await user.save();
     }
