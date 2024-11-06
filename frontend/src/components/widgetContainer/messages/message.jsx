@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import getSocket from "./socket/getSocket";
 import { useAuthContext } from "./AuthContext.jsx";
-import Messages from "./Messages.jsx";
+import Messages from "./messages.jsx";
 import MessageInput from "./MessageInput.jsx";
 import apiUrl from '../../../apiConfig';
 
