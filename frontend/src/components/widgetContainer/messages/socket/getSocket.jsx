@@ -10,8 +10,9 @@ const getSocket = () => {
     try {
       socket = io(serverUrl, {
         transports: ['websocket', 'polling'],
-        reconnectionAttempts: 10, // Retry up to 10 times
-        reconnectionDelay: 2000, // 2 seconds delay
+        reconnectionAttempts: 10,
+        reconnectionDelay: 2000,
+        autoConnect: true,  // Ensures it reconnects automatically
       });
 
       socket.on('connect', () => {
@@ -19,11 +20,19 @@ const getSocket = () => {
       });
 
       socket.on('connect_error', (error) => {
-        console.error('Socket connection error:', error);
+        console.error('Socket connection error:', error.message);
       });
 
       socket.on('disconnect', (reason) => {
         console.warn('Socket disconnected:', reason);
+        if (reason === 'io server disconnect') {
+          // Server disconnected the socket, so we need to reconnect manually
+          socket.connect();
+        }
+      });
+
+      socket.on('reconnect_attempt', (attempt) => {
+        console.log(`Socket reconnect attempt: ${attempt}`);
       });
     } catch (err) {
       console.error('Error initializing WebSocket:', err);

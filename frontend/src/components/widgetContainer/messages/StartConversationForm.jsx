@@ -29,9 +29,9 @@ const StartConversationForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null); // Clear any previous error
+    setError(null);
   
-    const eid = getEID(); // Get the EID from the script tag
+    const eid = getEID();
     if (!eid) {
       setError('Unable to identify chat widget (EID missing)');
       return;
@@ -40,14 +40,12 @@ const StartConversationForm = () => {
     try {
       const response = await axios.post(`${apiUrl}/api/start-conversation`, {
         ...formData,
-        eid, // Send EID in the request body
+        eid,
       });
-  
-      console.log('Response:', response.data);
   
       if (response.status === 201) {
         const { usertoken, ...userData } = response.data;
-        localStorage.setItem('token', usertoken); // Store the token
+        localStorage.setItem('token', usertoken);
         setUser({ ...userData, token: usertoken, eid });
         navigate('/message');
       } else {
@@ -58,6 +56,7 @@ const StartConversationForm = () => {
       setError(err.response?.data?.message || "Something went wrong");
     }
   };
+  
   
 
   return (

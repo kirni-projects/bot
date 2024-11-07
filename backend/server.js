@@ -24,12 +24,13 @@ const app = express();
 app.use(express.json());
 
 // Apply CORS middleware with credentials
-const corsOptions = {
-  origin: 'https://scriptdemo.imageum.in', // Your frontend domain
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  credentials: true,
-};
-app.use(cors(corsOptions));
+const io = new SocketIOServer(server, {
+  cors: {
+    origin: 'https://scriptdemo.imageum.in',
+    methods: ['GET', 'POST'],
+    credentials: true,
+  },
+});
 
 // Serve static files for the frontend (including the widget)
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
@@ -67,9 +68,9 @@ connectToMongoDB().catch((err) => {
 
 // Create the HTTP server and initialize Socket.IO
 const server = http.createServer(app);
-const io = new SocketIOServer(server, {
-  cors: corsOptions, // Apply CORS options to Socket.IO as well
-});
+// const io = new SocketIOServer(server, {
+//   cors: corsOptions, // Apply CORS options to Socket.IO as well
+// });
 
 // Expose the io instance for other parts of the app (like controllers)
 app.locals.io = io;

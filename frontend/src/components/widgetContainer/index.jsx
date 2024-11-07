@@ -1,6 +1,5 @@
 // src/components/widgetContainer/index.jsx
 import React, { useState } from 'react';
-import ReactDOM from 'react-dom';
 import widgetAvatar from "../../assets/sms.png";  
 import widgetClose from "../../assets/close32X32.png";  
 import MessageContainer from './messages/messageContainer.jsx';
@@ -10,8 +9,8 @@ const WidgetContainer = () => {
   const [showMessageContainer, setShowMessageContainer] = useState(false);
 
   const avatarChange = () => {
-    setShowAvatar(!showAvatar);  
-    setShowMessageContainer(!showMessageContainer);  
+    setShowAvatar((prev) => !prev);
+    setShowMessageContainer((prev) => !prev);
   };
 
   return (
@@ -25,10 +24,11 @@ const WidgetContainer = () => {
           />
         </div>
       </div>
-      {showMessageContainer && <MessageContainer />} 
+      {showMessageContainer && <MessageContainer />}
     </div>
   );
 };
+
 
 
 export default WidgetContainer;
