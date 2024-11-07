@@ -17,6 +17,9 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Create the HTTP server and initialize Socket.IO
+// const server = http.createServer(app);
+
 // Load environment variables
 dotenv.config();
 
@@ -66,8 +69,6 @@ connectToMongoDB().catch((err) => {
   process.exit(1); // Exit the application if MongoDB connection fails
 });
 
-// Create the HTTP server and initialize Socket.IO
-const server = http.createServer(app);
 // const io = new SocketIOServer(server, {
 //   cors: corsOptions, // Apply CORS options to Socket.IO as well
 // });
