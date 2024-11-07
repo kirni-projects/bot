@@ -1,4 +1,4 @@
-// server.js
+//server.js
 import path from 'path';
 import express from 'express';
 import dotenv from 'dotenv';
@@ -17,9 +17,6 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Create the HTTP server and initialize Socket.IO
-const server = http.createServer(app);
-
 // Load environment variables
 dotenv.config();
 
@@ -27,13 +24,12 @@ const app = express();
 app.use(express.json());
 
 // Apply CORS middleware with credentials
-const io = new SocketIOServer(server, {
-  cors: {
-    origin: 'https://scriptdemo.imageum.in',
-    methods: ['GET', 'POST'],
-    credentials: true,
-  },
-});
+const corsOptions = {
+  origin: 'https://scriptdemo.imageum.in', // Your frontend domain
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true,
+};
+app.use(cors(corsOptions));
 
 // Serve static files for the frontend (including the widget)
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
@@ -69,9 +65,11 @@ connectToMongoDB().catch((err) => {
   process.exit(1); // Exit the application if MongoDB connection fails
 });
 
-// const io = new SocketIOServer(server, {
-//   cors: corsOptions, // Apply CORS options to Socket.IO as well
-// });
+// Create the HTTP server and initialize Socket.IO
+const server = http.createServer(app);
+const io = new SocketIOServer(server, {
+  cors: corsOptions, // Apply CORS options to Socket.IO as well
+});
 
 // Expose the io instance for other parts of the app (like controllers)
 app.locals.io = io;
@@ -116,7 +114,6 @@ server.listen(PORT, (err) => {
     console.log(`Server running on port ${PORT}`);
   }
 });
-
 
 
 
