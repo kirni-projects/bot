@@ -18,7 +18,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Create the HTTP server and initialize Socket.IO
-// const server = http.createServer(app);
+const server = http.createServer(app);
 
 // Load environment variables
 dotenv.config();
