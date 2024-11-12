@@ -1,5 +1,5 @@
 // src/components/widgetContainer/index.jsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import widgetAvatar from "../../assets/sms.png";  
 import widgetClose from "../../assets/close32X32.png";  
 import MessageContainer from './messages/messageContainer.jsx';
