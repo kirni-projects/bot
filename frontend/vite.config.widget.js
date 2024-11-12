@@ -7,14 +7,14 @@ export default defineConfig({
   plugins: [react()],
   build: {
     rollupOptions: {
-      input: path.resolve(__dirname, 'src/renderWidget.jsx'),  // Path to your widget entry file
+      input: path.resolve(__dirname, 'src/renderWidget.jsx'),
       output: {
-        format: 'iife',  // IIFE format for embedding
-        name: 'RenderWidgetBundle',  // Name of the global object for the widget
-        dir: 'dist/widget',  // Output directory for the widget build
-        entryFileNames: 'renderWidget.js',  // Output file name
+        format: 'iife', // IIFE format for embedding
+        name: 'RenderWidgetBundle', // Global object for the widget
+        dir: 'dist/widget',
+        entryFileNames: 'renderWidget.js',
       },
     },
-    outDir: 'dist/widget',  // Ensure the output is in 'dist/widget'
+    outDir: 'dist/widget',
   },
 });

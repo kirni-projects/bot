@@ -1,30 +1,22 @@
 document.addEventListener("DOMContentLoaded", function () {
   const scriptTag = document.querySelector('script[src*="widget.js"]');
-
-  if (!scriptTag) {
-    console.error('Script tag not found');
-    return;
-  }
-
   const elementId = scriptTag.getAttribute("data-id");
 
   if (elementId) {
     const waitForRenderFunction = () => {
       if (typeof window.renderChatWidget === 'function') {
-        // Call the globally available renderChatWidget function
-        console.log("renderChatWidget found, invoking it now...");
         window.renderChatWidget(elementId);
       } else {
-        console.warn('renderChatWidget is not yet defined, retrying...');
-        setTimeout(waitForRenderFunction, 100); // Retry after 100ms
+        setTimeout(waitForRenderFunction, 100); // Retry every 100ms
       }
     };
 
-    waitForRenderFunction();  // Start polling for the renderChatWidget function
+    waitForRenderFunction();  // Start polling for the render function
   } else {
     console.error('data-id attribute not found on the script tag');
   }
 });
+
 
 
 
