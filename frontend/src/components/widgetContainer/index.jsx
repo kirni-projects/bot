@@ -9,9 +9,14 @@ const WidgetContainer = () => {
   const [showMessageContainer, setShowMessageContainer] = useState(false);
 
   const avatarChange = () => {
-    setShowAvatar((prev) => !prev);
-    setShowMessageContainer((prev) => !prev);
+    console.log("Avatar clicked, toggling showMessageContainer");
+    setShowAvatar(!showAvatar);  
+    setShowMessageContainer(!showMessageContainer);  
   };
+
+  useEffect(() => {
+    console.log("showMessageContainer changed:", showMessageContainer);
+  }, [showMessageContainer]);
 
   return (
     <div className="chat-widget relative m-4">
@@ -24,7 +29,7 @@ const WidgetContainer = () => {
           />
         </div>
       </div>
-      {showMessageContainer && <MessageContainer />}
+      {showMessageContainer && <MessageContainer />} 
     </div>
   );
 };
