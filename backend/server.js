@@ -25,9 +25,9 @@ app.use(express.json());
 
 // Apply CORS middleware with credentials
 const corsOptions = {
-  origin: ['https://yourdomain.com', 'https://externaldomain.com'], // Include allowed domains
+  origin: 'https://scriptdemo.imageum.in', // Your frontend domain
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  credentials: true, // To allow cookies for auth, etc.
+  credentials: true,
 };
 app.use(cors(corsOptions));
 
