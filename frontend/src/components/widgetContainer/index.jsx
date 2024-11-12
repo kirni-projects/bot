@@ -16,7 +16,7 @@ const WidgetContainer = () => {
   };
 
   useEffect(() => {
-    console.log("showMessageContainer changed:", showMessageContainer);
+    console.log("showMessageContainer state:", showMessageContainer);
   }, [showMessageContainer]);
 
   return (
