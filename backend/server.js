@@ -104,6 +104,7 @@ io.on('connection', (socket) => {
   });
 });
 
+
 // Start the server and log any potential startup errors
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, (err) => {

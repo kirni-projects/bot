@@ -1,4 +1,4 @@
-// MessageInput.jsx
+// src/components/widgetContainer/messages/MessageInput.jsx
 import React, { useState } from 'react';
 import { BsSend } from 'react-icons/bs';
 import axios from 'axios';
@@ -12,14 +12,12 @@ const MessageInput = ({ userId, onNewMessage }) => {
   const sendMessage = async () => {
     if (message.trim()) {
       try {
-        // Send message to the backend
         const response = await axios.post(`${apiUrl}/api/messages/${userId}`, { text: message });
         
-        // Update parent with the new message
         if (response.status === 201) {
           const newMessage = { sender: userId, text: message, createdAt: new Date().toISOString() };
           onNewMessage(newMessage);
-          setMessage('');  // Clear input after sending
+          setMessage('');
         } else {
           console.error('Failed to send message:', response);
         }

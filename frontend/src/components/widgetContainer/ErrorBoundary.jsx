@@ -1,3 +1,4 @@
+// src/components/widgetContainer/ErrorBoundary.jsx
 import React from 'react';
 
 class ErrorBoundary extends React.Component {
@@ -16,7 +17,7 @@ class ErrorBoundary extends React.Component {
 
   render() {
     if (this.state.hasError) {
-      return <h2>Something went wrong.</h2>;
+      return <div>Something went wrong.</div>;
     }
 
     return this.props.children;

@@ -1,9 +1,9 @@
 // src/components/widgetContainer/index.jsx
 import React, { useEffect, useState } from 'react';
-import widgetAvatar from "../../assets/sms.png";  
-import widgetClose from "../../assets/close32X32.png";  
+import widgetAvatar from "../../assets/sms.png";
+import widgetClose from "../../assets/close32X32.png";
 import MessageContainer from './messages/messageContainer.jsx';
-import ErrorBoundary from './messages/utils/ErrorBoundary.jsx';
+import ErrorBoundary from './messages/utils/ErrorBoundary.jsx'; // Assuming you created an ErrorBoundary component
 
 const WidgetContainer = () => {
   const [showAvatar, setShowAvatar] = useState(true);
@@ -11,8 +11,8 @@ const WidgetContainer = () => {
 
   const avatarChange = () => {
     console.log("Avatar clicked, toggling showMessageContainer");
-    setShowAvatar(!showAvatar);  
-    setShowMessageContainer(!showMessageContainer);  
+    setShowAvatar(!showAvatar);
+    setShowMessageContainer(!showMessageContainer);
   };
 
   useEffect(() => {
