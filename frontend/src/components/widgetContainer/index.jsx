@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import widgetAvatar from "../../assets/sms.png";  
 import widgetClose from "../../assets/close32X32.png";  
 import MessageContainer from './messages/messageContainer.jsx';
+import ErrorBoundary from './messages/utils/ErrorBoundary.jsx';
 
 const WidgetContainer = () => {
   const [showAvatar, setShowAvatar] = useState(true);
@@ -29,11 +30,13 @@ const WidgetContainer = () => {
           />
         </div>
       </div>
-      {showMessageContainer && <MessageContainer />} 
+      {showMessageContainer && (
+        <ErrorBoundary>
+          <MessageContainer />
+        </ErrorBoundary>
+      )}
     </div>
   );
 };
-
-
 
 export default WidgetContainer;

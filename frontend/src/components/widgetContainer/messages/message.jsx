@@ -42,18 +42,19 @@ const Message = () => {
     if (user && user._id) {
       fetchConversation();
       socket.emit("joinRoom", user._id);
-
+  
       const handleMessage = (message) => {
         setConversation((prev) => [...prev, message]);
       };
-
+  
       socket.on("message", handleMessage);
-
+  
       return () => {
         socket.off("message", handleMessage);
       };
     }
-  }, [user]);
+  }, [user]); // Correct dependency array
+  
 
   const handleNewMessage = (newMessage) => {
     socket.emit("message", { text: newMessage, sender: user._id });
