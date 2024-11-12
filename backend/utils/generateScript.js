@@ -2,13 +2,20 @@
 export const generateEmbedScript = (userId, eid) => {
   const scriptDomain = process.env.NODE_ENV === 'production' 
     ? process.env.PRODUCTION_URL 
-    : 'http://localhost:5000'; // Update with your local dev URL
+    : 'http://localhost:3000';
 
+  const renderWidgetUrl = `${scriptDomain}/widget/renderWidget.js`;  // Adjusted path
+  const widgetUrl = `${scriptDomain}/widget.js`;  // Widget.js should be in root or correct folder
   const dataId = `chatbot-${userId}`;
 
   return `
     <div id='${dataId}'></div>
-    <script src='${scriptDomain}/widget.js' data-id='${dataId}' eid='${eid}'></script>
+
+    <!-- Load the renderWidget.js script first -->
+    <script src='${renderWidgetUrl}'></script>
+
+    <!-- Then load the widget.js script -->
+    <script type='module' src='${widgetUrl}' data-id='${dataId}' eid='${eid}'></script>
   `;
 };
 
