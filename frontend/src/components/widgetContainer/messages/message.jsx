@@ -15,6 +15,10 @@ const Message = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const handleMessage = (message) => {
+    setConversation((prev) => [...prev, message]);
+  };
+
   const fetchConversation = async () => {
     if (!user) {
       setError(new Error("User not authenticated"));
@@ -42,20 +46,13 @@ const Message = () => {
     if (user && user._id) {
       fetchConversation();
       socket.emit("joinRoom", user._id);
-  
-      const handleMessage = (message) => {
-        setConversation((prev) => [...prev, message]);
-      };
-  
       socket.on("message", handleMessage);
-  
     }
-    
+
     return () => {
       socket.off("message", handleMessage);
     };
-  }, [user]); // Correct dependency array
-  
+  }, [user]);
 
   const handleNewMessage = (newMessage) => {
     socket.emit("message", { text: newMessage, sender: user._id });
@@ -83,5 +80,6 @@ const Message = () => {
     </>
   );
 };
+
 
 export default Message;

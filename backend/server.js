@@ -25,11 +25,12 @@ app.use(express.json());
 
 // Apply CORS middleware with credentials
 const corsOptions = {
-  origin: 'https://scriptdemo.imageum.in', // Your frontend domain
+  origin: ['https://scriptdemo.imageum.in', 'https://bot-rd1k.onrender.com'], // Add your widget's embedding domain
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
 };
 app.use(cors(corsOptions));
+
 
 // Serve static files for the frontend (including the widget)
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
