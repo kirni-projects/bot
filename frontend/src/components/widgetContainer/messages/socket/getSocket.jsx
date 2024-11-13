@@ -18,13 +18,13 @@ const getSocket = () => {
       console.log('Socket connected');
     });
 
-    socket.on('disconnect', (reason) => {
-      console.warn('Socket disconnected:', reason);
-      // Reconnect immediately if the server closed the connection
-      if (reason === 'io server disconnect') {
-        socket.connect();
-      }
-    });
+    // socket.on('disconnect', (reason) => {
+    //   console.warn('Socket disconnected:', reason);
+    //   // Reconnect immediately if the server closed the connection
+    //   if (reason === 'io server disconnect') {
+    //     socket.connect();
+    //   }
+    // });
 
     socket.on('connect_error', (error) => {
       console.error('Socket connection error:', error.message);
