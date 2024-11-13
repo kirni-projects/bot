@@ -37,18 +37,21 @@ const Message = () => {
       setLoading(false);
     }
   };
-  
+
   useEffect(() => {
     if (user && user._id) {
       fetchConversation();
+
+      // Only emit `joinRoom` once when the user first joins
       socket.emit("joinRoom", user._id);
 
       // Define the message handler
       const handleMessage = (message) => {
+        console.log("New message received:", message);  // Debugging line
         setConversation((prev) => [...prev, message]);
       };
 
-      // Attach the listener
+      // Attach the listener only once
       socket.on("message", handleMessage);
 
       // Cleanup function to remove the listener when the component unmounts
@@ -56,11 +59,13 @@ const Message = () => {
         socket.off("message", handleMessage);
       };
     }
-  }, [user]); // Dependency array ensures this only runs when `user` changes
-
+  }, [user?._id]); // Ensure listener is only attached when `user._id` changes
 
   const handleNewMessage = (newMessage) => {
+    // Emit the new message through the socket
     socket.emit("message", { text: newMessage, sender: user._id });
+    
+    // Add the new message to the conversation locally for immediate feedback
     setConversation((prev) => [
       ...prev,
       { sender: user._id, text: newMessage, createdAt: new Date().toISOString() },
