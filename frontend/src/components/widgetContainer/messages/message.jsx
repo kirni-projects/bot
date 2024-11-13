@@ -37,7 +37,7 @@ const Message = () => {
       setLoading(false);
     }
   };
-
+  
   useEffect(() => {
     if (user && user._id) {
       fetchConversation();
@@ -57,6 +57,7 @@ const Message = () => {
       };
     }
   }, [user]); // Dependency array ensures this only runs when `user` changes
+
 
   const handleNewMessage = (newMessage) => {
     socket.emit("message", { text: newMessage, sender: user._id });
