@@ -55,16 +55,12 @@ const Message = () => {
     }
   }, [user]);
 
-  const handleMessage = (message) => {
-    console.log("Received message:", message); // Debugging log
-    // Ensure the message has the expected keys before adding to conversation
-    if (message.sender && message.text && message.createdAt) {
-      setConversation((prev) => [...prev, message]);
-    } else {
-      console.error("Unexpected message format:", message);
-    }
+  // Define handleNewMessage here
+  const handleNewMessage = (newMessage) => {
+    // Emit the message through socket and update the conversation state
+    socket.emit("message", { text: newMessage, sender: user._id });
+    setConversation((prev) => [...prev, { sender: user._id, text: newMessage, createdAt: new Date().toISOString() }]);
   };
-  
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
@@ -90,3 +86,4 @@ const Message = () => {
 };
 
 export default Message;
+
