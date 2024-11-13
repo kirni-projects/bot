@@ -6,7 +6,7 @@ import MessageContainer from './messages/messageContainer.jsx';
 
 const WidgetContainer = () => {
   const [showAvatar, setShowAvatar] = useState(true);
-  const [showMessageContainer, setShowMessageContainer] = useState(true);
+  const [showMessageContainer, setShowMessageContainer] = useState(false);
 
   const avatarChange = () => {
     console.log("Avatar clicked, toggling showMessageContainer");
