@@ -42,24 +42,37 @@ const Message = () => {
     if (user && user._id) {
       fetchConversation();
 
-      // Only emit `joinRoom` once when the user first joins
+      // Emit `joinRoom` once for this user
       socket.emit("joinRoom", user._id);
 
-      // Define the message handler
       const handleMessage = (message) => {
-        console.log("New message received:", message);  // Debugging line
-        setConversation((prev) => [...prev, message]);
+        // Debug output to ensure this only fires once per message
+        console.log("New message received:", message);
+
+        setConversation((prev) => {
+          // Check for duplicate messages by comparing sender and text
+          const isDuplicate = prev.some(
+            (msg) => msg.sender === message.sender && msg.text === message.text && msg.createdAt === message.createdAt
+          );
+
+          if (!isDuplicate) {
+            return [...prev, message];
+          } else {
+            console.warn("Duplicate message prevented:", message);
+            return prev; // Return previous state unchanged if duplicate
+          }
+        });
       };
 
-      // Attach the listener only once
+      // Attach listener only once
       socket.on("message", handleMessage);
 
-      // Cleanup function to remove the listener when the component unmounts
+      // Cleanup to remove the listener when the component unmounts
       return () => {
         socket.off("message", handleMessage);
       };
     }
-  }, [user?._id]); // Ensure listener is only attached when `user._id` changes
+  }, [user?._id]); // Run this effect only when user ID changes
 
   const handleNewMessage = (newMessage) => {
     // Emit the new message through the socket
