@@ -7,7 +7,7 @@ import ErrorBoundary from './ErrorBoundary.jsx'; // Assuming you created an Erro
 
 const WidgetContainer = () => {
   const [showAvatar, setShowAvatar] = useState(true);
-  const [showMessageContainer, setShowMessageContainer] = useState(false);
+  const [showMessageContainer, setShowMessageContainer] = useState(true);
 
   const avatarChange = () => {
     console.log("Avatar clicked, toggling showMessageContainer");

@@ -30,6 +30,8 @@ const MessageInput = ({ userId, onNewMessage }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     sendMessage();
+    // Ensure that showMessageContainer stays true
+    setShowMessageContainer(true);
   };
 
   return (

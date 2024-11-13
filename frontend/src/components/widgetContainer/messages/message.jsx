@@ -39,21 +39,11 @@ const Message = () => {
   };
 
   useEffect(() => {
-    if (user && user._id) {
-      fetchConversation();
-      socket.emit("joinRoom", user._id);
-  
-      const handleMessage = (message) => {
-        setConversation((prev) => [...prev, message]);
-      };
-  
-      socket.on("message", handleMessage);
-  
-      return () => {
-        socket.off("message", handleMessage);
-      };
-    }
-  }, [user]); // Correct dependency array
+    socket.on("message", (message) => {
+      setConversation((prev) => [...prev, message]);
+    });
+    return () => socket.off("message"); // Remove listener on unmount
+  }, []);
   
 
   const handleNewMessage = (newMessage) => {
