@@ -2,11 +2,10 @@
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useAuthContext } from './AuthContext.jsx';
-import apiUrl from '../../../apiConfig'; // Import the backend URL
+import apiUrl from '../../../apiConfig';
 
 const Messages = ({ initialMessages }) => {
   const { user } = useAuthContext();
-
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -16,22 +15,23 @@ const Messages = ({ initialMessages }) => {
   useEffect(() => {
     scrollToBottom(); // Scroll when messages change
   }, [initialMessages]);
+
   return (
     <div className="messages-container p-3">
-      {initialMessages.length > 0 ? (
+      {initialMessages && initialMessages.length > 0 ? (
         initialMessages.map((msg, index) => (
-          <div 
-            key={index} 
+          <div
+            key={index}
             className={`flex chat gap-0 ${msg.sender === user._id ? 'justify-end chat-end' : 'justify-start chat-start'} mb-3`}
           >
             {msg.sender !== user._id && (
               <div className="chat-image avatar">
                 <div className="w-10 rounded-full">
-                  <img 
-                    alt="Profile" 
-                    src={msg.sender === 'bot' 
-                      ? `${apiUrl}/api/avatar?username=bot` 
-                      : 'default-profile.png'} 
+                  <img
+                    alt="Profile"
+                    src={msg.sender === 'bot'
+                      ? `${apiUrl}/api/avatar?username=bot`
+                      : user.profilePic}
                   />
                 </div>
               </div>
@@ -63,62 +63,11 @@ const Messages = ({ initialMessages }) => {
   );
 };
 
-//   return (
-//     <div className="messages-container p-3">
-//       {initialMessages.length > 0 ? (
-//         initialMessages.map((msg, index) => (
-//           <div
-//             key={index}
-//             className={`flex chat gap-0 ${
-//               msg.sender === 'bot' ? 'justify-start chat-start' : 'justify-end chat-end'
-//             } mb-3`}
-//           >
-            
-//             {msg.sender === 'bot' && (
-//               <div className="chat-image avatar ml-3 order-2">
-//                 <div className="w-10 rounded-full">
-//                   <img alt="Profile" src={msg.profilePic} />
-//                 </div>
-//               </div>
-//             )}
-//             <div className={`ml-3 ${msg.sender === 'bot' ? 'order-none' : 'order-1 text-right'}`}>
-//               <div className="chat-header">
-//                 <span className="chat-sender font-semibold">
-//                   {msg.sender === 'bot' ? 'Bot' : 'You'}
-//                 </span>
-//               </div>
-//               <div
-//                 className={`chat-bubble ${
-//                   msg.sender === 'bot' ? 'bg-gray-400' : 'bg-blue-200 float-right'
-//                 } p-2 text-black rounded-lg`}
-//               >
-//                 {msg.text}
-//               </div>
-//             </div>
-            
-//             {msg.sender !== 'bot' && (
-//               <div className="chat-image avatar">
-//                 <div className="w-10 rounded-full">
-//                   <img alt="Profile" src={msg.profilePic} />
-//                 </div>
-//               </div>
-//             )}
-//           </div>
-//         ))
-//       ) : (
-//         <div className="no-messages text-center text-gray-500 mt-3">No messages yet</div>
-//       )}
-//       <div ref={messagesEndRef} />
-//     </div>
-//   );
-// };
-
 Messages.propTypes = {
   initialMessages: PropTypes.arrayOf(
     PropTypes.shape({
-      sender: PropTypes.string.isRequired,
+      sender: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
       text: PropTypes.string.isRequired,
-      profilePic: PropTypes.string,
       createdAt: PropTypes.string.isRequired,
     })
   ).isRequired,

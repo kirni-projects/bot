@@ -55,9 +55,16 @@ const Message = () => {
     }
   }, [user]);
 
-  const handleNewMessage = (newMessage) => {
-    socket.emit("message", { text: newMessage, sender: user._id });
+  const handleMessage = (message) => {
+    console.log("Received message:", message); // Debugging log
+    // Ensure the message has the expected keys before adding to conversation
+    if (message.sender && message.text && message.createdAt) {
+      setConversation((prev) => [...prev, message]);
+    } else {
+      console.error("Unexpected message format:", message);
+    }
   };
+  
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;

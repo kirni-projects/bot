@@ -1,9 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import WidgetContainer from './components/widgetContainer';
-import './index.css';  // Ensure that your Tailwind CSS is bundled
 
-// Function to render the widget into a specific element
 const renderWidget = (elementId) => {
   const rootElement = document.getElementById(elementId);
   if (rootElement) {
@@ -13,8 +11,7 @@ const renderWidget = (elementId) => {
   }
 };
 
-// Attach the renderWidget function to the global window object
 if (typeof window !== 'undefined') {
   console.log('renderWidget.js is loaded, defining window.renderChatWidget.');
-  window.renderChatWidget = renderWidget;  // Make renderChatWidget globally available
+  window.renderChatWidget = renderWidget;
 }
