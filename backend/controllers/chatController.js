@@ -23,64 +23,36 @@ export const startConversation = async (req, res) => {
     // Find the user by 'username' and 'eid'
     let user = await botUser.findOne({ username, eid });
 
-    // If user exists and is active (within 24 hours), update lastActive and proceed with the existing conversation
-    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-    if (user && user.lastActive > twentyFourHoursAgo) {
-      // Update lastActive to keep user active
+    if (user) {
+      // Update lastActive if the user already exists
       user.lastActive = new Date();
       await user.save();
     } else {
-      // If user is inactive (or doesn't exist), recreate the user and start a new conversation
-      if (!user) {
-        user = new botUser({
-          username,
-          message,
-          eid,
-          profilePic: `${process.env.PRODUCTION_URL}/api/avatar?username=${encodeURIComponent(username)}`,
-          lastActive: new Date() // Set lastActive to current time
-        });
-        await user.save();
-      } else {
-        // User exists but is inactive; reset lastActive and delete previous data
-        user.lastActive = new Date();
-        await user.save();
-
-        // Clear old conversation if any
-        await Conversation.deleteOne({ participants: user._id });
-      }
+      // Create a new user if not found
+      user = new botUser({
+        username,
+        message,
+        eid,
+        profilePic: `${process.env.PRODUCTION_URL}/api/avatar?username=${encodeURIComponent(username)}`
+      });
+      await user.save();
     }
 
-    const profilePic = user.profilePic;
-
-    // Find an existing conversation or create a new one
+    // Check for an existing conversation
     let conversation = await Conversation.findOne({ participants: user._id });
+
     if (!conversation) {
+      // If no conversation exists, create a new one
       conversation = new Conversation({
         participants: [user._id],
         messages: [{ sender: user._id, text: message, createdAt: new Date() }]
       });
       await conversation.save();
-    } else {
-      // If continuing the conversation, add the new message
-      conversation.messages.push({ sender: user._id, text: message, createdAt: new Date() });
-      await conversation.save();
     }
 
-    // Create a new notification for starting/continuing a chat
-    const newNotification = new Notification({
-      userId: user._id,
-      userProfile: profilePic,
-      title: 'New Chat Started',
-      description: `${username} has started or continued a conversation.`,
-      type: 'chat'
-    });
-    await newNotification.save();
-
-    // Generate token and set cookie
     const token = generateToken(user._id);
     setCookie(res, token);
 
-    // Emit initial message to user's socket room
     const io = req.app.locals.io;
     io.to(user._id.toString()).emit('message', { sender: user._id, text: message, createdAt: new Date() });
 
@@ -88,19 +60,19 @@ export const startConversation = async (req, res) => {
       _id: user._id,
       username: username,
       message: message,
-      conversation,
-      profilePic: profilePic,
+      conversation: conversation,
+      profilePic: user.profilePic,
       usertoken: token
     });
 
-    // Send a bot response after a delay
+    // Send a bot response after the initial message
     setTimeout(async () => {
       const botResponse = generateBotResponse(message);
       const botMessage = { sender: 'bot', text: botResponse, createdAt: new Date() };
       conversation.messages.push(botMessage);
       await conversation.save();
 
-      io.to(user._id.toString()).emit('message', botMessage);
+      io.to(user._id.toString()).emit('message', botMessage);  // Emit bot message to the client
     }, 2000);
 
   } catch (err) {

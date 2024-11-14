@@ -37,42 +37,66 @@ const Message = () => {
       setLoading(false);
     }
   };
+// Only add the listener once when the component mounts
+useEffect(() => {
+  if (user && user._id) {
+    socket.emit("joinRoom", user._id);
 
-  useEffect(() => {
-    if (user && user._id) {
-      fetchConversation();
+    // Define the message handler
+    const handleMessage = (message) => {
+      // Avoid adding duplicate messages to the state
+      setConversation((prev) => {
+        if (!prev.find((msg) => msg.createdAt === message.createdAt && msg.text === message.text)) {
+          return [...prev, message];
+        }
+        return prev;
+      });
+    };
 
-      // Emit `joinRoom` only once for this user
-      socket.emit("joinRoom", user._id);
+    // Attach the listener
+    socket.on("message", handleMessage);
 
-      const handleMessage = (message) => {
-        console.log("New message received:", message);
+    // Cleanup function to remove the listener when the component unmounts
+    return () => {
+      socket.off("message", handleMessage);
+    };
+  }
+}, [user]);
+  // useEffect(() => {
+  //   if (user && user._id) {
+  //     fetchConversation();
 
-        // Prevent duplicate messages
-        setConversation((prev) => {
-          const isDuplicate = prev.some(
-            (msg) => msg.sender === message.sender && msg.text === message.text && msg.createdAt === message.createdAt
-          );
-          if (!isDuplicate) {
-            return [...prev, message];
-          } else {
-            console.warn("Duplicate message prevented:", message);
-            return prev;
-          }
-        });
-      };
+  //     // Emit `joinRoom` only once for this user
+  //     socket.emit("joinRoom", user._id);
 
-      // Ensure listener is added only once
-      if (!socket.hasListeners("message")) {
-        socket.on("message", handleMessage);
-      }
+  //     const handleMessage = (message) => {
+  //       console.log("New message received:", message);
 
-      // Cleanup function to remove the listener when component unmounts
-      return () => {
-        socket.off("message", handleMessage);
-      };
-    }
-  }, [user?._id]); // Runs only when user ID changes
+  //       // Prevent duplicate messages
+  //       setConversation((prev) => {
+  //         const isDuplicate = prev.some(
+  //           (msg) => msg.sender === message.sender && msg.text === message.text && msg.createdAt === message.createdAt
+  //         );
+  //         if (!isDuplicate) {
+  //           return [...prev, message];
+  //         } else {
+  //           console.warn("Duplicate message prevented:", message);
+  //           return prev;
+  //         }
+  //       });
+  //     };
+
+  //     // Ensure listener is added only once
+  //     if (!socket.hasListeners("message")) {
+  //       socket.on("message", handleMessage);
+  //     }
+
+  //     // Cleanup function to remove the listener when component unmounts
+  //     return () => {
+  //       socket.off("message", handleMessage);
+  //     };
+  //   }
+  // }, [user?._id]); // Runs only when user ID changes
 
   const handleNewMessage = (newMessage) => {
     socket.emit("message", { text: newMessage, sender: user._id });
