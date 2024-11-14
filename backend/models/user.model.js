@@ -35,6 +35,10 @@ const userSchema = new mongoose.Schema({
   profilePic: {
     type: String,
     default: ""
+  },
+  lastActive: {
+    type: Date,
+    default: Date.now // Initialize as the current time
   }
 }, { timestamps: true });
 

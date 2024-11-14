@@ -12,7 +12,7 @@ const generateBotResponse = (userMessage) => {
   } else if (userMessage.toLowerCase().includes('help')) {
     return 'Sure, I am here to help you. Please tell me what you need assistance with.';
   } else {
-    return 'I am not sure how to respond to that. Can you please rephrase your question or ask something else?';
+    return 'I am not sure how to respond to that. An agent will be with you shortly. Please hold on for a moment.';
   }
 };
 
@@ -30,6 +30,9 @@ export const startConversation = async (req, res) => {
         eid,
         profilePic: `${process.env.PRODUCTION_URL}/api/avatar?username=${encodeURIComponent(username)}`
       });
+      await user.save();
+    } else {
+      user.lastActive = new Date(); // Update lastActive timestamp
       await user.save();
     }
 
@@ -105,6 +108,12 @@ export const sendMessage = async (req, res) => {
   }
 
   try {
+    let user = await botUser.findById(userId);
+    if (user) {
+      user.lastActive = new Date(); // Update lastActive timestamp
+      await user.save();
+    }
+
     let conversation = await Conversation.findOne({ participants: userId });
 
     if (!conversation) {
@@ -113,6 +122,8 @@ export const sendMessage = async (req, res) => {
 
     const newMessage = { sender: userId, text, createdAt: new Date() };
     conversation.messages.push(newMessage);
+
+    await conversation.updateLastActivity();
 
     await conversation.save();
 
@@ -133,8 +144,6 @@ export const sendMessage = async (req, res) => {
     res.status(500).json({ message: 'Failed to send message', error: err.message });
   }
 };
-
-
 
 // Function to get all messages for a user
 export const getMessages = async (req, res) => {
