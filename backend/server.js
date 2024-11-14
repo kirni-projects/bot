@@ -12,7 +12,8 @@ import authRoutes from './routes/authRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
 import avatarRoute from './routes/avatarRoute.js';
 import { fileURLToPath } from 'url';
-import deleteInactiveUsers from './utils/cleanupInactiveUsers.js';
+import cron from 'node-cron'; // Import node-cron
+import cleanupInactiveUsers from './utils/cleanupInactiveUsers.js'; // Import the cleanup function
 
 // Get __dirname in ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -31,7 +32,6 @@ const corsOptions = {
   credentials: true,
 };
 app.use(cors(corsOptions));
-
 
 // Serve static files for the frontend (including the widget)
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
@@ -55,9 +55,6 @@ app.use('/widget.js', (req, res, next) => {
 
 // Apply API routes
 app.use('/api', registerRoutes, scriptCheckRoutes, authRoutes, chatRoutes, avatarRoute);
-
-// Start the cleanup job
-deleteInactiveUsers();
 
 // Fallback route for React’s index.html
 app.get('*', (req, res) => {
@@ -109,6 +106,8 @@ io.on('connection', (socket) => {
   });
 });
 
+// Schedule the cleanup of inactive users every hour
+cron.schedule('0 * * * *', cleanupInactiveUsers);
 
 // Start the server and log any potential startup errors
 const PORT = process.env.PORT || 5000;
