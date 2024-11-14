@@ -12,7 +12,7 @@ import authRoutes from './routes/authRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
 import avatarRoute from './routes/avatarRoute.js';
 import { fileURLToPath } from 'url';
-import deleteInactiveUsers from './jobs/cleanupInactiveUsers.js';
+import deleteInactiveUsers from './utils/cleanupInactiveUsers.js';
 
 // Get __dirname in ESM
 const __filename = fileURLToPath(import.meta.url);
