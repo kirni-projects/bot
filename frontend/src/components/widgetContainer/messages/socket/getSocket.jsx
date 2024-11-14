@@ -5,10 +5,10 @@ let socket;
 
 const getSocket = () => {
   if (!socket) {
-    const serverUrl = 'https://bot-rd1k.onrender.com';  // Your server URL
+    const serverUrl = 'https://bot-rd1k.onrender.com';
 
     socket = io(serverUrl, {
-      transports: ['websocket'],
+      transports: ['websocket'],  // Use only websocket transport
       reconnection: true,
       reconnectionAttempts: 10,
       reconnectionDelay: 2000,
@@ -20,7 +20,7 @@ const getSocket = () => {
 
     socket.on('disconnect', (reason) => {
       console.warn('Socket disconnected:', reason);
-      // Reconnect only if server didn't close connection intentionally
+      // Attempt to reconnect if disconnected by server
       if (reason === 'io server disconnect') {
         socket.connect();
       }
@@ -32,6 +32,7 @@ const getSocket = () => {
   }
   return socket;
 };
+
 
 export default getSocket;
 
