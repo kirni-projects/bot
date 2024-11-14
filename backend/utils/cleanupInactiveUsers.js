@@ -4,7 +4,8 @@ import Conversation from '../models/conversation.model.js';
 import Notification from '../models/Notification.model.js';
 
 const cleanupInactiveUsers = async () => {
-  const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  const twentyFourHoursAgo = new Date(Date.now() - 1 * 60 * 1000);
+  // const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
   try {
     // Find botUsers who haven't been active in the last 24 hours
