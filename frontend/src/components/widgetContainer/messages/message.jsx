@@ -7,6 +7,7 @@ import Messages from "./messages.jsx";
 import MessageInput from "./MessageInput.jsx";
 import apiUrl from '../../../apiConfig';
 
+const socket = getSocket(); // Use the singleton instance here
 
 const Message = () => {
   const { user } = useAuthContext();
@@ -14,7 +15,6 @@ const Message = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const socket = getSocket(); // Use the singleton instance here
 
   const fetchConversation = async () => {
     if (!user) {
@@ -75,7 +75,7 @@ useEffect(() => {
       socket.off("message", handleMessage); // Clean up listener on unmount
     };
   }
-}, [user, socket]);
+}, [user]);
 
   const handleNewMessage = (newMessage) => {
     socket.emit("message", { text: newMessage, sender: user._id });
