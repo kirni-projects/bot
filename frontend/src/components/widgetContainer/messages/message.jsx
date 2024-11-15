@@ -7,13 +7,14 @@ import Messages from "./messages.jsx";
 import MessageInput from "./MessageInput.jsx";
 import apiUrl from '../../../apiConfig';
 
-const socket = getSocket();
 
 const Message = () => {
   const { user } = useAuthContext();
   const [conversation, setConversation] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const socket = getSocket();
 
   const fetchConversation = async () => {
     if (!user) {
@@ -73,7 +74,7 @@ useEffect(() => {
       socket.off("message", handleMessage);
     };
   }
-}, [user]);
+}, [user,socket]);
 
   const handleNewMessage = (newMessage) => {
     socket.emit("message", { text: newMessage, sender: user._id });
