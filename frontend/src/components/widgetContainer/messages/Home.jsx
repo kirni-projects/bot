@@ -8,6 +8,11 @@ const Home = () => {
   return (
     <>
       <div className="card-home-body bg-orange-500 h-52 p-5 content-center">
+        <div className="icon-to-home text-white">
+          <Link to='/'>
+            <SlArrowLeft />
+          </Link>
+        </div>
         <h1 className="text-center align-center text-4xl font-semibold text-white">
           Hi there 👋
         </h1>

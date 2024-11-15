@@ -7,7 +7,6 @@ import Messages from "./messages.jsx";
 import MessageInput from "./MessageInput.jsx";
 import apiUrl from '../../../apiConfig';
 
-const socket = getSocket();
 
 const Message = () => {
   const { user } = useAuthContext();
@@ -15,12 +14,15 @@ const Message = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const socket = getSocket(); // Use the singleton instance here
+
   const fetchConversation = async () => {
     if (!user) {
       setError(new Error("User not authenticated"));
       return;
     }
-    try {
+    
+    try { 
       const response = await axios.get(`${apiUrl}/api/chat/me`, {
         headers: {
           Authorization: `Bearer ${user.token}`,
@@ -70,10 +72,10 @@ useEffect(() => {
 
     // Cleanup function to remove the listener when the component unmounts
     return () => {
-      socket.off("message", handleMessage);
+      socket.off("message", handleMessage); // Clean up listener on unmount
     };
   }
-}, [user]);
+}, [user, socket]);
 
   const handleNewMessage = (newMessage) => {
     socket.emit("message", { text: newMessage, sender: user._id });

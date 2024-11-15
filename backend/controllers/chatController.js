@@ -2,7 +2,6 @@
 import botUser from '../models/user.model.js';  // Use botUser instead of User
 import Conversation from '../models/conversation.model.js';
 import Notification from '../models/Notification.model.js';
-import { v4 as uuidv4 } from 'uuid';
 import { generateToken, setCookie } from '../utils/generateToken.js';
 
 const generateBotResponse = (userMessage) => {
@@ -49,6 +48,15 @@ export const startConversation = async (req, res) => {
       });
       await conversation.save();
     }
+    const newNotification = new Notification({
+      userId: user._id,
+      userProfile: profilePic,
+      title: 'New Chat Started',
+      description: `${username} has started a conversation.`,
+      type: 'chat'
+    });
+
+    await newNotification.save();
 
     const token = generateToken(user._id);
     setCookie(res, token);
